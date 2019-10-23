@@ -37,9 +37,10 @@ processRulesStatusShortAccepted=Acceptée
 # LIST
 processRulesList=Liste des méthodes
 NoprocessRules=(vide)
+DateCre=Créé le
 
 # CARD
-NewprocessRules=Création méthode
+NewprocessRules=Nouvelle méthode
 processRulesCard=Fiche méthode
 LinkToProduct=Lien vers le produit
 

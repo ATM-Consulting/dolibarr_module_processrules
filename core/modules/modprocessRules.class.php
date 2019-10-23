@@ -254,6 +254,52 @@ class modprocessRules extends DolibarrModules
 		$this->menu = array();			// List of menus to add
 		$r=0;
 
+		$this->menu[$r]=array(	'fk_menu'=>'fk_mainmenu=products',		    // Use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
+			'type'=>'left',			                // This is a Left menu entry
+			'titre'=>'TopMenuprocessRules',
+			'mainmenu'=>'products',
+			'leftmenu'=>'processrules',
+			'url'=>'/processrules/processrules_list.php',
+			'langs'=>'processrules@processrules',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+			'position'=>100,
+			'enabled'=>'$conf->processrules->enabled',  // Define condition to show or hide menu entry. Use '$conf->nomenclature->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
+			'perms'=>'$user->rights->processrules->read',			                // Use 'perms'=>'$user->rights->nomenclature->level1->level2' if you want your menu with a permission rules
+			'target'=>'',
+			'user'=>0);				                // 0=Menu for internal users, 1=external users, 2=both
+		$r++;
+
+		$this->menu[$r]=array(
+			'fk_menu'=>'fk_mainmenu=products,fk_leftmenu=processrules',		    // Use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
+			'type'=>'left',			                // This is a Left menu entry
+			'titre'=>$langs->trans('NewprocessRules'),
+			'mainmenu'=>'products',
+			'leftmenu'=>'processrules_left_create',
+			'url'=>'/processrules/processrules_card.php?action=create',
+			'langs'=>'processrules@processrules',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+			'position'=>100+$r,
+			'enabled'=> '$conf->processrules->enabled',  // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
+			'perms'=> '$user->rights->processrules->write',			                // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
+			'target'=>'',
+			'user'=>0
+		);				                // 0=Menu for internal users, 1=external users, 2=both
+		$r++;
+
+		$this->menu[$r]=array(
+			'fk_menu'=>'fk_mainmenu=products,fk_leftmenu=processrules',		    // Use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
+			'type'=>'left',			                // This is a Left menu entry
+			'titre'=>$langs->trans('List'),
+			'mainmenu'=>'products',
+			'leftmenu'=>'processrules_left_list',
+			'url'=>'/processrules/processrules_list.php',
+			'langs'=>'processrules@processrules',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+			'position'=>100+$r,
+			'enabled'=> '$conf->processrules->enabled',  // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
+			'perms'=> '$user->rights->processrules->read',			                // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
+			'target'=>'',
+			'user'=>0
+		);				                // 0=Menu for internal users, 1=external users, 2=both
+		$r++;
+
 		// Add here entries to declare new menus
 		//
 		// Example to declare a new Top Menu entry and its Left menu entry:
