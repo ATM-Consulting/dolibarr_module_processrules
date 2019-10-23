@@ -1,0 +1,54 @@
+Module104079Name = processRules
+Module104079Desc = processRules Description
+
+ATMAbout = Ce module a été développé par <a href="http://www.atm-consulting.fr" target="_blank">ATM Consulting</a><br>Vous pouvez retrouver la documentation sur notre <a href="http://wiki.atm-consulting.fr/index.php/Accueil" target="_blank">wiki</a><br><br>Pour toute question technique ou retour, contactez-nous sur <a href="mailto:support@atm-consulting.fr">support@atm-consulting.fr</a><br><br>Pour toute question commerciale, contactez-nous sur <a href="mailto:contact@atm-consulting.fr">contact@atm-consulting.fr</a> ou au +33 9 77 19 50 70<br><br>Retrouvez nos autres modules sur <a href="http://www.dolistore.com/search.php?orderby=position&orderway=desc&search_query=atm&submit_search=Rechercher" target="_blank">Dolistore</a>
+
+processRulesSetup = Configuration du module processRules
+processRulesAbout = A propos du module processRules
+
+processRules=processRules
+AbricotNeedUpdate=Le module abricot doit être mis à jour
+
+# SETUP
+ParamLabel=Nom du paramètre
+ParamDesc=Une description si besoin
+ParamHelp=Le contenu de l'aide
+
+# MENU
+TopMenuprocessRules=processRules
+
+# STATUS
+processRulesStatusCanceled=Abandonnée (fermée)
+processRulesStatusDraft=Brouillon (à valider)
+processRulesStatusValidated=Validée (à accepter)
+processRulesStatusRefused=Refusée (fermée)
+processRulesStatusAccepted=Acceptée (fermée)
+
+processRulesStatusShortCanceled=Abandonnée
+processRulesStatusShortDraft=Brouillon
+processRulesStatusShortValidated=Validée
+processRulesStatusShortRefused=Refusée
+processRulesStatusShortAccepted=Acceptée
+
+# LIST
+processRulesList=Liste processRules
+NoprocessRules=(vide)
+
+# CARD
+NewprocessRules=Création processRules
+processRulesCard=Fiche processRules
+
+processRulesModify=Modifier
+processRulesClone=Cloner
+processRulesValid=Valider
+processRulesAccept=Accepter
+processRulesRefuse=Refuser
+processRulesReopen=Rouvrir
+processRulesCancel=Abandonner
+processRulesDelete=Supprimer
+
+ConfirmValidateprocessRulesTitle=Confirmation d'activation
+ConfirmValidateprocessRulesBody=Souhaitez-vous vraiment activer cette fiche processRules %s ?
+
+ConfirmDeleteprocessRulesTitle=Confirmation de suppression
+ConfirmDeleteprocessRulesBody=Souhaitez-vous vraiment supprimer cette fiche processRules %s ?
