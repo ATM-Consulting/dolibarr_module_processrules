@@ -179,6 +179,15 @@ if (empty($reshook))
 			header('Location: '.dol_buildpath('/processrules/processrules_card.php', 1).'?id='.$object->id);
 			exit;
 
+		case 'enable':
+			$object->setValid($user);
+			header('Location: '.dol_buildpath('/processrules/processrules_card.php', 1).'?id='.$object->id);
+			exit;
+
+		case 'disable':
+			$ret = $object->setDraft($user);
+			header('Location: '.dol_buildpath('/processrules/processrules_card.php', 1).'?id='.$object->id);
+			exit;
 	}
 }
 
@@ -314,56 +323,38 @@ else
 
             if (empty($reshook))
             {
-                // Send
-                //        print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&action=presend&mode=init#formmailbeforetitle">' . $langs->trans('SendMail') . '</a>'."\n";
-
                 // Modify
                 if (!empty($user->rights->processrules->write))
                 {
-                    if ($object->status !== processRules::STATUS_CANCELED)
-                    {
-                        // Modify
-                        if ($object->status !== processRules::STATUS_ACCEPTED) print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=edit">'.$langs->trans("processRulesModify").'</a></div>'."\n";
-                        // Clone
-                        print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=clone">'.$langs->trans("processRulesClone").'</a></div>'."\n";
-                    }
+					// Modify
+					print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=edit">'.$langs->trans("processRulesModify").'</a></div>'."\n";
+					// Clone
+					print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=clone">'.$langs->trans("processRulesClone").'</a></div>'."\n";
 
-                    // Valid
-                    if ($object->status === processRules::STATUS_DRAFT) print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=valid">'.$langs->trans('processRulesValid').'</a></div>'."\n";
-
-                    // Accept
-                    if ($object->status === processRules::STATUS_VALIDATED) print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=accept">'.$langs->trans('processRulesAccept').'</a></div>'."\n";
-                    // Refuse
-                    if ($object->status === processRules::STATUS_VALIDATED) print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=refuse">'.$langs->trans('processRulesRefuse').'</a></div>'."\n";
-
-
-                    // Reopen
-                    if ($object->status === processRules::STATUS_ACCEPTED || $object->status === processRules::STATUS_REFUSED) print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=reopen">'.$langs->trans('processRulesReopen').'</a></div>'."\n";
-                    // Cancel
-                    if ($object->status === processRules::STATUS_VALIDATED) print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=cancel">'.$langs->trans("processRulesCancel").'</a></div>'."\n";
+					if ($object->status == processRules::STATUS_DRAFT)
+					{
+						print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'&amp;action=enable">'.$langs->trans("Activate").'</a></div>';
+					}
+					else
+					{
+						print '<div class="inline-block divButAction"><a class="butActionDelete" href="'.$_SERVER['PHP_SELF'].'?action=disable&amp;id='.$object->id.'">'.$langs->trans("Disable").'</a></div>';
+					}
                 }
                 else
                 {
-                    if ($object->status !== processRules::STATUS_CANCELED)
-                    {
-                        // Modify
-                        if ($object->status !== processRules::STATUS_ACCEPTED) print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("processRulesModify").'</a></div>'."\n";
-                        // Clone
-                        print '<div class="inline-block divButAction"><a class="butAction" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("processRulesClone").'</a></div>'."\n";
-                    }
+					// Modify
+					print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("processRulesModify").'</a></div>'."\n";
+					// Clone
+					print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("processRulesClone").'</a></div>'."\n";
 
-                    // Valid
-                    if ($object->status === processRules::STATUS_DRAFT) print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans('processRulesValid').'</a></div>'."\n";
-
-                    // Accept
-                    if ($object->status === processRules::STATUS_VALIDATED) print '<div class="inline-block divButAction"><a class="butActionRefused" href="#">'.$langs->trans('processRulesAccept').'</a></div>'."\n";
-                    // Refuse
-                    if ($object->status === processRules::STATUS_VALIDATED) print '<div class="inline-block divButAction"><a class="butActionRefused" href="#">'.$langs->trans('processRulesRefuse').'</a></div>'."\n";
-
-                    // Reopen
-                    if ($object->status === processRules::STATUS_ACCEPTED || $object->status === processRules::STATUS_REFUSED) print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans('processRulesReopen').'</a></div>'."\n";
-                    // Cancel
-                    if ($object->status === processRules::STATUS_VALIDATED) print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("processRulesCancel").'</a></div>'."\n";
+					if ($object->status == processRules::STATUS_DRAFT)
+					{
+						print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("Activate").'</a></div>';
+					}
+					else
+					{
+						print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("Disable").'</a></div>';
+					}
                 }
 
                 if (!empty($user->rights->processrules->delete))

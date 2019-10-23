@@ -69,6 +69,15 @@ class processRules extends SeedObject
     /** @var int $ismultientitymanaged 0=No test on entity, 1=Test with field entity, 2=Test with link by societe */
     public $ismultientitymanaged = 1;
 
+	/** @var string $note_public */
+	public $note_public;
+
+	/** @var string $note_private */
+	public $note_private;
+
+	/** @var int $fk_user_modif */
+	public $fk_user_modif;
+
     /**
      *  'type' is the field format.
      *  'label' the translation key.
@@ -128,7 +137,7 @@ class processRules extends SeedObject
             'arrayofkeyval' => array(
                 0 => 'Draft',
                 1 => 'Active',
-                -1 => 'Canceled'
+//                -1 => 'Canceled'
             )
         ),
 
@@ -464,11 +473,11 @@ class processRules extends SeedObject
 		$langs->load('processrules@processrules');
         $res = '';
 
-        if ($status==self::STATUS_CANCELED) { $statusType='status9'; $statusLabel=$langs->trans('processRulesStatusCancel'); $statusLabelShort=$langs->trans('processRulesStatusShortCancel'); }
-        elseif ($status==self::STATUS_DRAFT) { $statusType='status0'; $statusLabel=$langs->trans('processRulesStatusDraft'); $statusLabelShort=$langs->trans('processRulesStatusShortDraft'); }
-        elseif ($status==self::STATUS_VALIDATED) { $statusType='status1'; $statusLabel=$langs->trans('processRulesStatusValidated'); $statusLabelShort=$langs->trans('processRulesStatusShortValidate'); }
-        elseif ($status==self::STATUS_REFUSED) { $statusType='status5'; $statusLabel=$langs->trans('processRulesStatusRefused'); $statusLabelShort=$langs->trans('processRulesStatusShortRefused'); }
-        elseif ($status==self::STATUS_ACCEPTED) { $statusType='status6'; $statusLabel=$langs->trans('processRulesStatusAccepted'); $statusLabelShort=$langs->trans('processRulesStatusShortAccepted'); }
+        /*if ($status==self::STATUS_CANCELED) { $statusType='status9'; $statusLabel=$langs->trans('processRulesStatusCancel'); $statusLabelShort=$langs->trans('processRulesStatusShortCancel'); }
+        else*/if ($status==self::STATUS_DRAFT) { $statusType='status0'; $statusLabel=$langs->trans('Disabled'); $statusLabelShort=$langs->trans('Disabled'); }
+        elseif ($status==self::STATUS_VALIDATED) { $statusType='status1'; $statusLabel=$langs->trans('Enabled'); $statusLabelShort=$langs->trans('Enabled'); }
+//        elseif ($status==self::STATUS_REFUSED) { $statusType='status5'; $statusLabel=$langs->trans('processRulesStatusRefused'); $statusLabelShort=$langs->trans('processRulesStatusShortRefused'); }
+//        elseif ($status==self::STATUS_ACCEPTED) { $statusType='status6'; $statusLabel=$langs->trans('processRulesStatusAccepted'); $statusLabelShort=$langs->trans('processRulesStatusShortAccepted'); }
 
         if (function_exists('dolGetStatus'))
         {

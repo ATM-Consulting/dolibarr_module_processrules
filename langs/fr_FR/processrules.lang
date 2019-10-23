@@ -58,3 +58,6 @@ ConfirmValidateprocessRulesBody=Souhaitez-vous vraiment activer cette fiche mét
 
 ConfirmDeleteprocessRulesTitle=Confirmation de suppression
 ConfirmDeleteprocessRulesBody=Souhaitez-vous vraiment supprimer cette fiche méthode %s ?
+
+ConfirmCloneprocessRulesTitle=Confirmation de clonage
+ConfirmCloneprocessRulesBody=Souhaitez-vous cloner cette fiche méthode %s ?
