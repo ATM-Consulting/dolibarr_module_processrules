@@ -27,12 +27,8 @@ if(!defined('INC_FROM_DOLIBARR')) {
 	global $db;
 }
 
-
-/* uncomment
-
-
 dol_include_once('/processrules/class/processrules.class.php');
 
 $o=new processRules($db);
 $o->init_db_by_vars();
-*/
+

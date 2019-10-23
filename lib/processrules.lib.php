@@ -71,17 +71,31 @@ function processrules_prepare_head(processRules $object)
     global $langs, $conf;
     $h = 0;
     $head = array();
-    $head[$h][0] = dol_buildpath('/processrules/card.php', 1).'?id='.$object->id;
+    $head[$h][0] = dol_buildpath('/processrules/processrules_card.php', 1).'?id='.$object->id;
     $head[$h][1] = $langs->trans("processRulesCard");
     $head[$h][2] = 'card';
     $h++;
-	
+
+	$nbNote = 0;
+	if (!empty($object->note_private)) $nbNote++;
+	if (!empty($object->note_public)) $nbNote++;
+    $head[$h][0] = dol_buildpath('/processrules/processrules_note.php', 1).'?id='.$object->id;
+    $head[$h][1] = $langs->trans("Notes");
+	if ($nbNote > 0) $head[$h][1].= ' <span class="badge">'.$nbNote.'</span>';
+    $head[$h][2] = 'note';
+    $h++;
+
+	$head[$h][0] = dol_buildpath('/processrules/processrules_document.php', 1).'?id='.$object->id;
+	$head[$h][1] = $langs->trans("Documents");
+	$head[$h][2] = 'document';
+	$h++;
+
 	// Show more tabs from modules
     // Entries must be declared in modules descriptor with line
     // $this->tabs = array('entity:+tabname:Title:@processrules:/processrules/mypage.php?id=__ID__');   to add new tab
     // $this->tabs = array('entity:-tabname:Title:@processrules:/processrules/mypage.php?id=__ID__');   to remove a tab
     complete_head_from_modules($conf, $langs, $object, $head, $h, 'processrules');
-	
+
 	return $head;
 }
 

@@ -140,11 +140,10 @@ class processRules extends SeedObject
             'position' => 40,
             'searchall' => 1,
             'css' => 'minwidth200',
-            'help' => 'Help text',
             'showoncombobox' => 1
         ),
 
-        'fk_soc' => array(
+        /*'fk_soc' => array(
             'type' => 'integer:Societe:societe/class/societe.class.php',
             'label' => 'ThirdParty',
             'visible' => 1,
@@ -152,6 +151,16 @@ class processRules extends SeedObject
             'position' => 50,
             'index' => 1,
             'help' => 'LinkToThirparty'
+        ),*/
+        'fk_product' => array(
+			'type' 		=> 'integer:Product:product/class/product.class.php',
+			'label'		=> 'Product',
+			'visible' 	=> 1,
+			'notnull' 	=> 1,
+			'enabled'	=> 1,
+			'position'	=> 50,
+			'index'		=> 1,
+			'help'		=> 'LinkToProduct'
         ),
 
         'description' => array(
@@ -162,13 +171,29 @@ class processRules extends SeedObject
             'position' => 60
         ),
 
-//        'fk_user_valid' =>array(
-//            'type' => 'integer',
-//            'label' => 'UserValidation',
-//            'enabled' => 1,
-//            'visible' => -1,
-//            'position' => 512
-//        ),
+		'note_public' => array(
+			'type' => 'html', // or text
+			'label' => 'NotePublic',
+			'enabled' => 1,
+			'visible' => 0,
+			'position' => 100
+		),
+
+		'note_private' => array(
+			'type' => 'html', // or text
+			'label' => 'NotePrivate',
+			'enabled' => 1,
+			'visible' => 0,
+			'position' => 100
+		),
+
+        'fk_user_modif' =>array(
+            'type' => 'integer',
+            'label' => 'UserValidation',
+            'enabled' => 1,
+            'visible' => 0,
+            'position' => 512
+        ),
 
         'import_key' => array(
             'type' => 'varchar(14)',
@@ -385,7 +410,7 @@ class processRules extends SeedObject
         if (! empty($this->ref)) $label.= '<br><b>'.$langs->trans('Ref').':</b> '.$this->ref;
 
         $linkclose = '" title="'.dol_escape_htmltag($label, 1).'" class="classfortooltip">';
-        $link = '<a href="'.dol_buildpath('/processrules/card.php', 1).'?id='.$this->id.urlencode($moreparams).$linkclose;
+        $link = '<a href="'.dol_buildpath('/processrules/processrules_card.php', 1).'?id='.$this->id.urlencode($moreparams).$linkclose;
 
         $linkend='</a>';
 
@@ -459,7 +484,7 @@ class processRules extends SeedObject
             elseif ($mode == 5) $res = $statusLabelShort.img_picto($statusLabel, $statusType);
             elseif ($mode == 6) $res = $statusLabel.img_picto($statusLabel, $statusType);
         }
-        
+
         return $res;
     }
 }

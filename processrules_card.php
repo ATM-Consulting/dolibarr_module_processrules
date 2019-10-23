@@ -104,7 +104,7 @@ if (empty($reshook))
 //				$error++;
 //				setEventMessages($langs->trans('warning_date_must_be_fill'), array(), 'warnings');
 //			}
-			
+
 			// ...
 
 			if ($error > 0)
@@ -112,7 +112,7 @@ if (empty($reshook))
 				$action = 'edit';
 				break;
 			}
-			
+
 			$res = $object->save($user);
             if ($res < 0)
             {
@@ -122,7 +122,7 @@ if (empty($reshook))
             }
             else
             {
-                header('Location: '.dol_buildpath('/processrules/card.php', 1).'?id='.$object->id);
+                header('Location: '.dol_buildpath('/processrules/processrules_card.php', 1).'?id='.$object->id);
                 exit;
             }
         case 'update_extras':
@@ -146,37 +146,37 @@ if (empty($reshook))
             if ($error) $action = 'edit_extras';
             else
             {
-                header('Location: '.dol_buildpath('/processrules/card.php', 1).'?id='.$object->id);
+                header('Location: '.dol_buildpath('/processrules/processrules_card.php', 1).'?id='.$object->id);
                 exit;
             }
             break;
 		case 'confirm_clone':
 			$object->cloneObject($user);
-			
-			header('Location: '.dol_buildpath('/processrules/card.php', 1).'?id='.$object->id);
+
+			header('Location: '.dol_buildpath('/processrules/processrules_card.php', 1).'?id='.$object->id);
 			exit;
 
 		case 'modif':
 		case 'reopen':
 			if (!empty($user->rights->processrules->write)) $object->setDraft($user);
-				
+
 			break;
 		case 'confirm_validate':
 			if (!empty($user->rights->processrules->write)) $object->setValid($user);
-			
-			header('Location: '.dol_buildpath('/processrules/card.php', 1).'?id='.$object->id);
+
+			header('Location: '.dol_buildpath('/processrules/processrules_card.php', 1).'?id='.$object->id);
 			exit;
 
 		case 'confirm_delete':
 			if (!empty($user->rights->processrules->delete)) $object->delete($user);
-			
-			header('Location: '.dol_buildpath('/processrules/list.php', 1));
+
+			header('Location: '.dol_buildpath('/processrules/processrules_list.php', 1));
 			exit;
 
 		// link from llx_element_element
 		case 'dellink':
 			$object->deleteObjectLinked(null, '', null, '', GETPOST('dellinkid'));
-			header('Location: '.dol_buildpath('/processrules/card.php', 1).'?id='.$object->id);
+			header('Location: '.dol_buildpath('/processrules/processrules_card.php', 1).'?id='.$object->id);
 			exit;
 
 	}
@@ -271,7 +271,7 @@ else
             if (!empty($formconfirm)) print $formconfirm;
 
 
-            $linkback = '<a href="' .dol_buildpath('/processrules/list.php', 1) . '?restore_lastsearch_values=1">' . $langs->trans('BackToList') . '</a>';
+            $linkback = '<a href="' .dol_buildpath('/processrules/processrules_list.php', 1) . '?restore_lastsearch_values=1">' . $langs->trans('BackToList') . '</a>';
 
             $morehtmlref='<div class="refidno">';
             /*
