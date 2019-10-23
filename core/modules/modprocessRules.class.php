@@ -145,7 +145,54 @@ class modprocessRules extends DolibarrModules
         	$conf->processrules=new stdClass();
         	$conf->processrules->enabled=0;
         }
-		$this->dictionaries=array();
+		$this->dictionaries=array(
+			'langs' 	=> 'processrules@processrules',
+
+			// List of tables we want to see into dictonnary editor
+			'tabname' 	=> array(
+				MAIN_DB_PREFIX."c_procedure_type"
+			),
+
+			// Label of tables
+			'tablib'	=> array(
+				"DictionnaryProcedureType"
+			),
+
+			// Request to select fields
+			'tabsql'	=> array(
+				'SELECT f.rowid as rowid, f.code, f.label, f.active FROM '.MAIN_DB_PREFIX.'c_procedure_type as f'
+			),
+
+			// Sort order
+            'tabsqlsort'=>array(
+				"label ASC"
+			),
+
+			// List of fields (result of select to show dictionary)
+			'tabfield'=>array(
+				"code,label"
+			),
+
+			// List of fields (list of fields to edit a record)
+			'tabfieldvalue'=>array(
+				"code,label"
+			),
+
+			// List of fields (list of fields for insert)
+			'tabfieldinsert'=>array(
+				"code,label"
+			),
+
+			// Name of columns with primary key (try to always name it 'rowid')
+			'tabrowid'=>array(
+				"rowid"
+			),
+
+			// Condition to show each dictionary
+			'tabcond'=>array(
+				$conf->processrules->enabled
+			)
+		);
         /* Example:
         if (! isset($conf->processrules->enabled)) $conf->processrules->enabled=0;	// This is to avoid warnings
         $this->dictionaries=array(

@@ -18,6 +18,9 @@ processRulesExtrafieldPage=Attributs supplémentaires (Méthode)
 # MENU
 TopMenuprocessRules=Méthodes
 
+# DICTIONARY
+DictionnaryProcedureType=Type de mode opératoire
+
 # STATUS
 processRulesStatusCanceled=Abandonnée (fermée)
 processRulesStatusDraft=Brouillon (à valider)
