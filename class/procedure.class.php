@@ -50,8 +50,8 @@ class procedure extends SeedObject
 
 	/** @var array $TStatus Array of translate key for each const */
 	public static $TStatus = array(
-		self::STATUS_DRAFT => 'processRulesStatusShortDraft'
-		,self::STATUS_VALIDATED => 'processRulesStatusShortValidated'
+		self::STATUS_DRAFT => 'Disabled'
+		,self::STATUS_VALIDATED => 'Enabled'
 	);
 
 	/** @var string $table_element Table name in SQL */

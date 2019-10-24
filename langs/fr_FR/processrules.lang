@@ -40,6 +40,7 @@ processRulesStatusShortAccepted=Acceptée
 
 # LIST
 processRulesList=Liste des méthodes
+procedureList=Liste des procédures
 NoprocessRules=(vide)
 DateCre=Créé le
 
