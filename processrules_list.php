@@ -91,15 +91,15 @@ $parameters=array('sql' => $sql);
 $reshook=$hookmanager->executeHooks('printFieldListSelect', $parameters, $object);    // Note that $action and $object may have been modified by hook
 $sql.=$hookmanager->resPrint;
 
-$sql.= ' FROM '.MAIN_DB_PREFIX.'processrules t ';
+$sql.= ' FROM '.MAIN_DB_PREFIX.$object->table_element.' t ';
 
 if (!empty($object->isextrafieldmanaged))
 {
-    $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'processrules_extrafields et ON (et.fk_object = t.rowid)';
+    $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.$object->table_element.'_extrafields et ON (et.fk_object = t.rowid)';
 }
 
 $sql.= ' WHERE 1=1';
-//$sql.= ' AND t.entity IN ('.getEntity('processRules', 1).')';
+$sql.= ' AND t.entity IN ('.getEntity('processRules', 1).')';
 //if ($type == 'mine') $sql.= ' AND t.fk_user = '.$user->id;
 
 // Add where from hooks
@@ -108,10 +108,7 @@ $reshook=$hookmanager->executeHooks('printFieldListWhere', $parameters, $object)
 $sql.=$hookmanager->resPrint;
 
 $formcore = new TFormCore($_SERVER['PHP_SELF'], 'form_list_processrules', 'GET');
-$form = new Form($db);
-ob_start();
-$form->select_produits($search_product, 'Listview_processrules_search_fk_product');
-$formproduct = ob_get_clean();
+
 $nbLine = !empty($user->conf->MAIN_SIZE_LISTE_LIMIT) ? $user->conf->MAIN_SIZE_LISTE_LIMIT : $conf->global->MAIN_SIZE_LISTE_LIMIT;
 
 $r = new Listview($db, 'processrules');
@@ -143,7 +140,7 @@ echo $r->render($sql, array(
 	,'search' => array(
 		'date_creation' => array('search_type' => 'calendars', 'allow_is_null' => true)
 		,'tms' => array('search_type' => 'calendars', 'allow_is_null' => false)
-		,'fk_product'=>array('search_type' => 'override', 'override' => $formproduct)
+		,'fk_product'=>array('search_type' => 'override', 'override' => $object->showInputField($object->fields, 'fk_product', $search_product, '', '', 'Listview_processrules_search_'))//$formproduct)
 		,'ref' => array('search_type' => true, 'table' => 't', 'field' => 'ref')
 		,'label' => array('search_type' => true, 'table' => array('t', 't'), 'field' => array('label')) // input text de recherche sur plusieurs champs
 		,'status' => array('search_type' => processRules::$TStatus, 'to_translate' => true) // select html, la clé = le status de l'objet, 'to_translate' à true si nécessaire
@@ -157,12 +154,14 @@ echo $r->render($sql, array(
 		,'fk_product' => $langs->trans('Product')
 		,'label' => $langs->trans('Label')
 		,'date_creation' => $langs->trans('DateCre')
+		,'status'	=> $langs->trans('Status')
 		//,'tms' => $langs->trans('DateMaj')
 
 	)
 	,'eval'=>array(
 		'ref' => '_getObjectNomUrl(\'@rowid@\', \'@val@\')'
 		,'fk_product' => '_getProductNomUrl(\'@val@\')'
+		,'status' => 'processRules::LibStatut(\'@val@\', 2)'
 //		,'fk_user' => '_getUserNomUrl(@val@)' // Si on a un fk_user dans notre requête
 	)
 ));
