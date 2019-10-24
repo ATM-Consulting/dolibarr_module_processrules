@@ -63,10 +63,10 @@ function processrulesAdminPrepareHead()
 /**
  * Return array of tabs to used on pages for processRules cards.
  *
- * @param 	procedure	$object		Object company shown
+ * @param 	processRules	$object		Object company shown
  * @return 	array				Array of tabs
  */
-function processrules_prepare_head(procedure $object)
+function processrules_prepare_head(processRules $object)
 {
     global $langs, $conf;
     $h = 0;

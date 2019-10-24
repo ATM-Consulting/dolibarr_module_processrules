@@ -157,7 +157,7 @@ class procedure extends SeedObject
 
         'fk_processrules' => array(
 			'type' 		=> 'integer:processrules:processrules/class/processrules.class.php',
-			'label'		=> 'Product',
+			'label'		=> 'processRules',
 			'visible' 	=> 1,
 			'notnull' 	=> 1,
 			'enabled'	=> 1,

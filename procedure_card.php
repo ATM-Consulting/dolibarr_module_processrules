@@ -96,17 +96,6 @@ if (empty($reshook))
                 if ($ret < 0) $error++;
             }
 
-//			$object->date_other = dol_mktime(GETPOST('starthour'), GETPOST('startmin'), 0, GETPOST('startmonth'), GETPOST('startday'), GETPOST('startyear'));
-
-			// Check parameters
-//			if (empty($object->date_other))
-//			{
-//				$error++;
-//				setEventMessages($langs->trans('warning_date_must_be_fill'), array(), 'warnings');
-//			}
-
-			// ...
-
 			if ($error > 0)
 			{
 				$action = 'edit';
@@ -179,12 +168,12 @@ if (empty($reshook))
 			header('Location: '.dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$object->id);
 			exit;
 
-		case 'enable':
+		case 'confirm_enable':
 			$object->setValid($user);
 			header('Location: '.dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$object->id);
 			exit;
 
-		case 'disable':
+		case 'confirm_disable':
 			$ret = $object->setDraft($user);
 			header('Location: '.dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$object->id);
 			exit;

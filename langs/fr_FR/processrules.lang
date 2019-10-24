@@ -19,6 +19,7 @@ processRulesExtrafieldPage=Attributs supplémentaires (Méthode)
 
 # MENU
 TopMenuprocessRules=Méthodes
+TopMenuprocedure=Procédures
 
 # DICTIONARY
 DictionnaryProcedureType=Type de mode opératoire
