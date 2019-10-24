@@ -7,6 +7,8 @@ processRulesSetup = Configuration du module Méthodes
 processRulesAbout = A propos du module Méthodes
 
 processRules=Méthode
+procedure=Procédure
+processStep=Etape
 AbricotNeedUpdate=Le module abricot doit être mis à jour
 
 # SETUP
@@ -20,6 +22,7 @@ TopMenuprocessRules=Méthodes
 
 # DICTIONARY
 DictionnaryProcedureType=Type de mode opératoire
+DictionnaryProcedureTypeHelp=Liste issue du dictionnaire "Type de mode opératoire"
 
 # STATUS
 processRulesStatusCanceled=Abandonnée (fermée)
@@ -43,6 +46,11 @@ DateCre=Créé le
 NewprocessRules=Nouvelle méthode
 processRulesCard=Fiche méthode
 LinkToProduct=Lien vers le produit
+ShowprocessRules=Voir la fiche méthode
+
+Newprocedure=Nouvelle procedure
+procedureCard=Fiche procédure
+Showprocedure=Voir la fiche procédure
 
 processRulesModify=Modifier
 processRulesClone=Cloner
@@ -53,11 +61,18 @@ processRulesReopen=Rouvrir
 processRulesCancel=Abandonner
 processRulesDelete=Supprimer
 
-ConfirmValidateprocessRulesTitle=Confirmation d'activation
-ConfirmValidateprocessRulesBody=Souhaitez-vous vraiment activer cette fiche méthode %s ?
+ConfirmEnableprocessRulesTitle=Confirmation d'activation
+ConfirmEnableprocessRulesBody=Souhaitez-vous vraiment activer cette fiche méthode %s ?
+ConfirmEnableprocedureBody=Souhaitez-vous vraiment activer cette fiche procédure %s ?
+
+ConfirmDisableprocessRulesTitle=Confirmation de désactivation
+ConfirmDisableprocessRulesBody=Souhaitez-vous vraiment désactiver cette fiche méthode %s ?
+ConfirmDisableprocedureBody=Souhaitez-vous vraiment désactiver cette fiche procédure %s ?
 
 ConfirmDeleteprocessRulesTitle=Confirmation de suppression
 ConfirmDeleteprocessRulesBody=Souhaitez-vous vraiment supprimer cette fiche méthode %s ?
+ConfirmDeleteprocedureBody=Souhaitez-vous vraiment supprimer cette fiche procédure %s ?
 
 ConfirmCloneprocessRulesTitle=Confirmation de clonage
 ConfirmCloneprocessRulesBody=Souhaitez-vous cloner cette fiche méthode %s ?
+ConfirmCloneprocedureBody=Souhaitez-vous cloner cette fiche procédure %s ?

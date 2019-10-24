@@ -25,7 +25,7 @@ if (!class_exists('SeedObject'))
 }
 
 
-class processRules extends SeedObject
+class procedure extends SeedObject
 {
     /**
      * Canceled status
@@ -50,18 +50,15 @@ class processRules extends SeedObject
 
 	/** @var array $TStatus Array of translate key for each const */
 	public static $TStatus = array(
-		self::STATUS_CANCELED => 'processRulesStatusShortCanceled'
-		,self::STATUS_DRAFT => 'processRulesStatusShortDraft'
+		self::STATUS_DRAFT => 'processRulesStatusShortDraft'
 		,self::STATUS_VALIDATED => 'processRulesStatusShortValidated'
-//		,self::STATUS_REFUSED => 'processRulesStatusShortRefused'
-//		,self::STATUS_ACCEPTED => 'processRulesStatusShortAccepted'
 	);
 
 	/** @var string $table_element Table name in SQL */
-	public $table_element = 'processrules';
+	public $table_element = 'procedure';
 
 	/** @var string $element Name of the element (tip for better integration in Dolibarr: this value should be the reflection of the class name with ucfirst() function) */
-	public $element = 'processrules';
+	public $element = 'procedure';
 
 	/** @var int $isextrafieldmanaged Enable the fictionalises of extrafields */
     public $isextrafieldmanaged = 1;
@@ -77,6 +74,12 @@ class processRules extends SeedObject
 
 	/** @var int $fk_user_modif */
 	public $fk_user_modif;
+
+	/** @var int $fk_processrules */
+	public $fk_processrules;
+
+	/** @var int $fk_procedure_type */
+	public $fk_procedure_type;
 
     /**
      *  'type' is the field format.
@@ -152,25 +155,25 @@ class processRules extends SeedObject
             'showoncombobox' => 1
         ),
 
-        /*'fk_soc' => array(
-            'type' => 'integer:Societe:societe/class/societe.class.php',
-            'label' => 'ThirdParty',
-            'visible' => 1,
-            'enabled' => 1,
-            'position' => 50,
-            'index' => 1,
-            'help' => 'LinkToThirparty'
-        ),*/
-        'fk_product' => array(
-			'type' 		=> 'integer:Product:product/class/product.class.php',
+        'fk_processrules' => array(
+			'type' 		=> 'integer:processrules:processrules/class/processrules.class.php',
 			'label'		=> 'Product',
 			'visible' 	=> 1,
 			'notnull' 	=> 1,
 			'enabled'	=> 1,
 			'position'	=> 50,
-			'index'		=> 1,
-			'help'		=> 'LinkToProduct'
+			'index'		=> 1
         ),
+
+		'fk_procedure_type' => array(
+			'type' => 'sellist:c_procedure_type:label:rowid::active=1',
+			'label' => 'Type',
+			'visible' => 1,
+			'enabled' => 1,
+			'position' => 30,
+			'index' => 1,
+			'help' => 'DictionnaryProcedureTypeHelp'
+		),
 
         'description' => array(
             'type' => 'text', // or html for WYSWYG
@@ -178,6 +181,16 @@ class processRules extends SeedObject
             'enabled' => 1,
             'visible' => -1, //  un bug sur la version 9.0 de Dolibarr necessite de mettre -1 pour ne pas apparaitre sur les listes au lieu de la valeur 3
             'position' => 60
+        ),
+
+        'rang' => array(
+        	'type' => 'integer',
+        	'label' => 'rang',
+        	'visible' => 0,
+        	'enabled' => 1,
+        	'default' => 1,
+            'notnull' => 1,
+            'comment' => 'the procedure must be sortable in processRules'
         ),
 
 		'note_public' => array(
@@ -230,6 +243,9 @@ class processRules extends SeedObject
 
     /** @var string $description Object description */
     public $description;
+
+    /** @var int $rang */
+    public $rang;
 
 
 
@@ -309,8 +325,8 @@ class processRules extends SeedObject
 
 		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 
-		$mask = !empty($conf->global->PROCESSRULES_REF_MASK) ? $conf->global->PROCESSRULES_REF_MASK : 'M{yy}{mm}-{0000}';
-		$ref = get_next_value($db, $mask, 'processrules', 'ref');
+		$mask = !empty($conf->global->PROCEDURE_REF_MASK) ? $conf->global->PROCEDURE_REF_MASK : 'P{yy}{mm}-{0000}';
+		$ref = get_next_value($db, $mask, 'procedure', 'ref');
 
 		return $ref;
     }
@@ -415,11 +431,11 @@ class processRules extends SeedObject
 		global $langs;
 
         $result='';
-        $label = '<u>' . $langs->trans("ShowprocessRules") . '</u>';
+        $label = '<u>' . $langs->trans("Showprocedure") . '</u>';
         if (! empty($this->ref)) $label.= '<br><b>'.$langs->trans('Ref').':</b> '.$this->ref;
 
         $linkclose = '" title="'.dol_escape_htmltag($label, 1).'" class="classfortooltip">';
-        $link = '<a href="'.dol_buildpath('/processrules/processrules_card.php', 1).'?id='.$this->id.urlencode($moreparams).$linkclose;
+        $link = '<a href="'.dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$this->id.urlencode($moreparams).$linkclose;
 
         $linkend='</a>';
 
@@ -445,7 +461,7 @@ class processRules extends SeedObject
     {
 		global $db;
 
-		$object = new processRules($db);
+		$object = new procedure($db);
 		$object->fetch($id, false, $ref);
 
 		return $object->getNomUrl($withpicto, $moreparams);
@@ -473,11 +489,8 @@ class processRules extends SeedObject
 		$langs->load('processrules@processrules');
         $res = '';
 
-        /*if ($status==self::STATUS_CANCELED) { $statusType='status9'; $statusLabel=$langs->trans('processRulesStatusCancel'); $statusLabelShort=$langs->trans('processRulesStatusShortCancel'); }
-        else*/if ($status==self::STATUS_DRAFT) { $statusType='status0'; $statusLabel=$langs->trans('Disabled'); $statusLabelShort=$langs->trans('Disabled'); }
-        elseif ($status==self::STATUS_VALIDATED) { $statusType='status1'; $statusLabel=$langs->trans('Enabled'); $statusLabelShort=$langs->trans('Enabled'); }
-//        elseif ($status==self::STATUS_REFUSED) { $statusType='status5'; $statusLabel=$langs->trans('processRulesStatusRefused'); $statusLabelShort=$langs->trans('processRulesStatusShortRefused'); }
-//        elseif ($status==self::STATUS_ACCEPTED) { $statusType='status6'; $statusLabel=$langs->trans('processRulesStatusAccepted'); $statusLabelShort=$langs->trans('processRulesStatusShortAccepted'); }
+        if ($status==self::STATUS_DRAFT) { $statusType='status0'; $statusLabel=$langs->trans('Disabled'); $statusLabelShort=$langs->trans('Disabled'); }
+        else { $statusType='status1'; $statusLabel=$langs->trans('Enabled'); $statusLabelShort=$langs->trans('Enabled'); }
 
         if (function_exists('dolGetStatus'))
         {
@@ -496,24 +509,56 @@ class processRules extends SeedObject
 
         return $res;
     }
+
+	/**
+	 * Return HTML string to put an input field into a page
+	 * Code very similar with showInputField of extra fields
+	 *
+	 * @param  array   		$val	       Array of properties for field to show
+	 * @param  string  		$key           Key of attribute
+	 * @param  string  		$value         Preselected value to show (for date type it must be in timestamp format, for amount or price it must be a php numeric value)
+	 * @param  string  		$moreparam     To add more parameters on html input tag
+	 * @param  string  		$keysuffix     Prefix string to add into name and id of field (can be used to avoid duplicate names)
+	 * @param  string  		$keyprefix     Suffix string to add into name and id of field (can be used to avoid duplicate names)
+	 * @param  string|int	$morecss       Value for css to define style/length of field. May also be a numeric.
+	 * @return string
+	 */
+	public function showInputField($val, $key, $value, $moreparam = '', $keysuffix = '', $keyprefix = '', $morecss = 0)
+	{
+		global $conf, $langs, $form;
+
+		$out = parent::showInputField($val, $key, $value, $moreparam, $keysuffix, $keyprefix, $morecss);
+
+		return $out;
+	}
+
+	/**
+	 * Return HTML string to show a field into a page
+	 * Code very similar with showOutputField of extra fields
+	 *
+	 * @param  array   $val		       Array of properties of field to show
+	 * @param  string  $key            Key of attribute
+	 * @param  string  $value          Preselected value to show (for date type it must be in timestamp format, for amount or price it must be a php numeric value)
+	 * @param  string  $moreparam      To add more parametes on html input tag
+	 * @param  string  $keysuffix      Prefix string to add into name and id of field (can be used to avoid duplicate names)
+	 * @param  string  $keyprefix      Suffix string to add into name and id of field (can be used to avoid duplicate names)
+	 * @param  mixed   $morecss        Value for css to define size. May also be a numeric.
+	 * @return string
+	 */
+	public function showOutputField($val, $key, $value, $moreparam = '', $keysuffix = '', $keyprefix = '', $morecss = '')
+	{
+		global $conf, $langs, $form;
+
+		// TODO : quite a fixer autant le faire dans le seed object
+		// patch for dolibarr 9.0 show PR : https://github.com/Dolibarr/dolibarr/pull/11571
+		if(preg_match('/^sellist:(.*):(.*):(.*):(.*)/i', $val['type'], $reg)) {
+			$val['param']['options'] = array($reg[1] . ':' . $reg[2] . ':' . $reg[3] . ':' . $reg[4] => 'N');
+			$val['type'] = 'sellist';
+		}
+
+		$out = parent::showOutputField($val, $key, $value, $moreparam, $keysuffix, $keyprefix, $morecss);
+
+
+		return $out;
+	}
 }
-
-
-//class processRulesDet extends SeedObject
-//{
-//    public $table_element = 'processrulesdet';
-//
-//    public $element = 'processrulesdet';
-//
-//
-//    /**
-//     * processRulesDet constructor.
-//     * @param DoliDB    $db    Database connector
-//     */
-//    public function __construct($db)
-//    {
-//        $this->db = $db;
-//
-//        $this->init();
-//    }
-//}

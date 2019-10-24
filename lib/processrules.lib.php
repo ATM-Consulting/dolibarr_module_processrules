@@ -61,12 +61,12 @@ function processrulesAdminPrepareHead()
 }
 
 /**
- * Return array of tabs to used on pages for third parties cards.
+ * Return array of tabs to used on pages for processRules cards.
  *
- * @param 	processRules	$object		Object company shown
+ * @param 	procedure	$object		Object company shown
  * @return 	array				Array of tabs
  */
-function processrules_prepare_head(processRules $object)
+function processrules_prepare_head(procedure $object)
 {
     global $langs, $conf;
     $h = 0;
@@ -100,6 +100,41 @@ function processrules_prepare_head(processRules $object)
 }
 
 /**
+ * Return array of tabs to used on pages for procedure cards.
+ *
+ * @param 	procedure	$object		Object company shown
+ * @return 	array				Array of tabs
+ */
+function procedure_prepare_head(procedure $object)
+{
+	global $langs, $conf;
+	$h = 0;
+	$head = array();
+	$head[$h][0] = dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$object->id;
+	$head[$h][1] = $langs->trans("procedureCard");
+	$head[$h][2] = 'card';
+	$h++;
+
+	$nbNote = 0;
+	if (!empty($object->note_private)) $nbNote++;
+	if (!empty($object->note_public)) $nbNote++;
+	$head[$h][0] = dol_buildpath('/processrules/procedure_note.php', 1).'?id='.$object->id;
+	$head[$h][1] = $langs->trans("Notes");
+	if ($nbNote > 0) $head[$h][1].= ' <span class="badge">'.$nbNote.'</span>';
+	$head[$h][2] = 'note';
+	$h++;
+
+	$head[$h][0] = dol_buildpath('/processrules/procedure_document.php', 1).'?id='.$object->id;
+	$head[$h][1] = $langs->trans("Documents");
+	$head[$h][2] = 'document';
+	$h++;
+
+	complete_head_from_modules($conf, $langs, $object, $head, $h, 'procedure');
+
+	return $head;
+}
+
+/**
  * @param Form      $form       Form object
  * @param processRules  $object     processRules object
  * @param string    $action     Triggered action
@@ -111,25 +146,15 @@ function getFormConfirmprocessRules($form, $object, $action)
 
     $formconfirm = '';
 
-    if ($action === 'valid' && !empty($user->rights->processrules->write))
+    if ($action === 'enable' && !empty($user->rights->processrules->write))
     {
-        $body = $langs->trans('ConfirmValidateprocessRulesBody', $object->ref);
-        $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmValidateprocessRulesTitle'), $body, 'confirm_validate', '', 0, 1);
+        $body = $langs->trans('ConfirmEnableprocessRulesBody', $object->ref);
+        $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmEnableprocessRulesTitle'), $body, 'confirm_enable', '', 0, 1);
     }
-    elseif ($action === 'accept' && !empty($user->rights->processrules->write))
+        elseif ($action === 'disable' && !empty($user->rights->processrules->write))
     {
-        $body = $langs->trans('ConfirmAcceptprocessRulesBody', $object->ref);
-        $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmAcceptprocessRulesTitle'), $body, 'confirm_accept', '', 0, 1);
-    }
-    elseif ($action === 'refuse' && !empty($user->rights->processrules->write))
-    {
-        $body = $langs->trans('ConfirmRefuseprocessRulesBody', $object->ref);
-        $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmRefuseprocessRulesTitle'), $body, 'confirm_refuse', '', 0, 1);
-    }
-    elseif ($action === 'reopen' && !empty($user->rights->processrules->write))
-    {
-        $body = $langs->trans('ConfirmReopenprocessRulesBody', $object->ref);
-        $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmReopenprocessRulesTitle'), $body, 'confirm_refuse', '', 0, 1);
+        $body = $langs->trans('ConfirmDisableprocessRulesBody', $object->ref);
+        $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmDisableprocessRulesTitle'), $body, 'confirm_disable', '', 0, 1);
     }
     elseif ($action === 'delete' && !empty($user->rights->processrules->write))
     {
@@ -141,10 +166,41 @@ function getFormConfirmprocessRules($form, $object, $action)
         $body = $langs->trans('ConfirmCloneprocessRulesBody', $object->ref);
         $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmCloneprocessRulesTitle'), $body, 'confirm_clone', '', 0, 1);
     }
-    elseif ($action === 'cancel' && !empty($user->rights->processrules->write))
+
+    return $formconfirm;
+}
+
+/**
+ * @param Form      $form       Form object
+ * @param procedure  $object    procedure object
+ * @param string    $action     Triggered action
+ * @return string
+ */
+function getFormConfirmprocedure($form, $object, $action)
+{
+    global $langs, $user;
+
+    $formconfirm = '';
+
+    if ($action === 'enable' && !empty($user->rights->processrules->write))
     {
-        $body = $langs->trans('ConfirmCancelprocessRulesBody', $object->ref);
-        $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmCancelprocessRulesTitle'), $body, 'confirm_cancel', '', 0, 1);
+        $body = $langs->trans('ConfirmEnableprocedureBody', $object->ref);
+        $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmEnableprocessRulesTitle'), $body, 'confirm_enable', '', 0, 1);
+    }
+        elseif ($action === 'disable' && !empty($user->rights->processrules->write))
+    {
+        $body = $langs->trans('ConfirmDisableprocedureBody', $object->ref);
+        $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmDeleteprocessRulesTitle'), $body, 'confirm_disable', '', 0, 1);
+    }
+    elseif ($action === 'delete' && !empty($user->rights->processrules->write))
+    {
+        $body = $langs->trans('ConfirmDeleteprocedureBody');
+        $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmCloneprocessRulesTitle'), $body, 'confirm_delete', '', 0, 1);
+    }
+    elseif ($action === 'clone' && !empty($user->rights->processrules->write))
+    {
+        $body = $langs->trans('ConfirmCloneprocedureBody', $object->ref);
+        $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmCloneprocedureTitle'), $body, 'confirm_clone', '', 0, 1);
     }
 
     return $formconfirm;

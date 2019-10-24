@@ -18,7 +18,7 @@
 require 'config.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
-dol_include_once('processrules/class/processrules.class.php');
+dol_include_once('processrules/class/procedure.class.php');
 dol_include_once('processrules/lib/processrules.lib.php');
 
 if(empty($user->rights->processrules->read)) accessforbidden();
@@ -30,14 +30,14 @@ $action = GETPOST('action');
 $id = GETPOST('id', 'int');
 $ref = GETPOST('ref');
 
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'processrulescard';   // To manage different context of search
+$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'procedurecard';   // To manage different context of search
 $backtopage = GETPOST('backtopage', 'alpha');
 
-$object = new processRules($db);
+$object = new procedure($db);
 
 if (!empty($id) || !empty($ref)) $object->fetch($id, true, $ref);
 
-$hookmanager->initHooks(array('processrulescard', 'globalcard'));
+$hookmanager->initHooks(array('procedurecard', 'globalcard'));
 
 
 if ($object->isextrafieldmanaged)
@@ -81,6 +81,9 @@ if (empty($reshook))
     // For object linked
     include DOL_DOCUMENT_ROOT.'/core/actions_dellink.inc.php';		// Must be include, not include_once
 
+
+
+
     $error = 0;
 	switch ($action) {
 		case 'add':
@@ -92,6 +95,17 @@ if (empty($reshook))
                 $ret = $extrafields->setOptionalsFromPost($extralabels, $object);
                 if ($ret < 0) $error++;
             }
+
+//			$object->date_other = dol_mktime(GETPOST('starthour'), GETPOST('startmin'), 0, GETPOST('startmonth'), GETPOST('startday'), GETPOST('startyear'));
+
+			// Check parameters
+//			if (empty($object->date_other))
+//			{
+//				$error++;
+//				setEventMessages($langs->trans('warning_date_must_be_fill'), array(), 'warnings');
+//			}
+
+			// ...
 
 			if ($error > 0)
 			{
@@ -108,7 +122,7 @@ if (empty($reshook))
             }
             else
             {
-                header('Location: '.dol_buildpath('/processrules/processrules_card.php', 1).'?id='.$object->id);
+                header('Location: '.dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$object->id);
                 exit;
             }
         case 'update_extras':
@@ -121,7 +135,7 @@ if (empty($reshook))
 
             if (! $error)
             {
-                $result = $object->insertExtraFields('PROCESSRULES_MODIFY');
+                $result = $object->insertExtraFields('PROCEDURE_MODIFY');
                 if ($result < 0)
                 {
                     setEventMessages($object->error, $object->errors, 'errors');
@@ -132,36 +146,47 @@ if (empty($reshook))
             if ($error) $action = 'edit_extras';
             else
             {
-                header('Location: '.dol_buildpath('/processrules/processrules_card.php', 1).'?id='.$object->id);
+                header('Location: '.dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$object->id);
                 exit;
             }
             break;
 		case 'confirm_clone':
 			$object->cloneObject($user);
 
-			header('Location: '.dol_buildpath('/processrules/processrules_card.php', 1).'?id='.$object->id);
+			header('Location: '.dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$object->id);
+			exit;
+
+		case 'modif':
+		case 'reopen':
+			if (!empty($user->rights->processrules->write)) $object->setDraft($user);
+
+			break;
+		case 'confirm_validate':
+			if (!empty($user->rights->processrules->write)) $object->setValid($user);
+
+			header('Location: '.dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$object->id);
 			exit;
 
 		case 'confirm_delete':
 			if (!empty($user->rights->processrules->delete)) $object->delete($user);
 
-			header('Location: '.dol_buildpath('/processrules/processrules_list.php', 1));
+			header('Location: '.dol_buildpath('/processrules/procedure_list.php', 1));
 			exit;
 
 		// link from llx_element_element
 		case 'dellink':
 			$object->deleteObjectLinked(null, '', null, '', GETPOST('dellinkid'));
-			header('Location: '.dol_buildpath('/processrules/processrules_card.php', 1).'?id='.$object->id);
+			header('Location: '.dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$object->id);
 			exit;
 
-		case 'confirm_enable':
+		case 'enable':
 			$object->setValid($user);
-			header('Location: '.dol_buildpath('/processrules/processrules_card.php', 1).'?id='.$object->id);
+			header('Location: '.dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$object->id);
 			exit;
 
-		case 'confirm_disable':
+		case 'disable':
 			$ret = $object->setDraft($user);
-			header('Location: '.dol_buildpath('/processrules/processrules_card.php', 1).'?id='.$object->id);
+			header('Location: '.dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$object->id);
 			exit;
 	}
 }
@@ -172,12 +197,12 @@ if (empty($reshook))
  */
 $form = new Form($db);
 
-$title=$langs->trans('processRules');
+$title=$langs->trans('procedure');
 llxHeader('', $title);
 
 if ($action == 'create')
 {
-    print load_fiche_titre($langs->trans('NewprocessRules'), '', 'processrules@processrules');
+    print load_fiche_titre($langs->trans('Newprocedure'), '', 'processrules@processrules');
 
     print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'">';
     print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
@@ -223,9 +248,9 @@ else
             print '<input type="hidden" name="backtopage" value="'.$backtopage.'">';
             print '<input type="hidden" name="id" value="'.$object->id.'">';
 
-            $head = processrules_prepare_head($object);
+            $head = procedure_prepare_head($object);
             $picto = 'processrules@processrules';
-            dol_fiche_head($head, 'card', $langs->trans('processRules'), 0, $picto);
+            dol_fiche_head($head, 'card', $langs->trans('procedure'), 0, $picto);
 
             print '<table class="border centpercent">'."\n";
 
@@ -247,15 +272,15 @@ else
         }
         elseif ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'create')))
         {
-            $head = processrules_prepare_head($object);
+            $head = procedure_prepare_head($object);
             $picto = 'processrules@processrules';
-            dol_fiche_head($head, 'card', $langs->trans('processRules'), -1, $picto);
+            dol_fiche_head($head, 'card', $langs->trans('procedure'), -1, $picto);
 
-            $formconfirm = getFormConfirmprocessRules($form, $object, $action);
+            $formconfirm = getFormConfirmprocedure($form, $object, $action);
             if (!empty($formconfirm)) print $formconfirm;
 
 
-            $linkback = '<a href="' .dol_buildpath('/processrules/processrules_list.php', 1) . '?restore_lastsearch_values=1">' . $langs->trans('BackToList') . '</a>';
+            $linkback = '<a href="' .dol_buildpath('/processrules/procedure_list.php', 1) . '?restore_lastsearch_values=1">' . $langs->trans('BackToList') . '</a>';
 
             $morehtmlref='<div class="refidno">';
             /*
