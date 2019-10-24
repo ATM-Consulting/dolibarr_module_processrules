@@ -1,0 +1,58 @@
+ul.pr-sortable-list,ul.pr-sortable-list ul,ul.pr-sortable-list li, #sortableListsBase ul, #sortableListsBase li {
+	margin:0; padding:0;
+	list-style-type:none;
+	color:#6e6e6e;
+	border:1px solid #c3c3c3;
+}
+
+ul.pr-sortable-list{ padding:0; background-color:#f9f9f9; }
+
+ul.pr-sortable-list li.pr-sortable-list__item, #sortableListsBase li.pr-sortable-list__item{
+	padding-left:50px;
+	margin:5px;
+	border: 1px solid #c3c3c3;
+	background-color: #dcdcdc;
+}
+
+li.pr-sortable-list__item .pr-sortable-list__item__title , #sortableListsBase li.pr-sortable-list__item .pr-sortable-list__item__title {
+	padding:7px;
+	background-color:#fff;
+}
+
+.move {
+	cursor: move;
+}
+
+.clickable, .move .clickable{
+	cursor: pointer;
+}
+
+.sortableListsOpener{
+	cursor: pointer !important;
+}
+
+.pr-sortable-list__item--placeholder{
+	background-color: #ff8 !important;
+}
+
+.pr-sortable-list__item--hint{
+	background-color: #bbf !important;
+}
+
+.pr-sortable-list__item__title__flex{
+	display: flex;
+	flex-direction: row;
+}
+
+.pr-sortable-list__item__title__col{
+	flex: auto;
+	width: 25%;
+}
+
+.pr-sortable-list__item__title__col.-action{
+	text-align: right;
+}
+
+.pr-sortable-list__item__title__button{
+	margin-left: 15px;
+}

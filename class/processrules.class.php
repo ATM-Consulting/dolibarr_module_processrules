@@ -247,6 +247,7 @@ class processRules extends SeedObject
 
 		$this->status = self::STATUS_DRAFT;
 		$this->entity = $conf->entity;
+		$this->picto = 'generic';
     }
 
     /**
@@ -287,6 +288,40 @@ class processRules extends SeedObject
         return parent::delete($user);
     }
 
+	/**
+	 * get all procedures link to the processRules
+	 */
+	public function fetch_lines()
+	{
+		$this->lines = array();
+
+		$sql = "SELECT rowid FROM ".MAIN_DB_PREFIX."procedure WHERE fk_processrules = ".$this->id." ORDER BY rang ASC";
+		$resql = $this->db->query($sql);
+
+		if ($resql)
+		{
+			$num = $this->db->num_rows($resql);
+
+			if ($num)
+			{
+				dol_include_once('/processrules/class/procedure.class.php');
+
+				while ($obj = $this->db->fetch_object($resql))
+				{
+					$proc = new procedure($this->db);
+					$ret = $proc->fetch($obj->rowid);
+					if ($ret > 0) $this->lines[] = $proc;
+				}
+			}
+
+			return $num;
+		}
+		else
+		{
+			$this->error = $this->db->lasterror;
+			return -1;
+		}
+	}
     /**
      * @return string
      */
@@ -473,11 +508,8 @@ class processRules extends SeedObject
 		$langs->load('processrules@processrules');
         $res = '';
 
-        /*if ($status==self::STATUS_CANCELED) { $statusType='status9'; $statusLabel=$langs->trans('processRulesStatusCancel'); $statusLabelShort=$langs->trans('processRulesStatusShortCancel'); }
-        else*/if ($status==self::STATUS_DRAFT) { $statusType='status0'; $statusLabel=$langs->trans('Disabled'); $statusLabelShort=$langs->trans('Disabled'); }
+        if ($status==self::STATUS_DRAFT) { $statusType='status0'; $statusLabel=$langs->trans('Disabled'); $statusLabelShort=$langs->trans('Disabled'); }
         elseif ($status==self::STATUS_VALIDATED) { $statusType='status1'; $statusLabel=$langs->trans('Enabled'); $statusLabelShort=$langs->trans('Enabled'); }
-//        elseif ($status==self::STATUS_REFUSED) { $statusType='status5'; $statusLabel=$langs->trans('processRulesStatusRefused'); $statusLabelShort=$langs->trans('processRulesStatusShortRefused'); }
-//        elseif ($status==self::STATUS_ACCEPTED) { $statusType='status6'; $statusLabel=$langs->trans('processRulesStatusAccepted'); $statusLabelShort=$langs->trans('processRulesStatusShortAccepted'); }
 
         if (function_exists('dolGetStatus'))
         {
@@ -498,22 +530,3 @@ class processRules extends SeedObject
     }
 }
 
-
-//class processRulesDet extends SeedObject
-//{
-//    public $table_element = 'processrulesdet';
-//
-//    public $element = 'processrulesdet';
-//
-//
-//    /**
-//     * processRulesDet constructor.
-//     * @param DoliDB    $db    Database connector
-//     */
-//    public function __construct($db)
-//    {
-//        $this->db = $db;
-//
-//        $this->init();
-//    }
-//}

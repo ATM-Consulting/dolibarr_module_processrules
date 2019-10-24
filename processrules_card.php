@@ -290,6 +290,95 @@ else
             print '</div>'; // Fin fichecenter
 
             print '<div class="clearboth"></div><br />';
+            print '<div class="fichecenter">';
+            $object->fetch_lines();
+			print '<div id="ajaxResults" ></div>';
+            print _displaySortableProcedures($object->lines, 'sortableLists', true);
+
+			print '<script src="'.dol_buildpath('processrules/js/jquery-sortable-lists.min.js',1).'" ></script>';
+			print '<link rel="stylesheet" href="'.dol_buildpath('/processrules/css/sortable.css', 1).'">';
+			print '</div>';// Fin fichecenter
+
+			?>
+
+			<script type="text/javascript">
+				$(function(){
+                    var options = {
+                        insertZone: 10, // This property defines the distance from the left, which determines if item will be inserted outside(before/after) or inside of another item.
+                        placeholderClass: 'pr-sortable-list__item--placeholder',
+                        hintClass: 'pr-sortable-list__item--hint',
+                        onChange: function( cEl )
+                        {
+
+                        $("#ajaxResults").html("");
+
+						console.log($('#sortableLists').sortableListsToHierarchy());
+                        /*$.ajax({
+                            url: "<?php //echo dol_buildpath('processrules/scripts/interface.php?action=setProcedureRank',1) ?>",
+                            method: "POST",
+                            data: {
+								'items' : $('#sortableLists').sortableListsToHierarchy()
+							},
+                        	dataType: "json",
+
+                            // La fonction à apeller si la requête aboutie
+                            success: function (data) {
+                            	// Loading data
+                            	console.log(data);
+                            	if(data.result > 0 ){
+                            		// ok case
+                            		$("#ajaxResults").html('<span class="badge badge-success">' + data.msg + '</span>');
+								}
+								else if(data.result < 0 ){
+									// error case
+									$("#ajaxResults").html('<span class="badge badge-danger">' + data.errorMsg + '</span>');
+								}
+								else{
+									// nothing to do ?
+								}
+							},
+							// La fonction à appeler si la requête n\'a pas abouti
+							error: function( jqXHR, textStatus ) {
+								alert( "Request failed: " + textStatus );
+							}
+						});*/
+						},
+						complete: function( cEl )
+						{
+							// nothing foor now
+						},
+						isAllowed: function( cEl, hint, target )
+						{
+							if (target.length == 0) return true;
+							else {
+								target.find('#sortableListsHintWrapper').hide();
+							    return false;
+                            }
+						},
+						opener: {
+							active: true,
+							as: 'html',  // if as is not set plugin uses background image
+							close: '<i class="fa fa-minus c3"></i>',  // or \'fa-minus c3\',  // or \'./imgs/Remove2.png\',
+							open: '<i class="fa fa-plus"></i>',  // or \'fa-plus\',  // or\'./imgs/Add2.png\',
+							openerCss: {
+								'display': 'inline-block',
+								'float': 'left',
+								'margin-left': '-35px',
+								'margin-right': '5px',
+								'font-size': '1.1em'
+							}
+						},
+						ignoreClass: 'clickable',
+
+						insertZonePlus: true,
+					};
+
+                    $('#sortableLists').sortableLists( options );
+
+				});
+			</script>
+
+			<?php
 
             print '<div class="tabsAction">'."\n";
             $parameters=array();
@@ -364,3 +453,57 @@ else
 
 llxFooter();
 $db->close();
+
+function _displaySortableProcedures($Tab, $htmlId='', $open = true){
+	global $langs;
+
+	if(!empty($Tab) && is_array($Tab))
+	{
+		$out = '<ul id="'.$htmlId.'" class="pr-sortable-list" >';
+		/** @var procedure $procedure */
+		foreach ($Tab as $procedure)
+		{
+			$class = '';
+			if($open){
+				$class.= 'sortableListsClosed';
+			}
+
+			$out.= '<li id="item_'.$procedure->id.'" class="pr-sortable-list__item '.$class.'" ';
+			$out.= ' data-id="'.$procedure->id.'" ';
+			$out.= ' data-ref="'.$procedure->ref.'"';
+			$out.= ' data-title="'.dol_escape_htmltag($procedure->label).'" ';
+			$out.= '>';
+			$out.= '<div class="pr-sortable-list__item__title  move">';
+			$out.= '<div class="pr-sortable-list__item__title__flex">';
+
+			$out.= '<div class="pr-sortable-list__item__title__col">';
+			$out.= dol_htmlentities($procedure->ref);
+			$out.= '</div>';
+
+			$out.= '<div class="pr-sortable-list__item__title__col">';
+			$out.= dol_htmlentities($procedure->label);
+			$out.= '</div>';
+
+			$out.= '<div class="pr-sortable-list__item__title__col -action clickable">';
+
+			$out.= '<a href="'.dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$procedure->id.'&action=edit'.'" class="classfortooltip pr-sortable-list__item__title__button clickable -edit-btn"  title="' . $langs->trans("Edit") . '" data-id="'.$procedure->id.'">';
+			$out.= '<i class="fa fa-pencil clickable"></i>';
+			$out.= '</a>';
+
+//			$deleteUrl = $_SERVER ['PHP_SELF'].'?sesslevel_remove=1&amp;id='. $procedure->id.'&amp;action=sessionlevel_update&amp;sesslevel_remove=1';
+//
+//			$out.= '<a href="'.$deleteUrl.'" class="classfortooltip pr-sortable-list__item__title__button clickable -delete-btn"  title="' . $langs->trans("Delete") . '"  data-id="'.$procedure->id.'">';
+//			$out.= '<i class="fa fa-trash clickable"></i>';
+//			$out.= '</a>';
+			$out.= '</div>';
+
+			$out.= '</div>';
+			$out.= '</div>';
+			//$out.= _displaySortableSteps($procedure->lines, '', $open); // pour afficher les étapes des procédures dans la card
+			$out.= '</li>';
+		}
+		$out.= '</ul>';
+		return $out;
+	}
+	else return '';
+}

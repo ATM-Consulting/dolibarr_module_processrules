@@ -263,6 +263,7 @@ class procedure extends SeedObject
 
 		$this->status = self::STATUS_DRAFT;
 		$this->entity = $conf->entity;
+		$this->picto = 'generic';
     }
 
     /**
@@ -277,9 +278,26 @@ class procedure extends SeedObject
             $this->ref = '(PROV'.$this->id.')';
         }
 
+        if (empty($this->id)) $this->rang = $this->getMaxRang();
+
         return $this->create($user);
     }
 
+    public function getMaxRang()
+	{
+		$sql = "SELECT MAX(rang) as m, count(rang) as nb FROM ".MAIN_DB_PREFIX.$this->table_element." WHERE fk_processrules = ".$this->fk_processrules;
+		$resql = $this->db->query($sql);
+		if ($resql)
+		{
+			$obj = $this->db->fetch_object($resql);
+			if ($obj->nb > 0)
+			{
+				return intval($obj->m) + 1;
+			}
+		}
+
+		return 0;
+	}
 
     /**
      * @see cloneObject
