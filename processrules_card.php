@@ -313,11 +313,13 @@ else
                         $("#ajaxResults").html("");
 
 						console.log($('#sortableLists').sortableListsToHierarchy());
-                        /*$.ajax({
-                            url: "<?php //echo dol_buildpath('processrules/scripts/interface.php?action=setProcedureRank',1) ?>",
+                        $.ajax({
+                            url: "<?php echo dol_buildpath('/processrules/scripts/interface.php?action=setProcedureRank',1) ?>",
                             method: "POST",
                             data: {
-								'items' : $('#sortableLists').sortableListsToHierarchy()
+                            	put: 'reorderProcedures'
+                            	,id: '<?php echo $object->id; ?>'
+								,items : $('#sortableLists').sortableListsToHierarchy()
 							},
                         	dataType: "json",
 
@@ -339,9 +341,9 @@ else
 							},
 							// La fonction à appeler si la requête n\'a pas abouti
 							error: function( jqXHR, textStatus ) {
-								alert( "Request failed: " + textStatus );
+								console.log( "Request failed: " + textStatus );
 							}
-						});*/
+						});
 						},
 						complete: function( cEl )
 						{
