@@ -43,11 +43,11 @@ $(document).ready(function(){
 
 			$.ajax({
 				data: {
-				    ''
+				    put: 'reorderDocumentFiles',
 					roworder: cleanSerialize($(this).sortable('serialize'))
 				},
 				type: 'POST',
-				url: '<?php dol_buildpath('/processrules/script/interface.php', 1); ?>',
+				url: '<?php print dol_buildpath('/processrules/script/interface.php', 1); ?>',
 				success: function(data) {
 					console.log(data);
 				},

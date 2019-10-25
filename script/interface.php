@@ -21,7 +21,7 @@ switch ($put)
 
 	case 'reorderSteps':
 		print json_encode(_reorderSteps(GETPOST('items'), GETPOST('id', 'int')));
-	
+
     case 'reorderDocumentFiles':
 		print json_encode(_reorderDocumentFiles(GETPOST('items')));
 		break;
@@ -95,6 +95,42 @@ function _reorderSteps($items = array(), $id = 0)
 		else
 		{
 			//if (isset($item['children'])) _reorderStepsImages($item['children'], $item['id']);
+		}
+	}
+
+	if ($data['success']) $db->commit();
+	else $db->rollback();
+	return $data;
+}
+
+
+function _reorderDocumentFiles($items = array())
+{
+	global $db, $langs;
+
+	$data['msg'] = $langs->trans('Updated');
+	$data['success'] = true;
+
+	if(empty($items))
+	{
+		$data['msg'] = $langs->trans('NothingToUpdate');
+		return $data;
+	}
+
+	$db->begin();
+
+	foreach ($items as $position => $item)
+	{
+		$item = intval($item);
+		$position = intval($position);
+
+		$sql = "UPDATE ".MAIN_DB_PREFIX."ecm_files SET position=".$position." WHERE rowid=".$item;
+		$resql = $db->query($sql);
+		if (!$resql)
+		{
+			$data['success'] = false;
+			$data['msg'] = $langs->trans('ErrorUpdatingRankOfItem', $item['id'] );
+			break;
 		}
 	}
 
