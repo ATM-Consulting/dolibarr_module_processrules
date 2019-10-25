@@ -402,8 +402,61 @@ function _displaySortableSteps($Tab, $htmlClass = '', $open = true, $backtopage 
 
 			$out.= '</div>';
 			$out.= '</div>';
-//			$step->fetch_lines();
-//			$out.= _displaySortableStepsImages($step->lines, 'sortableProcedures', $open); // pour afficher les images des étapes dans la card
+			$step->fetch_images();
+			$out.= _displaySortableStepsImages($step->images, 'sortableimages', $open); // pour afficher les images des étapes dans la card
+			$out.= '</li>';
+		}
+		$out.= '</ul>';
+		return $out;
+	}
+	else return '';
+}
+
+
+function _displaySortableStepsImages($Tab, $htmlClass = '', $open = true, $backtopage = '')
+{
+	global $langs;
+
+	if(!empty($Tab) && is_array($Tab))
+	{
+		$out = '<ul class="pr-sortable-list '.$htmlClass.'" >';
+		foreach ($Tab as $step)
+		{
+			$class = '';
+			if($open){
+				$class.= 'sortableListsClosed';
+			}
+			else $class.= 'sortableListsOpen';
+
+			$out.= '<li id="item_'.$step->id.'" class="pr-sortable-list__item '.$class.'" ';
+			$out.= ' data-id="'.$step->id.'" ';
+			$out.= ' data-ref="'.$step->ref.'"';
+			$out.= ' data-title="'.dol_escape_htmltag($step->label).'" ';
+			$out.= ' data-parent="step_'.$step->fk_procedure.'"';
+			$out.= '>';
+			$out.= '<div class="pr-sortable-list__item__title  move">';
+			$out.= '<div class="pr-sortable-list__item__title__flex">';
+
+			$out.= '<div class="pr-sortable-list__item__title__col" >';
+			$out.= dol_htmlentities($step->ref) . ' - ' . dol_htmlentities($step->label);
+			$out.= '</div>';
+
+			$out.= '<div class="pr-sortable-list__item__title__col">';
+			$out.= $step->description;
+			$out.= '</div>';
+
+			$out.= '<div class="pr-sortable-list__item__title__col -action clickable">';
+
+			$out.= '<a href="'.dol_buildpath('/processrules/processstep_card.php', 1).'?id='.$step->id.'&action=edit'.(!empty($backtopage) ? '&backtopage='.urlencode($backtopage) : '').'" class="classfortooltip pr-sortable-list__item__title__button clickable -edit-btn"  title="' . $langs->trans("Edit") . '" data-id="'.$step->id.'">';
+			$out.= '<i class="fa fa-pencil clickable"></i>';
+			$out.= '</a>';
+
+
+			$out.= '</div>';
+
+			$out.= '</div>';
+			$out.= '</div>';
+
 			$out.= '</li>';
 		}
 		$out.= '</ul>';

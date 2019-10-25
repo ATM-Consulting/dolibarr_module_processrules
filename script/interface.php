@@ -18,6 +18,10 @@ switch ($put)
 	case 'reorderProcedures':
 		print json_encode(_reorderProcedures(GETPOST('items'), GETPOST('id', 'int')));
 		break;
+
+	case 'reorderDocumentFiles':
+		print json_encode(_reorderDocumentFiles(GETPOST('items')));
+		break;
 }
 
 function _reorderProcedures($items = array(), $id = 0)

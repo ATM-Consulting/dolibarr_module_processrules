@@ -100,8 +100,9 @@ $form = new Form($db);
 
 $title=$langs->trans("processStep").' - '.$langs->trans("Files");
 $help_url='';
-//$help_url='EN:Module_Third_Parties|FR:Module_Tiers|ES:Empresas';
-llxHeader('', $title, $help_url);
+$arrayofjs = array('processrules/js/documents-sort-file.js.php');
+$arrayofcss = array();
+llxHeader('', $langs->trans('processRules'), $help_url, '', 0, 0, $arrayofjs, $arrayofcss);
 
 if ($object->id)
 {
@@ -151,9 +152,14 @@ if ($object->id)
 	$permtoedit = 1;
 	$param = '&id=' . $object->id;
 
+	$sortfield = 'position';
+	$sortorder = 'ACS';
+
 	$relativepathwithnofile='processrules/processstep/' . dol_sanitizeFileName($object->id).'/';
 
 	include_once DOL_DOCUMENT_ROOT . '/core/tpl/document_actions_post_headers.tpl.php';
+
+
 }
 else
 {

@@ -566,4 +566,27 @@ class ProcessStep extends SeedObject
 
 		return $out;
 	}
+
+	/**
+	 * @return array
+	 */
+	public function fetch_images()
+	{
+		global $conf;
+
+		$TImage = array();
+
+		$sql= 'SELECT rowid as id, src_object_type, src_object_id, filepath, filename  ';
+		$sql= ' FROM '.MAIN_DB_PREFIX.'ecm_files ';
+		$sql= ' WHERE src_object_type =  \''.$this->element.'\' AND src_object_id = '.$this->id;
+		$sql= ' ORDER BY position ASC';
+
+		$resql= $this->db->query($sql);
+		if ($resql){
+			$TImage = $this->db->fetch_object($resql);
+		}
+
+		return $TImage;
+	}
+
 }
