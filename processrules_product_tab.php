@@ -59,6 +59,17 @@ $toselect = GETPOST('toselect', 'array');
 
 // Initialize technical objects
 $object=new ProcessRules($db);
+if (!empty($d) || !empty($ref)) {
+	$result = $object->fetch($id, 1, $ref);
+
+	if ($result <= 0 || empty($object->id)) {
+		print $langs->trans('NotFound');
+		exit;
+	}
+}
+
+
+
 $extrafields = new ExtraFields($db);
 $diroutputmassaction=$conf->processrules->dir_output . '/temp/massgeneration/'.$user->id;
 $hookmanager->initHooks(array('processrulesproducttab','globalcard'));     // Note that conf->hooks_modules contains array
@@ -85,6 +96,51 @@ $productExtrafieldslabels = $productExtrafields->fetch_name_optionals_label($obj
  */
 
 
+if($action == 'addProduct'){
+	$fk_product = GETPOST('fk_product', 'int');
+	if(!empty($fk_product)){
+		if($object->add_object_linked('product', intval($fk_product)) > 0)
+		{
+			setEventMessage($langs->trans('ProcessRulesLinkAdded'));
+		}
+		else{
+			setEventMessage($langs->trans('ProcessRulesLinkAddError'), 'errors');
+		}
+	}
+	else{
+		setEventMessage($langs->trans('FormProductMissing'), 'warnings');
+	}
+}
+
+
+if($massaction == 'massDelProductLink')
+{
+	if(!empty($toselect) && is_array($toselect))
+	{
+		$toselect = array_map('intval', $toselect);
+		$countDeleted = 0;
+		foreach ($toselect as $fk_product)
+		{
+			if($object->deleteObjectLinked(intval($fk_product), 'product') > 0)
+			{
+				$countDeleted++;
+			}
+			else{
+				setEventMessage($langs->trans('ProcessRulesDeletedError', $fk_product), 'errors');
+			}
+		}
+
+		if($countDeleted>0)
+		{
+			setEventMessage($langs->trans('ProcessRulesLinksDeleted', $countDeleted));
+		}
+	}
+	else{
+		setEventMessage($langs->trans('NoProductSelected'), 'errors');
+	}
+}
+
+
 
 
 /*
@@ -95,7 +151,10 @@ $form = new Form($db);
 
 //$help_url='EN:Customers_Orders|FR:Commandes_Clients|ES:Pedidos de clientes';
 $help_url='';
-llxHeader('', $langs->trans('processRules'), $help_url);
+$arrayofjs = '';
+$arrayofcss = array('processrules/css/module-style.css');
+llxHeader('', $langs->trans('processRules'), $help_url, '', 0, 0, $arrayofjs, $arrayofcss);
+
 
 if ($id > 0 || ! empty($ref))
 {
@@ -117,9 +176,32 @@ if ($id > 0 || ! empty($ref))
 	dol_banner_tab($object, 'ref', $linkback, 1, 'ref', 'ref', $morehtmlref);
 
 
+	dol_fiche_end();
+
+
 	print '<div class="fichecenter">';
 	print '<div class="underbanner clearboth"></div>';
 
+	/*
+	 * PRODUCT ADD FORM
+	 */
+	print '<div class="form-add-contener" >';
+	$formcore = new TFormCore($_SERVER['PHP_SELF'], 'form_add_product_to_processrule', 'POST');
+
+	print '<h4>'.$langs->trans('LinkProcessRuleToAProduct').'</h4>';
+
+	print '<input type="hidden" name="id" value="'.$object->id.'" />';
+	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+	print $form->select_produits('', 'fk_product');
+	print  '<button type="submit" name="action" value="addProduct" >'.$langs->trans('AddProduct').'</button>';
+	print '</form>';
+	print '</div>';
+
+
+
+	/*
+	 * LIST OF PRODUCT
+	 */
 
 	$keys = array(
 		'rowid',
@@ -158,9 +240,9 @@ if ($id > 0 || ! empty($ref))
 	$sql.=$hookmanager->resPrint;
 
 	$sql.= ' FROM '.MAIN_DB_PREFIX.'product t ';
-	//$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'processrules processrules ON (processrules.rowid = t.fk_processrules)';
-	$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product_extrafields et ON (et.fk_object = t.rowid)';
+	$sql.= ' JOIN '.MAIN_DB_PREFIX.'element_element elel ON (elel.targettype = \''.$db->escape($object->element).'\' AND elel.fk_target = '.intval($object->id).' AND elel.sourcetype = \'product\' AND  elel.fk_source = t.rowid)';
 
+	$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product_extrafields et ON (et.fk_object = t.rowid)';
 
 	$sql.= ' WHERE 1=1';
 	$sql.= ' AND t.entity IN ('.getEntity('product', 1).')';
@@ -171,7 +253,7 @@ if ($id > 0 || ! empty($ref))
 	$reshook=$hookmanager->executeHooks('printFieldListWhere', $parameters, $object);    // Note that $action and $object may have been modified by hook
 	$sql.=$hookmanager->resPrint;
 
-	$formcore = new TFormCore($_SERVER['PHP_SELF'], 'form_list_processrule_product', 'GET');
+	$formcorelist = new TFormCore($_SERVER['PHP_SELF'], 'form_list_processrule_product', 'POST');
 
 	if(!empty($object->id)){
 		print  '<input type="hidden" name="id" value="'.$object->id.'" />';
@@ -207,7 +289,7 @@ if ($id > 0 || ! empty($ref))
 		,'image' => 'title_products.png'
 		//,'morehtmlrighttitle' => dolGetButtonTitle($langs->trans('AddNew'), '', 'fa fa-plus-circle', $addNewUrl, 'btnaddnew', $user->rights->processrules->write)
 		,'massactions'=>array(
-				//'yourmassactioncode'  => $langs->trans('YourMassActionLabel')
+				'massDelProductLink'  => $langs->trans('MassDelProductLink')
 			)
 		)
 	,'subQuery' => array()
@@ -257,11 +339,10 @@ if ($id > 0 || ! empty($ref))
 	$reshook=$hookmanager->executeHooks('printFieldListFooter', $parameters, $object);    // Note that $action and $object may have been modified by hook
 	print $hookmanager->resPrint;
 
-	$formcore->end_form();
+	print '</form>';
 
 	print '</div>';
 
-	dol_fiche_end();
 }
 
 // End of page

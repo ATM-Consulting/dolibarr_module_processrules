@@ -53,6 +53,15 @@ DateCre=Créé le
 
 # Product tab
 ProductsListLinkedToThisProcessrules=Liste des produits/services utilisant cette méthode
+LinkProcessRuleToAProduct=Lier un produit à cette méthode
+FormProductMissing=Produit manquant ou invalide
+ProcessRulesLinkAdded=Liaison ajouté
+ProcessRulesLinkAddError=Une erreur c'est produite lors de l'ajout de la liaison, vérifiez que le produit n'est pas déjà lié.
+ProcessRulesLinkDeleted=Liaison supprimée
+ProcessRulesLinksDeleted=%s liaisons supprimées
+MassDelProductLink=Supprimer la liason
+ProcessRulesDeletedError=Une erreur c'est produite lors de la suppression de la liaison
+NoProductSelected=Aucun produit sélectionné
 
 # CARD
 NewprocessRules=Nouvelle méthode
