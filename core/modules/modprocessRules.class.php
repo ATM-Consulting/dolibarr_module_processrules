@@ -319,7 +319,7 @@ class modprocessRules extends DolibarrModules
 		$this->menu[$r]=array(
 			'fk_menu'=>'fk_mainmenu=products,fk_leftmenu=procedure',		    // Use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
 			'type'=>'left',			                // This is a Left menu entry
-			'titre'=>$langs->trans('NewprocessRules'),
+			'titre'=>$langs->trans('Newprocedure'),
 			'mainmenu'=>'products',
 			'leftmenu'=>'procedure_left_create',
 			'url'=>'/processrules/procedure_card.php?action=create',
