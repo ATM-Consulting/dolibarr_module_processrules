@@ -57,6 +57,10 @@ Newprocedure=Nouvelle procedure
 procedureCard=Fiche procédure
 Showprocedure=Voir la fiche procédure
 
+NewProcessSttep=Nouvelle étape
+ProcessStepCard=Fiche étape
+ShowProcessStep=Voir la fiche étape
+
 processRulesModify=Modifier
 processRulesClone=Cloner
 processRulesValid=Valider

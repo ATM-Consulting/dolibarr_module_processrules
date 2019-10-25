@@ -37,6 +37,11 @@ dol_include_once('/processrules/class/procedure.class.php');
 $o=new Procedure($db);
 $o->init_db_by_vars();
 
+// classe étape
+dol_include_once('/processrules/class/processstep.class.php');
+$o=new ProcessStep($db);
+$o->init_db_by_vars();
+
 // dictionnaire type de procedure
 dol_include_once('/processrules/class/dictionaryproceduretype.class.php');
 $o = new DictionaryProcedureType($db);
