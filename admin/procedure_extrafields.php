@@ -38,7 +38,7 @@ $processrules = new Procedure($db);
 $elementtype=$processrules->table_element;  //Must be the $table_element of the class that manage extrafield
 
 // Page title and texts elements
-$textobject=$langs->transnoentitiesnoconv('Module104713Name');
+$textobject=$langs->transnoentitiesnoconv('Module104079Name');
 $help_url='EN:Help Procedure|FR:Aide Processrules';
 $pageTitle = $langs->trans('ProcedureExtrafieldPage');
 $activeTab = 'procedureExtrafields';

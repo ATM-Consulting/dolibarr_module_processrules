@@ -38,7 +38,7 @@ $processrules = new processstep($db);
 $elementtype=$processrules->table_element;  //Must be the $table_element of the class that manage extrafield
 
 // Page title and texts elements
-$textobject=$langs->transnoentitiesnoconv('Module104713Name');
+$textobject=$langs->transnoentitiesnoconv('Module104079Name');
 $help_url='EN:Help Processstep|FR:Aide Processrules';
 $pageTitle = $langs->trans('ProcessstepExtrafieldPage');
 $activeTab = 'processstepExtrafields';
