@@ -147,7 +147,7 @@ echo $r->render($sql, array(
 		,'fk_processrules' => array('search_type' => true, 'table' => array('p'), 'field' => array('ref'))
 		,'fk_procedure_type' => array('search_type' => true, 'table' => array('ptype', 'ptype'), 'field' => array('code', 'label'))
 		,'label' => array('search_type' => true, 'table' => array('t', 't'), 'field' => array('label')) // input text de recherche sur plusieurs champs
-		,'status' => array('search_type' => Procedure::$TStatus, 'to_translate' => true) // select html, la clé = le status de l'objet, 'to_translate' à true si nécessaire
+		,'status' => array('search_type' => Procedure::$TStatus, 'to_translate' => true, 'table' => array('t')) // select html, la clé = le status de l'objet, 'to_translate' à true si nécessaire
 	)
 	,'translate' => array()
 	,'hide' => array(
