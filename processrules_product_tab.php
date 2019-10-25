@@ -59,7 +59,7 @@ $toselect = GETPOST('toselect', 'array');
 
 // Initialize technical objects
 $object=new ProcessRules($db);
-if (!empty($d) || !empty($ref)) {
+if (!empty($id) || !empty($ref)) {
 	$result = $object->fetch($id, 1, $ref);
 
 	if ($result <= 0 || empty($object->id)) {

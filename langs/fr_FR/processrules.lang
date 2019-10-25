@@ -8,6 +8,7 @@ processRulesAbout = A propos du module Méthodes
 
 processRules=Méthode
 procedure=Procédure
+Procedures=Procédures
 processStep=Etape
 AbricotNeedUpdate=Le module abricot doit être mis à jour
 
@@ -69,7 +70,7 @@ processRulesCard=Fiche méthode
 LinkToProduct=Lien vers le produit
 ShowprocessRules=Voir la fiche méthode
 
-Newprocedure=Nouvelle procedure
+Newprocedure=Nouvelle procédure
 procedureCard=Fiche procédure
 Showprocedure=Voir la fiche procédure
 

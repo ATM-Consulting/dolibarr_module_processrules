@@ -318,15 +318,11 @@ function _displaySortableProcedures($Tab, $htmlId='', $open = true){
 			$out.= '<div class="pr-sortable-list__item__title  move">';
 			$out.= '<div class="pr-sortable-list__item__title__flex">';
 
-			$out.= '<div class="pr-sortable-list__item__title__col" style="flex:1">';
+			$out.= '<div class="pr-sortable-list__item__title__col -label" >';
 			$out.= dol_htmlentities($procedure->ref) . " - " . dol_htmlentities($procedure->label);
 			$out.= '</div>';
 
-			$out.= '<div class="pr-sortable-list__item__title__col" style="flex:3">';
-			$out.= $procedure->description;
-			$out.= '</div>';
-
-			$out.= '<div class="pr-sortable-list__item__title__col -action clickable" style="flex:1">';
+			$out.= '<div class="pr-sortable-list__item__title__col -action clickable" >';
 
 			$backtopage = dol_buildpath('/processrules/processrules_card.php', 2).'?id='.$procedure->fk_processrules;
 			$out.= '<a href="'.dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$procedure->id.'&action=edit&backtopage='.urlencode($backtopage).'" class="classfortooltip pr-sortable-list__item__title__button clickable -edit-btn"  title="' . $langs->trans("Edit") . '" data-id="'.$procedure->id.'">';
@@ -341,6 +337,13 @@ function _displaySortableProcedures($Tab, $htmlId='', $open = true){
 			$out.= '</div>';
 
 			$out.= '</div>';
+
+
+
+			$out.= '<div class="pr-sortable-list__item__desc" >';
+			$out.= $procedure->description;
+			$out.= '</div>';
+
 			$out.= '</div>';
 			$procedure->fetch_lines();
 			$out.= _displaySortableSteps($procedure->lines, 'sortableProcedures', $open, $backtopage); // pour afficher les étapes des procédures dans la card

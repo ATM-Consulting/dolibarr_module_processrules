@@ -30,14 +30,26 @@ $action = GETPOST('action');
 $id = GETPOST('id', 'int');
 $ref = GETPOST('ref');
 
+
 $contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'processrulescard';   // To manage different context of search
 $backtopage = GETPOST('backtopage', 'alpha');
 
+
+
 $object = new ProcessRules($db);
 
-if (!empty($id) || !empty($ref)) $object->fetch($id, true, $ref);
+if (!empty($id) || !empty($ref)) {
+	$result = $object->fetch($id, 0, $ref);
 
-$hookmanager->initHooks(array('processrulescard', 'globalcard'));
+	if ($result <= 0 || empty($object->id)) {
+		print $langs->trans('NotFound');
+		exit;
+	}
+}
+
+$thisUrl = dol_buildpath('/processrules/processrules_card.php', 1).'?id='.$object->id;
+
+	$hookmanager->initHooks(array('processrulescard', 'globalcard'));
 
 
 if ($object->isextrafieldmanaged)
@@ -292,6 +304,13 @@ else
             print '<div class="clearboth"></div><br />';
             print '<div class="fichecenter">';
             $object->fetch_lines();
+
+
+
+			$titleBtn = dolGetButtonTitle($langs->trans('Newprocedure'), '', 'fa fa-plus-circle', dol_buildpath('/processrules/procedure_card.php', 2).'?action=create&fk_processrules='.$object->id.'&backtopage='.urlencode($thisUrl));
+			print load_fiche_titre($langs->trans('Procedures'), $titleBtn, 'title_generic.png');
+
+
 			print '<div id="ajaxResults" ></div>';
             print _displaySortableProcedures($object->lines, 'sortableLists', false);
 

@@ -53,6 +53,13 @@ li.pr-sortable-list__item .pr-sortable-list__item__title , #sortableListsBase li
 	text-align: right;
 }
 
+.pr-sortable-list__item__title__col.-label{
+	font-size: 1.2em;
+	color: #333;
+	font-weight: bold;
+}
+
+
 .pr-sortable-list__item__title__button{
 	margin-left: 15px;
 }
