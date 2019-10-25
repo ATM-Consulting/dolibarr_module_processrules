@@ -41,7 +41,8 @@ $elementtype=$processrules->table_element;  //Must be the $table_element of the 
 $textobject=$langs->transnoentitiesnoconv('processRules');
 $help_url='EN:Help processRules|FR:Aide processRules';
 $pageTitle = $langs->trans('processRulesExtrafieldPage');
-
+$activeTab = 'processrulesExtrafields';
+$picto='processrules@processrules';
 // Configuration header
 $head = processrulesAdminPrepareHead();
 
