@@ -71,7 +71,7 @@ if (! $sortfield) $sortfield="name";
 //if (! $sortfield) $sortfield="position_name";
 
 // Initialize technical objects
-$object=new procedure($db);
+$object=new Procedure($db);
 $extrafields = new ExtraFields($db);
 $diroutputmassaction=$conf->processrules->dir_output . '/temp/massgeneration/'.$user->id;
 $hookmanager->initHooks(array('proceduredocument','globalcard'));     // Note that conf->hooks_modules contains array

@@ -51,7 +51,7 @@ $cancel     = GETPOST('cancel', 'aZ09');
 $backtopage = GETPOST('backtopage', 'alpha');
 
 // Initialize technical objects
-$object=new processRules($db);
+$object=new ProcessRules($db);
 $extrafields = new ExtraFields($db);
 $diroutputmassaction=$conf->processrules->dir_output . '/temp/massgeneration/'.$user->id;
 $hookmanager->initHooks(array('processrulesnote','globalcard'));     // Note that conf->hooks_modules contains array

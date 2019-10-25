@@ -25,7 +25,7 @@ if (!class_exists('SeedObject'))
 }
 
 
-class processRules extends SeedObject
+class ProcessRules extends SeedObject
 {
     /**
      * Canceled status
@@ -308,7 +308,7 @@ class processRules extends SeedObject
 
 				while ($obj = $this->db->fetch_object($resql))
 				{
-					$proc = new procedure($this->db);
+					$proc = new Procedure($this->db);
 					$ret = $proc->fetch($obj->rowid);
 					if ($ret > 0) $this->lines[] = $proc;
 				}
@@ -480,7 +480,7 @@ class processRules extends SeedObject
     {
 		global $db;
 
-		$object = new processRules($db);
+		$object = new ProcessRules($db);
 		$object->fetch($id, false, $ref);
 
 		return $object->getNomUrl($withpicto, $moreparams);

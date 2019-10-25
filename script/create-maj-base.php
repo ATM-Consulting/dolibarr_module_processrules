@@ -29,12 +29,12 @@ if(!defined('INC_FROM_DOLIBARR')) {
 
 // classe méthode
 dol_include_once('/processrules/class/processrules.class.php');
-$o=new processRules($db);
+$o=new ProcessRules($db);
 $o->init_db_by_vars();
 
 // classe procedure
 dol_include_once('/processrules/class/procedure.class.php');
-$o=new procedure($db);
+$o=new Procedure($db);
 $o->init_db_by_vars();
 
 // dictionnaire type de procedure

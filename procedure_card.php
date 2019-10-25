@@ -33,7 +33,7 @@ $ref = GETPOST('ref');
 $contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'procedurecard';   // To manage different context of search
 $backtopage = GETPOST('backtopage', 'alpha');
 
-$object = new procedure($db);
+$object = new Procedure($db);
 
 if (!empty($id) || !empty($ref)) $object->fetch($id, true, $ref);
 
@@ -320,7 +320,7 @@ else
 					// Clone
 					print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=clone">'.$langs->trans("processRulesClone").'</a></div>'."\n";
 
-					if ($object->status == processRules::STATUS_DRAFT)
+					if ($object->status == ProcessRules::STATUS_DRAFT)
 					{
 						print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'&amp;action=enable">'.$langs->trans("Activate").'</a></div>';
 					}
@@ -336,7 +336,7 @@ else
 					// Clone
 					print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("processRulesClone").'</a></div>'."\n";
 
-					if ($object->status == processRules::STATUS_DRAFT)
+					if ($object->status == ProcessRules::STATUS_DRAFT)
 					{
 						print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("Activate").'</a></div>';
 					}

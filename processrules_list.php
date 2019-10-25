@@ -30,7 +30,7 @@ $confirmmassaction = GETPOST('confirmmassaction', 'alpha');
 $toselect = GETPOST('toselect', 'array');
 $search_product = GETPOST('Listview_processrules_search_fk_product');
 
-$object = new processRules($db);
+$object = new ProcessRules($db);
 
 $hookmanager->initHooks(array('processruleslist'));
 
@@ -143,7 +143,7 @@ echo $r->render($sql, array(
 		,'fk_product'=>array('search_type' => 'override', 'override' => $object->showInputField($object->fields, 'fk_product', $search_product, '', '', 'Listview_processrules_search_'))//$formproduct)
 		,'ref' => array('search_type' => true, 'table' => 't', 'field' => 'ref')
 		,'label' => array('search_type' => true, 'table' => array('t', 't'), 'field' => array('label')) // input text de recherche sur plusieurs champs
-		,'status' => array('search_type' => processRules::$TStatus, 'to_translate' => true) // select html, la clé = le status de l'objet, 'to_translate' à true si nécessaire
+		,'status' => array('search_type' => ProcessRules::$TStatus, 'to_translate' => true) // select html, la clé = le status de l'objet, 'to_translate' à true si nécessaire
 	)
 	,'translate' => array()
 	,'hide' => array(
@@ -182,7 +182,7 @@ function _getObjectNomUrl($id, $ref)
 {
 	global $db;
 
-	$o = new processRules($db);
+	$o = new ProcessRules($db);
 	$res = $o->fetch($id, false, $ref);
 	if ($res > 0)
 	{
