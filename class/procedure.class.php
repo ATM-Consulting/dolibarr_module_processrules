@@ -176,7 +176,7 @@ class Procedure extends SeedObject
 		),
 
         'description' => array(
-            'type' => 'text', // or html for WYSWYG
+            'type' => 'html', // or html for WYSWYG
             'label' => 'Description',
             'enabled' => 1,
             'visible' => -1, //  un bug sur la version 9.0 de Dolibarr necessite de mettre -1 pour ne pas apparaitre sur les listes au lieu de la valeur 3
