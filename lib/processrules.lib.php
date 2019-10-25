@@ -75,10 +75,10 @@ function processrulesAdminPrepareHead()
 /**
  * Return array of tabs to used on pages for processRules cards.
  *
- * @param 	processRules	$object		Object company shown
+ * @param 	ProcessRules	$object		Object company shown
  * @return 	array				Array of tabs
  */
-function processrules_prepare_head(processRules $object)
+function processrules_prepare_head(ProcessRules $object)
 {
     global $langs, $conf;
     $h = 0;
@@ -114,10 +114,10 @@ function processrules_prepare_head(processRules $object)
 /**
  * Return array of tabs to used on pages for procedure cards.
  *
- * @param 	procedure	$object		Object company shown
+ * @param 	Procedure	$object		Object company shown
  * @return 	array				Array of tabs
  */
-function procedure_prepare_head(procedure $object)
+function procedure_prepare_head(Procedure $object)
 {
 	global $langs, $conf;
 	$h = 0;
@@ -148,7 +148,7 @@ function procedure_prepare_head(procedure $object)
 
 /**
  * @param Form      $form       Form object
- * @param processRules  $object     processRules object
+ * @param ProcessRules  $object     processRules object
  * @param string    $action     Triggered action
  * @return string
  */
@@ -184,7 +184,7 @@ function getFormConfirmprocessRules($form, $object, $action)
 
 /**
  * @param Form      $form       Form object
- * @param procedure  $object    procedure object
+ * @param Procedure  $object    procedure object
  * @param string    $action     Triggered action
  * @return string
  */

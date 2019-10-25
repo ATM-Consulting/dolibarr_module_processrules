@@ -25,7 +25,7 @@ if (!class_exists('SeedObject'))
 }
 
 
-class procedure extends SeedObject
+class Procedure extends SeedObject
 {
     /**
      * Canceled status
@@ -479,7 +479,7 @@ class procedure extends SeedObject
     {
 		global $db;
 
-		$object = new procedure($db);
+		$object = new Procedure($db);
 		$object->fetch($id, false, $ref);
 
 		return $object->getNomUrl($withpicto, $moreparams);

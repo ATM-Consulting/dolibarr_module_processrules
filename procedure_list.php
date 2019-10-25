@@ -31,7 +31,7 @@ $massaction = GETPOST('massaction', 'alpha');
 $confirmmassaction = GETPOST('confirmmassaction', 'alpha');
 $toselect = GETPOST('toselect', 'array');
 
-$object = new procedure($db);
+$object = new Procedure($db);
 
 $hookmanager->initHooks(array('procedurelist'));
 
@@ -147,7 +147,7 @@ echo $r->render($sql, array(
 		,'fk_processrules' => array('search_type' => true, 'table' => array('p'), 'field' => array('ref'))
 		,'fk_procedure_type' => array('search_type' => true, 'table' => array('ptype', 'ptype'), 'field' => array('code', 'label'))
 		,'label' => array('search_type' => true, 'table' => array('t', 't'), 'field' => array('label')) // input text de recherche sur plusieurs champs
-		,'status' => array('search_type' => procedure::$TStatus, 'to_translate' => true) // select html, la clé = le status de l'objet, 'to_translate' à true si nécessaire
+		,'status' => array('search_type' => Procedure::$TStatus, 'to_translate' => true) // select html, la clé = le status de l'objet, 'to_translate' à true si nécessaire
 	)
 	,'translate' => array()
 	,'hide' => array(
@@ -188,7 +188,7 @@ function _getObjectNomUrl($id, $ref)
 {
 	global $db;
 
-	$o = new procedure($db);
+	$o = new Procedure($db);
 	$res = $o->fetch($id, false, $ref);
 	if ($res > 0)
 	{

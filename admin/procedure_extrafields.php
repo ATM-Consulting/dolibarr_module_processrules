@@ -34,7 +34,7 @@ require_once '../lib/processrules.lib.php';
 require_once '../class/procedure.class.php';
 $langs->loadLangs(array('processrules@processrules', 'admin', 'other'));
 
-$processrules = new procedure($db);
+$processrules = new Procedure($db);
 $elementtype=$processrules->table_element;  //Must be the $table_element of the class that manage extrafield
 
 // Page title and texts elements
