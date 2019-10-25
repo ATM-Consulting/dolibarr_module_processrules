@@ -40,6 +40,8 @@ if (! $res) die("Include of main fails");
 dol_include_once('/processrules/class/processrules.class.php');
 dol_include_once('/processrules/lib/processrules.lib.php');
 
+require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+
 // Load translation files required by the page
 $langs->loadLangs(array("processrules@processrules","companies"));
 
@@ -50,26 +52,32 @@ $action		= GETPOST('action', 'alpha');
 $cancel     = GETPOST('cancel', 'aZ09');
 $backtopage = GETPOST('backtopage', 'alpha');
 
+
+$massaction = GETPOST('massaction', 'alpha');
+$confirmmassaction = GETPOST('confirmmassaction', 'alpha');
+$toselect = GETPOST('toselect', 'array');
+
 // Initialize technical objects
 $object=new ProcessRules($db);
 $extrafields = new ExtraFields($db);
 $diroutputmassaction=$conf->processrules->dir_output . '/temp/massgeneration/'.$user->id;
-$hookmanager->initHooks(array('processrulesnote','globalcard'));     // Note that conf->hooks_modules contains array
+$hookmanager->initHooks(array('processrulesproducttab','globalcard'));     // Note that conf->hooks_modules contains array
 // Fetch optionals attributes and labels
 $extralabels = $extrafields->fetch_name_optionals_label('processrules');
 
 // Security check - Protection if external user
-//if ($user->societe_id > 0) access_forbidden();
-//if ($user->societe_id > 0) $socid = $user->societe_id;
-//$result = restrictedArea($user, 'processrules', $id);
+if ($user->societe_id > 0) access_forbidden();
+if ($user->societe_id > 0) $socid = $user->societe_id;
+$result = restrictedArea($user, 'processrules', $id);
 
 // Load object
 include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php';  // Must be include, not include_once  // Must be include, not include_once. Include fetch and fetch_thirdparty but not fetch_optionals
 if ($id > 0 || ! empty($ref)) $upload_dir = $conf->processrules->multidir_output[$object->entity] . "/" . $object->id;
 
-$permissionnote=1;
-//$permissionnote=$user->rights->processrules->creer;	// Used by the include of actions_setnotes.inc.php
-
+// LOAD PRODUCTS EXTRAFIELDS
+$productStatic = new Product($db);
+$productExtrafields = new ExtraFields($db);
+$productExtrafieldslabels = $productExtrafields->fetch_name_optionals_label($object->table_element);
 
 
 /*
@@ -113,8 +121,143 @@ if ($id > 0 || ! empty($ref))
 	print '<div class="underbanner clearboth"></div>';
 
 
+	$keys = array(
+		'rowid',
+		'ref',
+		'entity',
+		'note_public',
+		'note',
+		'datec',
+		'tms',
+		'fk_user_author',
+		'fk_user_modif',
+		'import_key',
+		'label',
+		'tobuy',
+		'tosell'
+	);
+	$fieldList = 't.'.implode(', t.', $keys);
+
+	// PREPARE PRODUCTS EXTRAFIELS
+	if (!empty($productExtrafieldslabels))
+	{
+		$keys = array_keys($productExtrafieldslabels);
+		if(!empty($keys)) {
+			$fieldList .= ', et.' . implode(', et.', $keys);
+		}
+	}
 
 
+	$sql = 'SELECT ';
+	$sql.= $fieldList;
+
+
+// Add fields from hooks
+	$parameters=array('sql' => $sql);
+	$reshook=$hookmanager->executeHooks('printFieldListSelect', $parameters, $object);    // Note that $action and $object may have been modified by hook
+	$sql.=$hookmanager->resPrint;
+
+	$sql.= ' FROM '.MAIN_DB_PREFIX.'product t ';
+	//$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'processrules processrules ON (processrules.rowid = t.fk_processrules)';
+	$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product_extrafields et ON (et.fk_object = t.rowid)';
+
+
+	$sql.= ' WHERE 1=1';
+	$sql.= ' AND t.entity IN ('.getEntity('product', 1).')';
+
+
+	// Add where from hooks
+	$parameters=array('sql' => $sql);
+	$reshook=$hookmanager->executeHooks('printFieldListWhere', $parameters, $object);    // Note that $action and $object may have been modified by hook
+	$sql.=$hookmanager->resPrint;
+
+	$formcore = new TFormCore($_SERVER['PHP_SELF'], 'form_list_processrule_product', 'GET');
+
+	if(!empty($object->id)){
+		print  '<input type="hidden" name="id" value="'.$object->id.'" />';
+	}
+
+	$listViewRenderName = 'processrule_product';
+	$r = new Listview($db, $listViewRenderName);
+
+
+	/*
+	$form = new Form($db);
+	$inputKey = 'fk_supplier';
+	$selectSupplier = $form->select_company(GETPOST('Listview_'.$listViewRenderName.'_search_'.$inputKey,'int'), 'Listview_'.$listViewRenderName.'_search_'.$inputKey, '', 1, 0);
+	$inputKey = 'fk_soc';
+	$selectCustomer = $form->select_company(GETPOST('Listview_'.$listViewRenderName.'_search_'.$inputKey,'int'), 'Listview_'.$listViewRenderName.'_search_'.$inputKey, '', 1, 0);
+	*/
+
+	//$addNewUrl = dol_buildpath('/processrules/_card.php',1).'?action=create&backtopage='.urlencode($_SERVER["PHP_SELF"]);
+
+	$nbLine = !empty($user->conf->MAIN_SIZE_LISTE_LIMIT) ? $user->conf->MAIN_SIZE_LISTE_LIMIT : $conf->global->MAIN_SIZE_LISTE_LIMIT;
+
+	$productCardUrl = DOL_URL_ROOT.'/product/card.php?id=@rowid@';
+	$productCardLink = '<a href="'.$productCardUrl.'" >@val@</a>';
+
+	$param = array(
+	'view_type' => 'list' // default = [list], [raw], [chart]
+	,'allow-fields-select' => true
+	,'limit'=>array(
+			'nbLine' => $nbLine
+		)
+	,'list' => array(
+		'title' => $langs->trans('ProductsListLinkedToThisProcessrules')
+		,'image' => 'title_products.png'
+		//,'morehtmlrighttitle' => dolGetButtonTitle($langs->trans('AddNew'), '', 'fa fa-plus-circle', $addNewUrl, 'btnaddnew', $user->rights->processrules->write)
+		,'massactions'=>array(
+				//'yourmassactioncode'  => $langs->trans('YourMassActionLabel')
+			)
+		)
+	,'subQuery' => array()
+	,'link' => array(
+		'ref' => $productCardLink,
+		'label' => $productCardLink
+	)
+	,'type' => array()
+	,'search' => array(
+		'ref' => array('search_type' => true, 'table' => 't', 'field' => 'ref')
+		,'label' => array('search_type' => true, 'table' => array('t', 't'), 'field' => array('label')) // input text de recherche sur plusieurs champs
+		//,'status' => array('search_type' => array(), 'to_translate' => true) // select html, la clé = le status de l'objet, 'to_translate' à true si nécessaire
+	)
+	,'translate' => array()
+	,'hide' => array(
+			'rowid' // important : rowid doit exister dans la query sql pour les checkbox de massaction
+	)
+	,'title'=>array(
+		'ref' => $langs->trans('Ref.')
+		,'label' => $langs->trans('Label')
+		//,'status' => $langs->trans('Status')
+	)
+	,'eval'=>array(
+//			'ref' => '_getObjectNomUrl(\'@rowid@\', \'@val@\')',
+//			'status' => 'WebInstance::LibStatut(\'@val@\', 2)',
+//			'fk_soc' => '_getSocUrl("@val@")',
+//			'fk_supplier' => '_getSocUrl("@val@")',
+//			'fk_processrules' => '_getProcessrulesNomUrl("@val@")',
+//
+//			'url' => '_outLink(\'@val@\')',
+//			'url_admin' => '_outLink(\'@val@\')',
+//			'instanceType' => 'labelPicto(\'@val@\', \'@picto@\')'
+			//		,'fk_user' => '_getUserNomUrl(@val@)' // Si on a un fk_user dans notre requête
+		)
+	);
+
+	if(!empty($object->id)){
+		$param['list']['param_url'] = 'id='.$object->id;
+	}
+
+
+
+	echo $r->render($sql, $param);
+	//print $r->sql;
+
+	$parameters=array('sql'=>$sql);
+	$reshook=$hookmanager->executeHooks('printFieldListFooter', $parameters, $object);    // Note that $action and $object may have been modified by hook
+	print $hookmanager->resPrint;
+
+	$formcore->end_form();
 
 	print '</div>';
 

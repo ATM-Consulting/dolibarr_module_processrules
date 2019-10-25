@@ -51,6 +51,9 @@ processstepList=Liste des étapes
 NoprocessRules=(vide)
 DateCre=Créé le
 
+# Product tab
+ProductsListLinkedToThisProcessrules=Liste des produits/services utilisant cette méthode
+
 # CARD
 NewprocessRules=Nouvelle méthode
 processRulesCard=Fiche méthode
