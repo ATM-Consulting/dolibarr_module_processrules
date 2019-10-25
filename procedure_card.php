@@ -35,7 +35,16 @@ $backtopage = GETPOST('backtopage', 'alpha');
 
 $object = new Procedure($db);
 
-if (!empty($id) || !empty($ref)) $object->fetch($id, true, $ref);
+if (!empty($id) || !empty($ref)) {
+	$result = $object->fetch($id, 0, $ref);
+
+	if ($result <= 0 || empty($object->id)) {
+		print $langs->trans('NotFound');
+		exit;
+	}
+}
+
+$thisUrl = dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$object->id;
 
 $hookmanager->initHooks(array('procedurecard', 'globalcard'));
 
@@ -306,6 +315,100 @@ else
             print '</div>'; // Fin fichecenter
 
             print '<div class="clearboth"></div><br />';
+
+			print '<div class="fichecenter">';
+			$object->fetch_lines();
+
+			$titleBtn = dolGetButtonTitle($langs->trans('NewProcessStep'), '', 'fa fa-plus-circle', dol_buildpath('/processrules/processstep_card.php', 2).'?action=create&fk_procedure='.$object->id.'&backtopage='.urlencode($thisUrl));
+			print load_fiche_titre($langs->trans('ProcessSteps'), $titleBtn, 'title_generic.png');
+
+			print '<div id="ajaxResults" ></div>';
+			print _displaySortableSteps($object->lines, 'sortableLists', false, $thisUrl);
+
+			print '<script src="'.dol_buildpath('processrules/js/jquery-sortable-lists.min.js',1).'" ></script>';
+			print '<link rel="stylesheet" href="'.dol_buildpath('/processrules/css/sortable.css', 1).'">';
+			print '</div>';// Fin fichecenter
+
+			?>
+
+			<script type="text/javascript">
+                $(function(){
+                    var options = {
+                        insertZone: 10, // This property defines the distance from the left, which determines if item will be inserted outside(before/after) or inside of another item.
+                        placeholderClass: 'pr-sortable-list__item--placeholder',
+                        hintClass: 'pr-sortable-list__item--hint',
+                        onChange: function( cEl )
+                        {
+
+                            $("#ajaxResults").html("");
+
+                            $.ajax({
+                                url: "<?php echo dol_buildpath('/processrules/script/interface.php',1) ?>",
+                                method: "POST",
+                                data: {
+                                    put: 'reorderSteps'
+                                    ,id: '<?php echo $object->id; ?>'
+                                    ,items : $('.sortableLists').sortableListsToHierarchy()
+                                },
+                                dataType: "json",
+
+                                // La fonction à apeller si la requête aboutie
+                                success: function (data) {
+                                    // Loading data
+                                    console.log(data);
+                                    if(data.success == true){
+                                        // ok case
+                                        $("#ajaxResults").html('<span class="badge badge-success">' + data.msg + '</span>');
+                                    }
+                                    else {
+                                        // error case
+                                        $("#ajaxResults").html('<span class="badge badge-danger">' + data.errorMsg + '</span>');
+                                    }
+                                },
+                                // La fonction à appeler si la requête n\'a pas abouti
+                                error: function( jqXHR, textStatus ) {
+                                    console.log( "Request failed: " + textStatus );
+                                }
+                            });
+                        },
+                        complete: function( cEl )
+                        {
+                            // nothing foor now
+                        },
+                        isAllowed: function( cEl, hint, target )
+                        {
+                        	if (cEl.data('parent') == "proc_<?php echo $object->id; ?>" &&  target.data('parent') == undefined) return true;
+                            else {
+                                console.log(cEl.data('parent'), target.data('parent'));
+                                target.find('#sortableListsHintWrapper').hide();
+                                target.find('#sortableListsHint').hide();
+                                return false;
+                            }
+                        },
+                        opener: {
+                            active: true,
+                            as: 'html',  // if as is not set plugin uses background image
+                            close: '<i class="fa fa-minus c3"></i>',  // or \'fa-minus c3\',  // or \'./imgs/Remove2.png\',
+                            open: '<i class="fa fa-plus"></i>',  // or \'fa-plus\',  // or\'./imgs/Add2.png\',
+                            openerCss: {
+                                'display': 'inline-block',
+                                'float': 'left',
+                                'margin-left': '-35px',
+                                'margin-right': '5px',
+                                'font-size': '1.1em'
+                            }
+                        },
+                        ignoreClass: 'clickable',
+
+                        insertZonePlus: true,
+                    };
+
+                    $('.sortableLists').sortableLists( options );
+
+                });
+			</script>
+
+			<?php
 
             print '<div class="tabsAction">'."\n";
             $parameters=array();

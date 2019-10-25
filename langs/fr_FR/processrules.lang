@@ -10,6 +10,7 @@ processRules=Méthode
 procedure=Procédure
 Procedures=Procédures
 processStep=Etape
+ProcessSteps=Etapes
 AbricotNeedUpdate=Le module abricot doit être mis à jour
 
 # SETUP
