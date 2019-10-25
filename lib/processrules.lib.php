@@ -307,25 +307,28 @@ function _displaySortableProcedures($Tab, $htmlId='', $open = true){
 			if($open){
 				$class.= 'sortableListsClosed';
 			}
+			else $class.= 'sortableListsOpen';
 
 			$out.= '<li id="item_'.$procedure->id.'" class="pr-sortable-list__item '.$class.'" ';
 			$out.= ' data-id="'.$procedure->id.'" ';
 			$out.= ' data-ref="'.$procedure->ref.'"';
 			$out.= ' data-title="'.dol_escape_htmltag($procedure->label).'" ';
+			$out.= ' data-parent="meth_'.$procedure->fk_processrules.'"';
 			$out.= '>';
 			$out.= '<div class="pr-sortable-list__item__title  move">';
 			$out.= '<div class="pr-sortable-list__item__title__flex">';
 
-			$out.= '<div class="pr-sortable-list__item__title__col">';
-			$out.= dol_htmlentities($procedure->ref);
+			$out.= '<div class="pr-sortable-list__item__title__col" style="flex:1">';
+			$out.= dol_htmlentities($procedure->ref) . " - " . dol_htmlentities($procedure->label);
 			$out.= '</div>';
 
-			$out.= '<div class="pr-sortable-list__item__title__col">';
-			$out.= dol_htmlentities($procedure->label);
+			$out.= '<div class="pr-sortable-list__item__title__col" style="flex:3">';
+			$out.= $procedure->description;
 			$out.= '</div>';
 
-			$out.= '<div class="pr-sortable-list__item__title__col -action clickable">';
+			$out.= '<div class="pr-sortable-list__item__title__col -action clickable" style="flex:1">';
 
+			$backtopage = $_SERVER['PHP_SELF'].'?id='.$procedure->fk_processrules;
 			$out.= '<a href="'.dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$procedure->id.'&action=edit'.'" class="classfortooltip pr-sortable-list__item__title__button clickable -edit-btn"  title="' . $langs->trans("Edit") . '" data-id="'.$procedure->id.'">';
 			$out.= '<i class="fa fa-pencil clickable"></i>';
 			$out.= '</a>';
@@ -339,7 +342,65 @@ function _displaySortableProcedures($Tab, $htmlId='', $open = true){
 
 			$out.= '</div>';
 			$out.= '</div>';
-			//$out.= _displaySortableSteps($procedure->lines, '', $open); // pour afficher les étapes des procédures dans la card
+			$procedure->fetch_lines();
+			$out.= _displaySortableSteps($procedure->lines, 'sortableProcedures', $open); // pour afficher les étapes des procédures dans la card
+			$out.= '</li>';
+		}
+		$out.= '</ul>';
+		return $out;
+	}
+	else return '';
+}
+
+function _displaySortableSteps($Tab, $htmlClass = '', $open = true)
+{
+	global $langs;
+
+	if(!empty($Tab) && is_array($Tab))
+	{
+		$out = '<ul class="pr-sortable-list '.$htmlClass.'" >';
+		foreach ($Tab as $step)
+		{
+			$class = '';
+			if($open){
+				$class.= 'sortableListsClosed';
+			}
+			else $class.= 'sortableListsOpen';
+
+			$out.= '<li id="item_'.$step->id.'" class="pr-sortable-list__item '.$class.'" ';
+			$out.= ' data-id="'.$step->id.'" ';
+			$out.= ' data-ref="'.$step->ref.'"';
+			$out.= ' data-title="'.dol_escape_htmltag($step->label).'" ';
+			$out.= ' data-parent="proc_'.$step->fk_procedure.'"';
+			$out.= '>';
+			$out.= '<div class="pr-sortable-list__item__title  move">';
+			$out.= '<div class="pr-sortable-list__item__title__flex">';
+
+			$out.= '<div class="pr-sortable-list__item__title__col"  style="flex:1">';
+			$out.= dol_htmlentities($step->ref) . ' - ' . dol_htmlentities($step->label);
+			$out.= '</div>';
+
+			$out.= '<div class="pr-sortable-list__item__title__col"  style="flex:3">';
+			$out.= $step->description;
+			$out.= '</div>';
+
+			$out.= '<div class="pr-sortable-list__item__title__col -action clickable"  style="flex:1">';
+
+			$out.= '<a href="'.dol_buildpath('/processrules/processstep_card.php', 1).'?id='.$step->id.'&action=edit'.'" class="classfortooltip pr-sortable-list__item__title__button clickable -edit-btn"  title="' . $langs->trans("Edit") . '" data-id="'.$step->id.'">';
+			$out.= '<i class="fa fa-pencil clickable"></i>';
+			$out.= '</a>';
+
+//			$deleteUrl = $_SERVER ['PHP_SELF'].'?sesslevel_remove=1&amp;id='. $step->id.'&amp;action=sessionlevel_update&amp;sesslevel_remove=1';
+//
+//			$out.= '<a href="'.$deleteUrl.'" class="classfortooltip pr-sortable-list__item__title__button clickable -delete-btn"  title="' . $langs->trans("Delete") . '"  data-id="'.$step->id.'">';
+//			$out.= '<i class="fa fa-trash clickable"></i>';
+//			$out.= '</a>';
+			$out.= '</div>';
+
+			$out.= '</div>';
+			$out.= '</div>';
+//			$step->fetch_lines();
+//			$out.= _displaySortableStepsImages($step->lines, 'sortableProcedures', $open); // pour afficher les images des étapes dans la card
 			$out.= '</li>';
 		}
 		$out.= '</ul>';

@@ -293,7 +293,7 @@ else
             print '<div class="fichecenter">';
             $object->fetch_lines();
 			print '<div id="ajaxResults" ></div>';
-            print _displaySortableProcedures($object->lines, 'sortableLists', true);
+            print _displaySortableProcedures($object->lines, 'sortableLists', false);
 
 			print '<script src="'.dol_buildpath('processrules/js/jquery-sortable-lists.min.js',1).'" ></script>';
 			print '<link rel="stylesheet" href="'.dol_buildpath('/processrules/css/sortable.css', 1).'">';
@@ -312,7 +312,6 @@ else
 
                         $("#ajaxResults").html("");
 
-						console.log($('#sortableLists').sortableListsToHierarchy());
                         $.ajax({
                             url: "<?php echo dol_buildpath('/processrules/script/interface.php',1) ?>",
                             method: "POST",
@@ -351,10 +350,31 @@ else
 						},
 						isAllowed: function( cEl, hint, target )
 						{
-							if (target.length == 0) return true;
-							else {
+							//console.log(cEl.data('parent'), target.data('parent'), cEl.data('parent').substring(0, 4) == "proc" , target.data('parent') != undefined);
+							/*if (
+								(cEl.data('parent') == "meth_<?php //echo $object->id; ?>" &&  target.data('parent') != undefined)
+								|| (cEl.data('parent').substring(0, 4) == "proc" && target.data('parent') != undefined && target.data('parent').substring(0, 4) != "meth" )
+								)
+							{
 								target.find('#sortableListsHintWrapper').hide();
-							    return false;
+								target.find('#sortableListsHint').hide();
+                                return false;
+
+                            }
+							else {
+                                return true;
+                            }*/
+
+                            if (cEl.data('parent') == "meth_<?php echo $object->id; ?>" &&  target.data('parent') == undefined) return true;
+							else if (cEl.data('parent').substring(0, 4) == "proc"
+								&& target.data('parent') != undefined
+								&& target.data('parent').substring(0, 4) == "meth"
+								&& target.data('id') == cEl.data("parent").substring(5)) return true;
+                            else {
+                                console.log(cEl.data('parent'), target.data('parent'));
+                                target.find('#sortableListsHintWrapper').hide();
+                                target.find('#sortableListsHint').hide();
+                                return false;
                             }
 						},
 						opener: {

@@ -322,6 +322,7 @@ class ProcessRules extends SeedObject
 			return -1;
 		}
 	}
+
     /**
      * @return string
      */

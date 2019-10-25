@@ -321,6 +321,41 @@ class Procedure extends SeedObject
         return parent::delete($user);
     }
 
+	/**
+	 * get all ProcessSteps link to the procedure
+	 */
+	public function fetch_lines()
+	{
+		$this->lines = array();
+
+		$sql = "SELECT rowid FROM ".MAIN_DB_PREFIX."processstep WHERE fk_procedure = ".$this->id." ORDER BY rang ASC";
+		$resql = $this->db->query($sql);
+
+		if ($resql)
+		{
+			$num = $this->db->num_rows($resql);
+
+			if ($num)
+			{
+				dol_include_once('/processrules/class/processstep.class.php');
+
+				while ($obj = $this->db->fetch_object($resql))
+				{
+					$step = new ProcessStep($this->db);
+					$ret = $step->fetch($obj->rowid);
+					if ($ret > 0) $this->lines[] = $step;
+				}
+			}
+
+			return $num;
+		}
+		else
+		{
+			$this->error = $this->db->lasterror;
+			return -1;
+		}
+	}
+
     /**
      * @return string
      */
