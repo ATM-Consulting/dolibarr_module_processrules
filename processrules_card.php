@@ -314,7 +314,7 @@ else
 
 						console.log($('#sortableLists').sortableListsToHierarchy());
                         $.ajax({
-                            url: "<?php echo dol_buildpath('/processrules/scripts/interface.php?action=setProcedureRank',1) ?>",
+                            url: "<?php echo dol_buildpath('/processrules/script/interface.php',1) ?>",
                             method: "POST",
                             data: {
                             	put: 'reorderProcedures'

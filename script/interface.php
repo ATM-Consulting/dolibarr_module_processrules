@@ -33,10 +33,23 @@ function _reorderProcedures($items = array())
 		return $data;
 	}
 
+	$db->begin();
+
 	foreach ($items as $item)
 	{
+		$item['id'] = str_replace("item_", "", $item['id']);
 
+		$sql = "UPDATE ".MAIN_DB_PREFIX."procedure SET rang=".$item['order']." WHERE rowid=".$item['id'];
+		$resql = $db->query($sql);
+		if (!$resql)
+		{
+			$data['success'] = false;
+			$data['msg'] = "Error updating rank of item ".$item['id'];
+			break;
+		}
 	}
 
+	if ($data['success']) $db->commit();
+	else $db->rollback();
 	return $data;
 }
