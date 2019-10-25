@@ -81,7 +81,7 @@ $extralabels = $extrafields->fetch_name_optionals_label('procedure');
 // Load object
 include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php';  // Must be include, not include_once  // Must be include, not include_once. Include fetch and fetch_thirdparty but not fetch_optionals
 
-if ($id > 0 || ! empty($ref)) $upload_dir = $conf->processrules->multidir_output[$object->entity?$object->entity:$conf->entity] . "/processrules/procedure/" . dol_sanitizeFileName($object->id);
+if ($id > 0 || ! empty($ref)) $upload_dir = $conf->processrules->multidir_output[$object->entity?$object->entity:$conf->entity] . "/procedure/" . dol_sanitizeFileName($object->id);
 //if ($id > 0 || ! empty($ref)) $upload_dir = $conf->processrules->multidir_output[$object->entity?$object->entity:$conf->entity] . "/processrules/" . dol_sanitizeFileName($object->ref);
 
 
@@ -151,7 +151,7 @@ if ($object->id)
 	$permtoedit = 1;
 	$param = '&id=' . $object->id;
 
-	$relativepathwithnofile='processrules/procedure/' . dol_sanitizeFileName($object->id).'/';
+	$relativepathwithnofile='procedure/' . dol_sanitizeFileName($object->id).'/';
 
 	include_once DOL_DOCUMENT_ROOT . '/core/tpl/document_actions_post_headers.tpl.php';
 }

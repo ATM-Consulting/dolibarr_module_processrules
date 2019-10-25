@@ -305,11 +305,8 @@ else
             print '<div class="fichecenter">';
             $object->fetch_lines();
 
-
-
 			$titleBtn = dolGetButtonTitle($langs->trans('Newprocedure'), '', 'fa fa-plus-circle', dol_buildpath('/processrules/procedure_card.php', 2).'?action=create&fk_processrules='.$object->id.'&backtopage='.urlencode($thisUrl));
 			print load_fiche_titre($langs->trans('Procedures'), $titleBtn, 'title_generic.png');
-
 
 			print '<div id="ajaxResults" ></div>';
             print _displaySortableProcedures($object->lines, 'sortableLists', false);
@@ -345,16 +342,13 @@ else
                             success: function (data) {
                             	// Loading data
                             	console.log(data);
-                            	if(data.result > 0 ){
+                            	if(data.success == true ){
                             		// ok case
                             		$("#ajaxResults").html('<span class="badge badge-success">' + data.msg + '</span>');
 								}
-								else if(data.result < 0 ){
+								else {
 									// error case
 									$("#ajaxResults").html('<span class="badge badge-danger">' + data.errorMsg + '</span>');
-								}
-								else{
-									// nothing to do ?
 								}
 							},
 							// La fonction à appeler si la requête n\'a pas abouti
