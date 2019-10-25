@@ -111,7 +111,8 @@ if (empty($reshook))
             }
             else
             {
-                header('Location: '.dol_buildpath('/processrules/processstep_card.php', 1).'?id='.$object->id);
+				if (! empty($backtopage)) header("Location: ".$backtopage);
+				else header('Location: '.dol_buildpath('/processrules/processstep_card.php', 1).'?id='.$object->id);
                 exit;
             }
         case 'update_extras':
@@ -135,7 +136,8 @@ if (empty($reshook))
             if ($error) $action = 'edit_extras';
             else
             {
-                header('Location: '.dol_buildpath('/processrules/processstep_card.php', 1).'?id='.$object->id);
+				if (! empty($backtopage)) header("Location: ".$backtopage);
+				else header('Location: '.dol_buildpath('/processrules/processstep_card.php', 1).'?id='.$object->id);
                 exit;
             }
             break;
