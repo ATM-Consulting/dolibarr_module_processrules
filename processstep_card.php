@@ -35,7 +35,14 @@ $backtopage = GETPOST('backtopage', 'alpha');
 
 $object = new ProcessStep($db);
 
-if (!empty($id) || !empty($ref)) $object->fetch($id, true, $ref);
+if (!empty($id) || (!empty($ref) && empty($action))) {
+	$result = $object->fetch($id, 0, $ref);
+
+	if ($result <= 0 || empty($object->id)) {
+		print $langs->trans('NotFound');
+		exit;
+	}
+}
 
 $hookmanager->initHooks(array('processstepcard', 'globalcard'));
 
