@@ -19,6 +19,8 @@ processRulesExtrafieldPage=Attributs supplémentaires (Méthode)
 ProcessrulesExtraFields=Attributs supplémentaires (Méthode)
 ProcedureExtraFields=Attributs supplémentaires (Procédure)
 ProcessstepExtraFields=Attributs supplémentaires (Etapes)
+ProcedureExtrafieldPage=Attributs supplémentaires (Procédure)
+ProcessstepExtrafieldPage=Attributs supplémentaires (Etapes)
 
 # MENU
 TopMenuprocessRules=Méthodes
