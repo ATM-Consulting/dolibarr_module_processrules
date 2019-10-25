@@ -165,9 +165,9 @@ echo $r->render($sql, array(
 	)
 	,'eval'=>array(
 		'ref' => '_getObjectNomUrl(\'@rowid@\', \'@val@\')'
-		,'fk_processrules' => 'processRules::getStaticNomUrl(\'@val@\')'
+		,'fk_processrules' => 'ProcessRules::getStaticNomUrl(\'@val@\')'
 		,'fk_procedure_type' => 'DictionaryProcedureType::getStaticNomUrl(\'@val@\')'
-		,'status' => 'procedure::LibStatut(\'@val@\', 2)'
+		,'status' => 'Procedure::LibStatut(\'@val@\', 2)'
 //		,'fk_user' => '_getUserNomUrl(@val@)' // Si on a un fk_user dans notre requête
 	)
 ));
