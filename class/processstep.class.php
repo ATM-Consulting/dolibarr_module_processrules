@@ -153,7 +153,7 @@ class ProcessStep extends SeedObject
         ),
 
         'fk_procedure' => array(
-			'type' 		=> 'integer:procedure:procedure/class/procedure.class.php',
+			'type' 		=> 'integer:procedure:processrules/class/procedure.class.php',
 			'label'		=> 'procedure',
 			'visible' 	=> 1,
 			'notnull' 	=> 1,

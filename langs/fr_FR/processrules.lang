@@ -23,6 +23,7 @@ ProcessstepExtraFields=Attributs supplémentaires (Etapes)
 # MENU
 TopMenuprocessRules=Méthodes
 TopMenuprocedure=Procédures
+TopMenuprocessstep=Etapes
 
 # DICTIONARY
 DictionnaryProcedureType=Type de mode opératoire
@@ -44,6 +45,7 @@ processRulesStatusShortAccepted=Acceptée
 # LIST
 processRulesList=Liste des méthodes
 procedureList=Liste des procédures
+processstepList=Liste des étapes
 NoprocessRules=(vide)
 DateCre=Créé le
 
@@ -57,7 +59,7 @@ Newprocedure=Nouvelle procedure
 procedureCard=Fiche procédure
 Showprocedure=Voir la fiche procédure
 
-NewProcessSttep=Nouvelle étape
+NewProcessStep=Nouvelle étape
 ProcessStepCard=Fiche étape
 ShowProcessStep=Voir la fiche étape
 
@@ -73,15 +75,19 @@ processRulesDelete=Supprimer
 ConfirmEnableprocessRulesTitle=Confirmation d'activation
 ConfirmEnableprocessRulesBody=Souhaitez-vous vraiment activer cette fiche méthode %s ?
 ConfirmEnableprocedureBody=Souhaitez-vous vraiment activer cette fiche procédure %s ?
+ConfirmEnableprocessStepBody=Souhaitez-vous vraiment activer cette fiche étape %s ?
 
 ConfirmDisableprocessRulesTitle=Confirmation de désactivation
 ConfirmDisableprocessRulesBody=Souhaitez-vous vraiment désactiver cette fiche méthode %s ?
 ConfirmDisableprocedureBody=Souhaitez-vous vraiment désactiver cette fiche procédure %s ?
+ConfirmDisableprocessStepBody=Souhaitez-vous vraiment désactiver cette fiche étape %s ?
 
 ConfirmDeleteprocessRulesTitle=Confirmation de suppression
 ConfirmDeleteprocessRulesBody=Souhaitez-vous vraiment supprimer cette fiche méthode %s ?
 ConfirmDeleteprocedureBody=Souhaitez-vous vraiment supprimer cette fiche procédure %s ?
+ConfirmDeleteprocessStepBody=Souhaitez-vous vraiment supprimer cette fiche étape %s ?
 
 ConfirmCloneprocessRulesTitle=Confirmation de clonage
 ConfirmCloneprocessRulesBody=Souhaitez-vous cloner cette fiche méthode %s ?
 ConfirmCloneprocedureBody=Souhaitez-vous cloner cette fiche procédure %s ?
+ConfirmCloneprocessStepBody=Souhaitez-vous cloner cette fiche étape %s ?
