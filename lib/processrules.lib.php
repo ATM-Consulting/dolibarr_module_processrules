@@ -102,6 +102,11 @@ function processrules_prepare_head(ProcessRules $object)
 	$head[$h][2] = 'document';
 	$h++;
 
+	$head[$h][0] = dol_buildpath('/processrules/processrules_product_tab.php', 1).'?id='.$object->id;
+	$head[$h][1] = $langs->trans("Products");
+	$head[$h][2] = 'products';
+	$h++;
+
 	// Show more tabs from modules
     // Entries must be declared in modules descriptor with line
     // $this->tabs = array('entity:+tabname:Title:@processrules:/processrules/mypage.php?id=__ID__');   to add new tab
