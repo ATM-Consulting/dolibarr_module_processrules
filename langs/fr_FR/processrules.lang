@@ -16,6 +16,9 @@ ParamLabel=Nom du paramètre
 ParamDesc=Une description si besoin
 ParamHelp=Le contenu de l'aide
 processRulesExtrafieldPage=Attributs supplémentaires (Méthode)
+ProcessrulesExtraFields=Attributs supplémentaires (Méthode)
+ProcedureExtraFields=Attributs supplémentaires (Procédure)
+ProcessstepExtraFields=Attributs supplémentaires (Etapes)
 
 # MENU
 TopMenuprocessRules=Méthodes

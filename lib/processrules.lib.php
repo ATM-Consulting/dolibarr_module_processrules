@@ -38,10 +38,22 @@ function processrulesAdminPrepareHead()
     $head[$h][1] = $langs->trans("Parameters");
     $head[$h][2] = 'settings';
     $h++;
+
     $head[$h][0] = dol_buildpath("/processrules/admin/processrules_extrafields.php", 1);
-    $head[$h][1] = $langs->trans("ExtraFields");
-    $head[$h][2] = 'extrafields';
+    $head[$h][1] = $langs->trans("ProcessrulesExtraFields");
+    $head[$h][2] = 'processrulesExtrafields';
     $h++;
+
+	$head[$h][0] = dol_buildpath("/processrules/admin/procedure_extrafields.php", 1);
+	$head[$h][1] = $langs->trans("ProcedureExtraFields");
+	$head[$h][2] = 'procedureExtrafields';
+	$h++;
+
+	$head[$h][0] = dol_buildpath("/processrules/admin/processstep_extrafields.php", 1);
+	$head[$h][1] = $langs->trans("ProcessstepExtraFields");
+	$head[$h][2] = 'processstepExtrafields';
+	$h++;
+
     $head[$h][0] = dol_buildpath("/processrules/admin/processrules_about.php", 1);
     $head[$h][1] = $langs->trans("About");
     $head[$h][2] = 'about';
