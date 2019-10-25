@@ -16,11 +16,11 @@ $get = GETPOST('get');
 switch ($put)
 {
 	case 'reorderProcedures':
-		print json_encode(_reorderProcedures(GETPOST('items')));
+		print json_encode(_reorderProcedures(GETPOST('items'), GETPOST('id', 'int')));
 		break;
 }
 
-function _reorderProcedures($items = array())
+function _reorderProcedures($items = array(), $id = 0)
 {
 	global $db;
 
@@ -39,7 +39,7 @@ function _reorderProcedures($items = array())
 	{
 		$item['id'] = str_replace("item_", "", $item['id']);
 
-		$sql = "UPDATE ".MAIN_DB_PREFIX."procedure SET rang=".$item['order']." WHERE rowid=".$item['id'];
+		$sql = "UPDATE ".MAIN_DB_PREFIX."procedure SET rang=".$item['order']." WHERE rowid=".$item['id']." AND fk_processrules=".$id;
 		$resql = $db->query($sql);
 		if (!$resql)
 		{
