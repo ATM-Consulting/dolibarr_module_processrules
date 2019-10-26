@@ -50,11 +50,8 @@ class ProcessRules extends SeedObject
 
 	/** @var array $TStatus Array of translate key for each const */
 	public static $TStatus = array(
-//		self::STATUS_CANCELED => 'processRulesStatusShortCanceled'
 		self::STATUS_DRAFT => 'Disabled'
 		,self::STATUS_VALIDATED => 'Enabled'
-//		,self::STATUS_REFUSED => 'processRulesStatusShortRefused'
-//		,self::STATUS_ACCEPTED => 'processRulesStatusShortAccepted'
 	);
 
 	/** @var string $table_element Table name in SQL */
@@ -160,7 +157,7 @@ class ProcessRules extends SeedObject
             'position' => 50,
             'index' => 1,
             'help' => 'LinkToThirparty'
-        ),*/
+        ),
         'fk_product' => array(
 			'type' 		=> 'integer:Product:product/class/product.class.php',
 			'label'		=> 'Product',
@@ -170,7 +167,7 @@ class ProcessRules extends SeedObject
 			'position'	=> 50,
 			'index'		=> 1,
 			'help'		=> 'LinkToProduct'
-        ),
+        ),*/
 
         'description' => array(
             'type' => 'html', // or html for WYSWYG
