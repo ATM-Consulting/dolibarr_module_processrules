@@ -153,7 +153,7 @@ if ($object->id)
 	$param = '&id=' . $object->id;
 
 	$sortfield = 'position';
-	$sortorder = 'ACS';
+	$sortorder = 'ASC';
 
 	$relativepathwithnofile='processstep/' . dol_sanitizeFileName($object->id).'/';
 

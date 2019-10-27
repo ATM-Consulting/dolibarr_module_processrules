@@ -23,7 +23,7 @@ switch ($put)
 		print json_encode(_reorderSteps(GETPOST('items'), GETPOST('id', 'int')));
 
     case 'reorderDocumentFiles':
-		print json_encode(_reorderDocumentFiles(GETPOST('items')));
+		print json_encode(_reorderDocumentFiles(GETPOST('roworder')));
 		break;
 }
 
@@ -104,7 +104,7 @@ function _reorderSteps($items = array(), $id = 0)
 }
 
 
-function _reorderDocumentFiles($items = array())
+function _reorderDocumentFiles($items = '')
 {
 	global $db, $langs;
 
@@ -116,6 +116,8 @@ function _reorderDocumentFiles($items = array())
 		$data['msg'] = $langs->trans('NothingToUpdate');
 		return $data;
 	}
+
+	if (!is_array($items)) $items = explode(',', $items);
 
 	$db->begin();
 

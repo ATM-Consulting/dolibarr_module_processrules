@@ -38,7 +38,7 @@ $backtopage = GETPOST('backtopage', 'alpha');
 
 $object = new ProcessRules($db);
 
-if (!empty($id) || !empty($ref)) {
+if (!empty($id) || (!empty($ref) && empty($action))) {
 	$result = $object->fetch($id, 0, $ref);
 
 	if ($result <= 0 || empty($object->id)) {
