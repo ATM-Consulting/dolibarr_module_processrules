@@ -576,14 +576,36 @@ class ProcessStep extends SeedObject
 
 		$TImage = array();
 
-		$sql= 'SELECT rowid as id, src_object_type, src_object_id, filepath, filename  ';
-		$sql= ' FROM '.MAIN_DB_PREFIX.'ecm_files ';
-		$sql= ' WHERE src_object_type =  \''.$this->element.'\' AND src_object_id = '.$this->id;
-		$sql= ' ORDER BY position ASC';
+		$sql = 'SELECT ecm.rowid as id, ecm.src_object_type, ecm.src_object_id, ecm.filepath, ecm.filename';
+		$sql.= ' FROM '.MAIN_DB_PREFIX.'ecm_files ecm';
+		$sql.= ' WHERE ecm.src_object_type = \''.$this->element.'\' AND ecm.src_object_id = '.$this->id;
+		$sql.= ' ORDER BY ecm.position ASC';
 
 		$resql= $this->db->query($sql);
 		if ($resql){
-			$TImage = $this->db->fetch_object($resql);
+			if ($this->db->num_rows($resql)) {
+				while ($obj = $this->db->fetch_object($resql)) {
+					$obj->fk_step = $this->id;
+					$TImage[$obj->id] = $obj;
+				}
+			}
+			else
+			{
+				$sql = 'SELECT ecm.rowid as id, ecm.src_object_type, ecm.src_object_id, ecm.filepath, ecm.filename';
+				$sql.= ' FROM '.MAIN_DB_PREFIX.'ecm_files ecm';
+				$sql.= ' WHERE ecm.filepath = \'processrules/'.$this->element.'/'.$this->id.'\'';
+				$sql.= ' ORDER BY ecm.position ASC';
+
+				$resql= $this->db->query($sql);
+				if ($resql) {
+					if ($this->db->num_rows($resql)) {
+						while ($obj = $this->db->fetch_object($resql)) {
+							$obj->fk_step = $this->id;
+							$TImage[$obj->id] = $obj;
+						}
+					}
+				}
+			}
 		}
 
 		return $TImage;

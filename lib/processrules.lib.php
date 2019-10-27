@@ -161,7 +161,7 @@ function processstep_prepare_head(ProcessStep $object)
 	$h = 0;
 	$head = array();
 	$head[$h][0] = dol_buildpath('/processrules/processstep_card.php', 1).'?id='.$object->id;
-	$head[$h][1] = $langs->trans("procedureCard");
+	$head[$h][1] = $langs->trans("ProcessStepCard");
 	$head[$h][2] = 'card';
 	$h++;
 
@@ -325,6 +325,11 @@ function _displaySortableProcedures($Tab, $htmlId='', $open = true){
 			$out.= '<div class="pr-sortable-list__item__title__col -action clickable" >';
 
 			$backtopage = dol_buildpath('/processrules/processrules_card.php', 2).'?id='.$procedure->fk_processrules;
+
+			$out.= '<a href="'.dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$procedure->id.'&backtopage='.urlencode($backtopage).'" class="classfortooltip pr-sortable-list__item__title__button clickable -edit-btn"  title="' . $langs->trans("Edit") . '" data-id="'.$procedure->id.'">';
+			$out.= '<i class="fa fa-eye clickable"></i>';
+			$out.= '</a>';
+
 			$out.= '<a href="'.dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$procedure->id.'&action=edit&backtopage='.urlencode($backtopage).'" class="classfortooltip pr-sortable-list__item__title__button clickable -edit-btn"  title="' . $langs->trans("Edit") . '" data-id="'.$procedure->id.'">';
 			$out.= '<i class="fa fa-pencil clickable"></i>';
 			$out.= '</a>';
@@ -389,6 +394,10 @@ function _displaySortableSteps($Tab, $htmlClass = '', $open = true, $backtopage 
 
 			$out.= '<div class="pr-sortable-list__item__title__col -action clickable"  style="flex:1">';
 
+			$out.= '<a href="'.dol_buildpath('/processrules/processstep_card.php', 1).'?id='.$step->id.(!empty($backtopage) ? '&backtopage='.urlencode($backtopage) : '').'" class="classfortooltip pr-sortable-list__item__title__button clickable -edit-btn"  title="' . $langs->trans("Edit") . '" data-id="'.$step->id.'">';
+			$out.= '<i class="fa fa-eye clickable"></i>';
+			$out.= '</a>';
+
 			$out.= '<a href="'.dol_buildpath('/processrules/processstep_card.php', 1).'?id='.$step->id.'&action=edit'.(!empty($backtopage) ? '&backtopage='.urlencode($backtopage) : '').'" class="classfortooltip pr-sortable-list__item__title__button clickable -edit-btn"  title="' . $langs->trans("Edit") . '" data-id="'.$step->id.'">';
 			$out.= '<i class="fa fa-pencil clickable"></i>';
 			$out.= '</a>';
@@ -402,8 +411,8 @@ function _displaySortableSteps($Tab, $htmlClass = '', $open = true, $backtopage 
 
 			$out.= '</div>';
 			$out.= '</div>';
-			$step->fetch_images();
-			$out.= _displaySortableStepsImages($step->images, 'sortableimages', $open); // pour afficher les images des étapes dans la card
+			$TImage = $step->fetch_images();
+			$out.= _displaySortableStepsImages($TImage, 'sortableimages', $open); // pour afficher les images des étapes dans la card
 			$out.= '</li>';
 		}
 		$out.= '</ul>';
@@ -419,8 +428,8 @@ function _displaySortableStepsImages($Tab, $htmlClass = '', $open = true, $backt
 
 	if(!empty($Tab) && is_array($Tab))
 	{
-		$out = '<ul class="pr-sortable-list '.$htmlClass.'" >';
-		foreach ($Tab as $step)
+		$out = '<ul class="pr-sortable-list '.$htmlClass.' clickable" >';
+		foreach ($Tab as $img)
 		{
 			$class = '';
 			if($open){
@@ -428,22 +437,22 @@ function _displaySortableStepsImages($Tab, $htmlClass = '', $open = true, $backt
 			}
 			else $class.= 'sortableListsOpen';
 
-			$out.= '<li id="item_'.$step->id.'" class="pr-sortable-list__item '.$class.'" ';
-			$out.= ' data-id="'.$step->id.'" ';
-			$out.= ' data-ref="'.$step->ref.'"';
-			$out.= ' data-title="'.dol_escape_htmltag($step->label).'" ';
-			$out.= ' data-parent="step_'.$step->fk_procedure.'"';
+			$out.= '<li id="item_'.$img->id.'" class="pr-sortable-list__item'.$class.'" ';
+			$out.= ' data-id="'.$img->id.'" ';
+			$out.= ' data-path="'.$img->filepath.'"';
+			$out.= ' data-filename="'.dol_escape_htmltag($img->filename).'" ';
+			$out.= ' data-parent="step_'.$img->fk_step.'"';
 			$out.= '>';
 			$out.= '<div class="pr-sortable-list__item__title  move">';
 			$out.= '<div class="pr-sortable-list__item__title__flex">';
 
 			$out.= '<div class="pr-sortable-list__item__title__col" >';
-			$out.= dol_htmlentities($step->ref) . ' - ' . dol_htmlentities($step->label);
+			$out.= dol_htmlentities($img->filepath) . ' - ' . dol_htmlentities($img->filename);
 			$out.= '</div>';
 
-			$out.= '<div class="pr-sortable-list__item__title__col">';
-			$out.= $step->description;
-			$out.= '</div>';
+//			$out.= '<div class="pr-sortable-list__item__title__col">';
+//			$out.= $img->description;
+//			$out.= '</div>';
 
 			$out.= '<div class="pr-sortable-list__item__title__col -action clickable">';
 
