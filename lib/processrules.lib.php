@@ -428,7 +428,7 @@ function _displaySortableStepsImages($Tab, $htmlClass = '', $open = true, $backt
 
 	if(!empty($Tab) && is_array($Tab))
 	{
-		$out = '<ul class="pr-sortable-list '.$htmlClass.' clickable" >';
+		$out = '<div class="pr-sortable-list '.$htmlClass.' clickable" >';
 		foreach ($Tab as $img)
 		{
 			$class = '';
@@ -437,7 +437,7 @@ function _displaySortableStepsImages($Tab, $htmlClass = '', $open = true, $backt
 			}
 			else $class.= 'sortableListsOpen';
 
-			$out.= '<li id="item_'.$img->id.'" class="pr-sortable-list__item'.$class.'" ';
+			$out.= '<div id="item_'.$img->id.'" class="pr-sortable-list__item'.$class.'" ';
 			$out.= ' data-id="'.$img->id.'" ';
 			$out.= ' data-path="'.$img->filepath.'"';
 			$out.= ' data-filename="'.dol_escape_htmltag($img->filename).'" ';
@@ -466,9 +466,9 @@ function _displaySortableStepsImages($Tab, $htmlClass = '', $open = true, $backt
 			$out.= '</div>';
 			$out.= '</div>';
 
-			$out.= '</li>';
+			$out.= '</div>';
 		}
-		$out.= '</ul>';
+		$out.= '</div>';
 		return $out;
 	}
 	else return '';
