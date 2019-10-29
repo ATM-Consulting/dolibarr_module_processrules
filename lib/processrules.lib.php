@@ -424,57 +424,48 @@ function _displaySortableSteps($Tab, $htmlClass = '', $open = true, $backtopage 
 
 function _displaySortableStepsImages($Tab, $htmlClass = '', $open = true, $backtopage = '')
 {
-	global $langs;
+	global $langs, $conf;
 
 	if(!empty($Tab) && is_array($Tab))
 	{
-		$out = '<div class="pr-sortable-list '.$htmlClass.' clickable" >';
+		$out = '<div class="'.$htmlClass.' clickable" >';
+		$out.= '<div class="pr-sortable-list__item__title  move">';
+		$out.= '<div class="pr-sortable-list__item__title__flex">';
 		foreach ($Tab as $img)
 		{
-			$class = '';
-			if($open){
-				$class.= 'sortableListsClosed';
-			}
-			else $class.= 'sortableListsOpen';
+//			$class = '';
+//			if($open){
+//				$class.= 'sortableListsClosed';
+//			}
+//			else $class.= 'sortableListsOpen';
 
-			$out.= '<div id="item_'.$img->id.'" class="pr-sortable-list__item'.$class.'" ';
+			$out.= '<div id="item_'.$img->id.'" class="pr-sortable-list__item" ';
 			$out.= ' data-id="'.$img->id.'" ';
 			$out.= ' data-path="'.$img->filepath.'"';
 			$out.= ' data-filename="'.dol_escape_htmltag($img->filename).'" ';
 			$out.= ' data-parent="step_'.$img->fk_step.'"';
 			$out.= '>';
-			$out.= '<div class="pr-sortable-list__item__title  move">';
-			$out.= '<div class="pr-sortable-list__item__title__flex">';
+//			$out.= '<div class="pr-sortable-list__item__title  move">';
+//			$out.= '<div class="pr-sortable-list__item__title__flex">';
 
-			$out.= '<div class="pr-sortable-list__item__title__col clickable" >';
-			$out.= dol_htmlentities($img->filepath) . ' - ' . dol_htmlentities($img->filename);
+//			$out.= '<div class="pr-sortable-list__item__title__col clickable" >';
+//			$out.= dol_htmlentities($img->filepath) . ' - ' . dol_htmlentities($img->filename);
 
 			$file = urlencode('processstep/'.$img->fk_step.'/'.$img->filename);
-			$thumb = urlencode('processstep/'.$img->fk_step.'/thumb/'.substr($img->filename, 0, strrpos('.',$img->filename)).'_mini'.substr($img->filename, strrpos('.',$img->filename)));
-			$doclink = dol_buildpath('document.php', 1).'?modulepart=processrules&attachment=0&file='.$file;
-			$viewlink = dol_buildpath('viewimage.php', 1).'?modulepart=processrules&file='.$thumb;
-			var_dump($viewlink);
-			$out.= '<a href="'.$doclink.'&entity=1" class="documentpreview" target="_blank" mime="image/png"><img class="photo" height="72" src="/client/bcn/dolibarr/htdocs/viewimage.php?modulepart=processrules&amp;entity=1&amp;file=processstep%2F1%2Fthumbs%2FCapture+d%E2%80%99ecran+de+2019-09-18+06-41-27_mini.png" title=""></a>';
-			$out.= '</div>';
+			$thumb = urlencode('processstep/'.$img->fk_step.'/thumbs/'.substr($img->filename, 0, strrpos($img->filename,'.')).'_mini'.substr($img->filename, strrpos($img->filename,'.')));
+			$doclink = dol_buildpath('document.php', 1).'?modulepart=processrules&attachment=0&file='.$file.'&entity='.$conf->entity;
+			$viewlink = dol_buildpath('viewimage.php', 1).'?modulepart=processrules&file='.$thumb.'&entity='.$conf->entity;
 
-//			$out.= '<div class="pr-sortable-list__item__title__col">';
-//			$out.= $img->description;
+			$out.= '<a href="'.$doclink.'" class="pr-sortable-list__item__images documentpreview clickable" target="_blank" mime="image/png"><img class="clickable" src="'.$viewlink.'" title=""></a>';
 //			$out.= '</div>';
 
-//			$out.= '<div class="pr-sortable-list__item__title__col -action clickable">';
-//
-//			$out.= '<a href="'.dol_buildpath('/processrules/processstep_card.php', 1).'?id='.$step->id.'&action=edit'.(!empty($backtopage) ? '&backtopage='.urlencode($backtopage) : '').'" class="classfortooltip pr-sortable-list__item__title__button clickable -edit-btn"  title="' . $langs->trans("Edit") . '" data-id="'.$step->id.'">';
-//			$out.= '<i class="fa fa-pencil clickable"></i>';
-//			$out.= '</a>';
-//
-//
 //			$out.= '</div>';
-
-			$out.= '</div>';
-			$out.= '</div>';
+//			$out.= '</div>';
 
 			$out.= '</div>';
 		}
+		$out.= '</div>';
+		$out.= '</div>';
 		$out.= '</div>';
 		return $out;
 	}

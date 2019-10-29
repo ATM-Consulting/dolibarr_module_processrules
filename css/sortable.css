@@ -59,7 +59,19 @@ li.pr-sortable-list__item .pr-sortable-list__item__title , #sortableListsBase li
 	font-weight: bold;
 }
 
-
 .pr-sortable-list__item__title__button{
 	margin-left: 15px;
+}
+
+.pr-sortable-list__item__images{
+	max-height: 120px;
+	margin-right: 10px;
+	max-width: 150px;
+	display: inline-block;
+	box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.70);
+}
+
+.pr-sortable-list__item__images img{
+	max-height: 100%;
+	max-width: 100%;
 }
