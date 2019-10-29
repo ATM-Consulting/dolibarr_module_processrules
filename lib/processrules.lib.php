@@ -446,22 +446,29 @@ function _displaySortableStepsImages($Tab, $htmlClass = '', $open = true, $backt
 			$out.= '<div class="pr-sortable-list__item__title  move">';
 			$out.= '<div class="pr-sortable-list__item__title__flex">';
 
-			$out.= '<div class="pr-sortable-list__item__title__col" >';
+			$out.= '<div class="pr-sortable-list__item__title__col clickable" >';
 			$out.= dol_htmlentities($img->filepath) . ' - ' . dol_htmlentities($img->filename);
+
+			$file = urlencode('processstep/'.$img->fk_step.'/'.$img->filename);
+			$thumb = urlencode('processstep/'.$img->fk_step.'/thumb/'.substr($img->filename, 0, strrpos('.',$img->filename)).'_mini'.substr($img->filename, strrpos('.',$img->filename)));
+			$doclink = dol_buildpath('document.php', 1).'?modulepart=processrules&attachment=0&file='.$file;
+			$viewlink = dol_buildpath('viewimage.php', 1).'?modulepart=processrules&file='.$thumb;
+			var_dump($viewlink);
+			$out.= '<a href="'.$doclink.'&entity=1" class="documentpreview" target="_blank" mime="image/png"><img class="photo" height="72" src="/client/bcn/dolibarr/htdocs/viewimage.php?modulepart=processrules&amp;entity=1&amp;file=processstep%2F1%2Fthumbs%2FCapture+d%E2%80%99ecran+de+2019-09-18+06-41-27_mini.png" title=""></a>';
 			$out.= '</div>';
 
 //			$out.= '<div class="pr-sortable-list__item__title__col">';
 //			$out.= $img->description;
 //			$out.= '</div>';
 
-			$out.= '<div class="pr-sortable-list__item__title__col -action clickable">';
-
-			$out.= '<a href="'.dol_buildpath('/processrules/processstep_card.php', 1).'?id='.$step->id.'&action=edit'.(!empty($backtopage) ? '&backtopage='.urlencode($backtopage) : '').'" class="classfortooltip pr-sortable-list__item__title__button clickable -edit-btn"  title="' . $langs->trans("Edit") . '" data-id="'.$step->id.'">';
-			$out.= '<i class="fa fa-pencil clickable"></i>';
-			$out.= '</a>';
-
-
-			$out.= '</div>';
+//			$out.= '<div class="pr-sortable-list__item__title__col -action clickable">';
+//
+//			$out.= '<a href="'.dol_buildpath('/processrules/processstep_card.php', 1).'?id='.$step->id.'&action=edit'.(!empty($backtopage) ? '&backtopage='.urlencode($backtopage) : '').'" class="classfortooltip pr-sortable-list__item__title__button clickable -edit-btn"  title="' . $langs->trans("Edit") . '" data-id="'.$step->id.'">';
+//			$out.= '<i class="fa fa-pencil clickable"></i>';
+//			$out.= '</a>';
+//
+//
+//			$out.= '</div>';
 
 			$out.= '</div>';
 			$out.= '</div>';
