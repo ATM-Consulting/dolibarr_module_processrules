@@ -29,6 +29,7 @@ $massaction = GETPOST('massaction', 'alpha');
 $confirmmassaction = GETPOST('confirmmassaction', 'alpha');
 $toselect = GETPOST('toselect', 'array');
 $search_product = GETPOST('Listview_processrules_search_fk_product');
+$productid = GETPOST('productid', 'int');
 
 $object = new ProcessRules($db);
 
@@ -70,6 +71,48 @@ if (empty($reshook))
 
 llxHeader('', $langs->trans('processRulesList'), '', '');
 
+
+
+if(!empty($productid)){
+
+	require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+
+	$product = new Product($db);
+	$res = $product->fetch($productid);
+
+	if($res>0)
+	{
+		/*
+		* Affichage onglets
+		*/
+		$head = product_prepare_head($product);
+		$titre=$langs->trans("CardProduct".$product->type);
+		$picto=($product->type==Product::TYPE_SERVICE?'service':'product');
+
+		dol_fiche_head($head, 'productmethodelist', $titre, -1, $picto);
+
+		$linkback = '<a href="'.DOL_URL_ROOT.'/product/list.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
+		$product->next_prev_filter=" fk_product_type = ".$product->type;
+
+		$shownav = 1;
+		if ($user->societe_id && ! in_array('product', explode(',', $conf->global->MAIN_MODULES_FOR_EXTERNAL))) $shownav=0;
+
+		dol_banner_tab($product, 'ref', $linkback, $shownav, 'ref');
+
+		dol_fiche_end(-1);
+
+
+	}
+}
+
+
+
+
+
+
+
+
 //$type = GETPOST('type');
 //if (empty($user->rights->processrules->all->read)) $type = 'mine';
 
@@ -96,6 +139,10 @@ $sql.= ' FROM '.MAIN_DB_PREFIX.$object->table_element.' t ';
 if (!empty($object->isextrafieldmanaged))
 {
     $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.$object->table_element.'_extrafields et ON (et.fk_object = t.rowid)';
+}
+
+if(!empty($productid)) {
+	$sql .= ' JOIN ' . MAIN_DB_PREFIX . 'element_element elel ON (elel.targettype = \'' . $db->escape($object->element) . '\' AND elel.fk_target = t.rowid AND elel.sourcetype = \'product\' AND  elel.fk_source = '.intval($productid).' )';
 }
 
 $sql.= ' WHERE 1=1';
@@ -151,7 +198,6 @@ echo $r->render($sql, array(
 	)
 	,'title'=>array(
 		'ref' => $langs->trans('Ref.')
-		,'fk_product' => $langs->trans('Product')
 		,'label' => $langs->trans('Label')
 		,'date_creation' => $langs->trans('DateCre')
 		,'status'	=> $langs->trans('Status')

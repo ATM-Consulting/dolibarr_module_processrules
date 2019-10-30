@@ -54,6 +54,9 @@ NoprocessRules=(vide)
 DateCre=Créé le
 
 # Product tab
+Productmethodelist=Méthodes
+
+# Product tab
 ProductsListLinkedToThisProcessrules=Liste des produits/services utilisant cette méthode
 LinkProcessRuleToAProduct=Lier un produit à cette méthode
 FormProductMissing=Produit manquant ou invalide

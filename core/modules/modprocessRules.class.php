@@ -137,7 +137,9 @@ class modprocessRules extends DolibarrModules
 		// 'stock'            to add a tab in stock view
 		// 'thirdparty'       to add a tab in third party view
 		// 'user'             to add a tab in user view
-        $this->tabs = array();
+        $this->tabs = array(
+			'product:+productmethodelist:Productmethodelist:processrules@processrules:$user->rights->processrules->read:/processrules/processrules_list.php?productid=__ID__'
+		);
 
         // Dictionaries
 	    if (! isset($conf->processrules->enabled))
