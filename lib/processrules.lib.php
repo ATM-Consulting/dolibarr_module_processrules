@@ -326,7 +326,7 @@ function _displaySortableProcedures($Tab, $htmlId='', $open = true){
 
 			$backtopage = dol_buildpath('/processrules/processrules_card.php', 2).'?id='.$procedure->fk_processrules;
 
-			$out.= '<a href="'.dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$procedure->id.'&backtopage='.urlencode($backtopage).'" class="classfortooltip pr-sortable-list__item__title__button clickable -edit-btn"  title="' . $langs->trans("Edit") . '" data-id="'.$procedure->id.'">';
+			$out.= '<a href="'.dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$procedure->id.'&backtopage='.urlencode($backtopage).'" class="classfortooltip pr-sortable-list__item__title__button clickable -view-btn"  title="' . $langs->trans("Showprocedure") . '" data-id="'.$procedure->id.'">';
 			$out.= '<i class="fa fa-eye clickable"></i>';
 			$out.= '</a>';
 
@@ -394,7 +394,7 @@ function _displaySortableSteps($Tab, $htmlClass = '', $open = true, $backtopage 
 
 			$out.= '<div class="pr-sortable-list__item__title__col -action clickable"  style="flex:1">';
 
-			$out.= '<a href="'.dol_buildpath('/processrules/processstep_card.php', 1).'?id='.$step->id.(!empty($backtopage) ? '&backtopage='.urlencode($backtopage) : '').'" class="classfortooltip pr-sortable-list__item__title__button clickable -edit-btn"  title="' . $langs->trans("Edit") . '" data-id="'.$step->id.'">';
+			$out.= '<a href="'.dol_buildpath('/processrules/processstep_card.php', 1).'?id='.$step->id.(!empty($backtopage) ? '&backtopage='.urlencode($backtopage) : '').'" class="classfortooltip pr-sortable-list__item__title__button clickable -view-btn"  title="' . $langs->trans("ShowProcessStep") . '" data-id="'.$step->id.'">';
 			$out.= '<i class="fa fa-eye clickable"></i>';
 			$out.= '</a>';
 
