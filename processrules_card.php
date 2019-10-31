@@ -363,21 +363,6 @@ else
 						},
 						isAllowed: function( cEl, hint, target )
 						{
-							//console.log(cEl.data('parent'), target.data('parent'), cEl.data('parent').substring(0, 4) == "proc" , target.data('parent') != undefined);
-							/*if (
-								(cEl.data('parent') == "meth_<?php //echo $object->id; ?>" &&  target.data('parent') != undefined)
-								|| (cEl.data('parent').substring(0, 4) == "proc" && target.data('parent') != undefined && target.data('parent').substring(0, 4) != "meth" )
-								)
-							{
-								target.find('#sortableListsHintWrapper').hide();
-								target.find('#sortableListsHint').hide();
-                                return false;
-
-                            }
-							else {
-                                return true;
-                            }*/
-
                             if (cEl.data('parent') == "meth_<?php echo $object->id; ?>" &&  target.data('parent') == undefined) return true;
 							else if (cEl.data('parent').substring(0, 4) == "proc"
 								&& target.data('parent') != undefined
