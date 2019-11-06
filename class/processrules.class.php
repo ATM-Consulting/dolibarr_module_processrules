@@ -281,6 +281,12 @@ class ProcessRules extends SeedObject
     {
         $this->deleteObjectLinked();
 
+        $this->fetch_lines();
+        if (!empty($this->lines))
+		{
+			foreach ($this->lines as $line) $line->delete($user);
+		}
+
         unset($this->fk_element); // avoid conflict with standard Dolibarr comportment
         return parent::delete($user);
     }
