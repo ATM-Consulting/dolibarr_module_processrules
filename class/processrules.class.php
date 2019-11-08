@@ -272,6 +272,31 @@ class ProcessRules extends SeedObject
         $this->ref = 'Copy of '.$this->ref;
     }
 
+	/**
+	 * @param User $user object
+	 * @return int
+	 */
+	public function cloneObject($user)
+	{
+		$this->fetch_lines();
+
+		$this->clear();
+		$this->status = 0;
+
+		$newID = $this->create($user);
+
+		if ($newID > 0)
+		{
+			foreach ($this->lines as $line)
+			{
+				$line->fk_processrules = $newID;
+
+				$line->cloneObject($user);
+			}
+		}
+
+		return $newID;
+	}
 
     /**
      * @param User $user User object

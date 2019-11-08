@@ -328,6 +328,32 @@ class Procedure extends SeedObject
     }
 
 	/**
+	 * @param User $user object
+	 * @return int
+	 */
+	public function cloneObject($user)
+	{
+		$this->fetch_lines();
+
+		$this->clear();
+		$this->status = 0;
+
+		$newID = $this->create($user);
+
+		if ($newID > 0)
+		{
+			foreach ($this->lines as $line)
+			{
+				$line->fk_procedure = $newID;
+
+				$line->cloneObject($user);
+			}
+		}
+
+		return $newID;
+	}
+
+	/**
 	 * get all ProcessSteps link to the procedure
 	 */
 	public function fetch_lines()

@@ -354,7 +354,7 @@ function _displaySortableProcedures($Tab, $htmlId='', $open = true, $editable = 
 
 			$out.= '</div>';
 			$procedure->fetch_lines();
-			$out.= _displaySortableSteps($procedure->lines, 'sortableProcedures', $open, $backtopage, $editable); // pour afficher les étapes des procédures dans la card
+			$out.= _displaySortableSteps($procedure->lines, 'sortableProcedures steps', $open, $backtopage, $editable); // pour afficher les étapes des procédures dans la card
 			$out.= '</li>';
 		}
 		$out.= '</ul>';
