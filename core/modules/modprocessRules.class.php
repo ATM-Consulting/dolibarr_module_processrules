@@ -304,7 +304,7 @@ class modprocessRules extends DolibarrModules
 		$r++;
 
 		// procedures
-		$this->menu[$r]=array(	'fk_menu'=>'fk_mainmenu=products',		    // Use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
+		/*$this->menu[$r]=array(	'fk_menu'=>'fk_mainmenu=products',		    // Use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
 			'type'=>'left',			                // This is a Left menu entry
 			'titre'=>'TopMenuprocedure',
 			'mainmenu'=>'products',
@@ -395,7 +395,7 @@ class modprocessRules extends DolibarrModules
 			'target'=>'',
 			'user'=>0
 		);				                // 0=Menu for internal users, 1=external users, 2=both
-		$r++;
+		$r++;*/
 
 		// Add here entries to declare new menus
 		//
