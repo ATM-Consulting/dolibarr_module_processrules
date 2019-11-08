@@ -600,6 +600,14 @@ class ProcessStep extends SeedObject
 				if ($resql) {
 					if ($this->db->num_rows($resql)) {
 						while ($obj = $this->db->fetch_object($resql)) {
+							// fix ecm files
+							$upd = "UPDATE ".MAIN_DB_PREFIX."ecm_files";
+							$upd.= " SET src_object_type=".$this->element;
+							$upd.= " , src_object_id=".$this->id;
+							$upd.= " WHERE rowid = ".$obj->id;
+
+							$res = $this->db->query($upd);
+
 							$obj->fk_step = $this->id;
 							$TImage[$obj->id] = $obj;
 						}
