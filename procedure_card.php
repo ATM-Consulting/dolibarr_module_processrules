@@ -333,7 +333,7 @@ else
 			print load_fiche_titre($langs->trans('ProcessSteps'), $titleBtn, 'title_generic.png');
 
 			print '<div id="ajaxResults" ></div>';
-			print _displaySortableSteps($object->lines, 'sortableLists steps', false, $thisUrl, $method->status < 1);
+			print _displaySortableSteps($object->lines, 'sortableLists', false, $thisUrl, $method->status < 1);
 
 			print '<script src="'.dol_buildpath('processrules/js/jquery-sortable-lists.min.js',1).'" ></script>';
 			print '<link rel="stylesheet" href="'.dol_buildpath('/processrules/css/sortable.css', 1).'">';
