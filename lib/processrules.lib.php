@@ -294,7 +294,7 @@ function getFormConfirmProcessStep($form, $object, $action)
     return $formconfirm;
 }
 
-function _displaySortableProcedures($Tab, $htmlId='', $open = true){
+function _displaySortableProcedures($Tab, $htmlId='', $open = true, $editable = true){
 	global $langs;
 
 	if(!empty($Tab) && is_array($Tab))
@@ -326,13 +326,16 @@ function _displaySortableProcedures($Tab, $htmlId='', $open = true){
 
 			$backtopage = dol_buildpath('/processrules/processrules_card.php', 2).'?id='.$procedure->fk_processrules;
 
-			$out.= '<a href="'.dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$procedure->id.'&backtopage='.urlencode($backtopage).'" class="classfortooltip pr-sortable-list__item__title__button clickable -view-btn"  title="' . $langs->trans("Showprocedure") . '" data-id="'.$procedure->id.'">';
-			$out.= '<i class="fa fa-eye clickable"></i>';
-			$out.= '</a>';
+			if ($editable)
+			{
+				$out.= '<a href="'.dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$procedure->id.'&backtopage='.urlencode($backtopage).'" class="classfortooltip pr-sortable-list__item__title__button clickable -view-btn"  title="' . $langs->trans("Showprocedure") . '" data-id="'.$procedure->id.'">';
+				$out.= '<i class="fa fa-eye clickable"></i>';
+				$out.= '</a>';
 
-			$out.= '<a href="'.dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$procedure->id.'&action=edit&backtopage='.urlencode($backtopage).'" class="classfortooltip pr-sortable-list__item__title__button clickable -edit-btn"  title="' . $langs->trans("Edit") . '" data-id="'.$procedure->id.'">';
-			$out.= '<i class="fa fa-pencil clickable"></i>';
-			$out.= '</a>';
+				$out.= '<a href="'.dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$procedure->id.'&action=edit&backtopage='.urlencode($backtopage).'" class="classfortooltip pr-sortable-list__item__title__button clickable -edit-btn"  title="' . $langs->trans("Edit") . '" data-id="'.$procedure->id.'">';
+				$out.= '<i class="fa fa-pencil clickable"></i>';
+				$out.= '</a>';
+			}
 
 //			$deleteUrl = $_SERVER ['PHP_SELF'].'?sesslevel_remove=1&amp;id='. $procedure->id.'&amp;action=sessionlevel_update&amp;sesslevel_remove=1';
 //
@@ -351,7 +354,7 @@ function _displaySortableProcedures($Tab, $htmlId='', $open = true){
 
 			$out.= '</div>';
 			$procedure->fetch_lines();
-			$out.= _displaySortableSteps($procedure->lines, 'sortableProcedures', $open, $backtopage); // pour afficher les étapes des procédures dans la card
+			$out.= _displaySortableSteps($procedure->lines, 'sortableProcedures', $open, $backtopage, $editable); // pour afficher les étapes des procédures dans la card
 			$out.= '</li>';
 		}
 		$out.= '</ul>';
@@ -360,7 +363,7 @@ function _displaySortableProcedures($Tab, $htmlId='', $open = true){
 	else return '';
 }
 
-function _displaySortableSteps($Tab, $htmlClass = '', $open = true, $backtopage = '')
+function _displaySortableSteps($Tab, $htmlClass = '', $open = true, $backtopage = '', $editable = true)
 {
 	global $langs;
 
@@ -394,13 +397,16 @@ function _displaySortableSteps($Tab, $htmlClass = '', $open = true, $backtopage 
 
 			$out.= '<div class="pr-sortable-list__item__title__col -action clickable"  style="flex:1">';
 
-			$out.= '<a href="'.dol_buildpath('/processrules/processstep_card.php', 1).'?id='.$step->id.(!empty($backtopage) ? '&backtopage='.urlencode($backtopage) : '').'" class="classfortooltip pr-sortable-list__item__title__button clickable -view-btn"  title="' . $langs->trans("ShowProcessStep") . '" data-id="'.$step->id.'">';
-			$out.= '<i class="fa fa-eye clickable"></i>';
-			$out.= '</a>';
+			if ($editable)
+			{
+				$out.= '<a href="'.dol_buildpath('/processrules/processstep_card.php', 1).'?id='.$step->id.(!empty($backtopage) ? '&backtopage='.urlencode($backtopage) : '').'" class="classfortooltip pr-sortable-list__item__title__button clickable -view-btn"  title="' . $langs->trans("ShowProcessStep") . '" data-id="'.$step->id.'">';
+				$out.= '<i class="fa fa-eye clickable"></i>';
+				$out.= '</a>';
 
-			$out.= '<a href="'.dol_buildpath('/processrules/processstep_card.php', 1).'?id='.$step->id.'&action=edit'.(!empty($backtopage) ? '&backtopage='.urlencode($backtopage) : '').'" class="classfortooltip pr-sortable-list__item__title__button clickable -edit-btn"  title="' . $langs->trans("Edit") . '" data-id="'.$step->id.'">';
-			$out.= '<i class="fa fa-pencil clickable"></i>';
-			$out.= '</a>';
+				$out.= '<a href="'.dol_buildpath('/processrules/processstep_card.php', 1).'?id='.$step->id.'&action=edit'.(!empty($backtopage) ? '&backtopage='.urlencode($backtopage) : '').'" class="classfortooltip pr-sortable-list__item__title__button clickable -edit-btn"  title="' . $langs->trans("Edit") . '" data-id="'.$step->id.'">';
+				$out.= '<i class="fa fa-pencil clickable"></i>';
+				$out.= '</a>';
+			}
 
 //			$deleteUrl = $_SERVER ['PHP_SELF'].'?sesslevel_remove=1&amp;id='. $step->id.'&amp;action=sessionlevel_update&amp;sesslevel_remove=1';
 //

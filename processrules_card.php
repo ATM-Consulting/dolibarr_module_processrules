@@ -305,100 +305,100 @@ else
             print '<div class="fichecenter">';
             $object->fetch_lines();
 
-			$titleBtn = dolGetButtonTitle($langs->trans('Newprocedure'), '', 'fa fa-plus-circle', dol_buildpath('/processrules/procedure_card.php', 2).'?action=create&fk_processrules='.$object->id.'&backtopage='.urlencode($thisUrl));
+			$titleBtn = '';
+			if ($object->status < 1 )
+				$titleBtn = dolGetButtonTitle($langs->trans('Newprocedure'), '', 'fa fa-plus-circle', dol_buildpath('/processrules/procedure_card.php', 2).'?action=create&fk_processrules='.$object->id.'&backtopage='.urlencode($thisUrl));
 			print load_fiche_titre($langs->trans('Procedures'), $titleBtn, 'title_generic.png');
 
 			print '<div id="ajaxResults" ></div>';
-            print _displaySortableProcedures($object->lines, 'sortableLists', false);
+            print _displaySortableProcedures($object->lines, 'sortableLists', false, $object->status < 1);
 
 			print '<script src="'.dol_buildpath('processrules/js/jquery-sortable-lists.min.js',1).'" ></script>';
 			print '<link rel="stylesheet" href="'.dol_buildpath('/processrules/css/sortable.css', 1).'">';
 			print '</div>';// Fin fichecenter
 
-			?>
+			if ($object->status < 1) {
+				?>
 
-			<script type="text/javascript">
-				$(function(){
-                    var options = {
-                        insertZone: 10, // This property defines the distance from the left, which determines if item will be inserted outside(before/after) or inside of another item.
-                        placeholderClass: 'pr-sortable-list__item--placeholder',
-                        hintClass: 'pr-sortable-list__item--hint',
-                        onChange: function( cEl )
-                        {
+				<script type="text/javascript">
+                    $(function () {
+                        var options = {
+                            insertZone: 10, // This property defines the distance from the left, which determines if item will be inserted outside(before/after) or inside of another item.
+                            placeholderClass: 'pr-sortable-list__item--placeholder',
+                            hintClass: 'pr-sortable-list__item--hint',
+                            onChange: function (cEl) {
 
-                        $("#ajaxResults").html("");
+                                $("#ajaxResults").html("");
 
-                        $.ajax({
-                            url: "<?php echo dol_buildpath('/processrules/script/interface.php',1) ?>",
-                            method: "POST",
-                            data: {
-                            	put: 'reorderProcedures'
-                            	,id: '<?php echo $object->id; ?>'
-								,items : $('#sortableLists').sortableListsToHierarchy()
-							},
-                        	dataType: "json",
+                                $.ajax({
+                                    url: "<?php echo dol_buildpath('/processrules/script/interface.php', 1) ?>",
+                                    method: "POST",
+                                    data: {
+                                        put: 'reorderProcedures'
+                                        , id: '<?php echo $object->id; ?>'
+                                        , items: $('#sortableLists').sortableListsToHierarchy()
+                                    },
+                                    dataType: "json",
 
-                            // La fonction à apeller si la requête aboutie
-                            success: function (data) {
-                            	// Loading data
-                            	console.log(data);
-                            	if(data.success == true ){
-                            		// ok case
-                            		$("#ajaxResults").html('<span class="badge badge-success">' + data.msg + '</span>');
-								}
-								else {
-									// error case
-									$("#ajaxResults").html('<span class="badge badge-danger">' + data.errorMsg + '</span>');
-								}
-							},
-							// La fonction à appeler si la requête n\'a pas abouti
-							error: function( jqXHR, textStatus ) {
-								console.log( "Request failed: " + textStatus );
-							}
-						});
-						},
-						complete: function( cEl )
-						{
-							// nothing foor now
-						},
-						isAllowed: function( cEl, hint, target )
-						{
-                            if (cEl.data('parent') == "meth_<?php echo $object->id; ?>" &&  target.data('parent') == undefined) return true;
-							else if (cEl.data('parent').substring(0, 4) == "proc"
-								&& target.data('parent') != undefined
-								&& target.data('parent').substring(0, 4) == "meth"
-								&& target.data('id') == cEl.data("parent").substring(5)) return true;
-                            else {
-                                console.log(cEl.data('parent'), target.data('parent'));
-                                target.find('#sortableListsHintWrapper').hide();
-                                target.find('#sortableListsHint').hide();
-                                return false;
-                            }
-						},
-						opener: {
-							active: true,
-							as: 'html',  // if as is not set plugin uses background image
-							close: '<i class="fa fa-minus c3"></i>',  // or \'fa-minus c3\',  // or \'./imgs/Remove2.png\',
-							open: '<i class="fa fa-plus"></i>',  // or \'fa-plus\',  // or\'./imgs/Add2.png\',
-							openerCss: {
-								'display': 'inline-block',
-								'float': 'left',
-								'margin-left': '-35px',
-								'margin-right': '5px',
-								'font-size': '1.1em'
-							}
-						},
-						ignoreClass: 'clickable',
+                                    // La fonction à apeller si la requête aboutie
+                                    success: function (data) {
+                                        // Loading data
+                                        console.log(data);
+                                        if (data.success == true) {
+                                            // ok case
+                                            $("#ajaxResults").html('<span class="badge badge-success">' + data.msg + '</span>');
+                                        } else {
+                                            // error case
+                                            $("#ajaxResults").html('<span class="badge badge-danger">' + data.errorMsg + '</span>');
+                                        }
+                                    },
+                                    // La fonction à appeler si la requête n\'a pas abouti
+                                    error: function (jqXHR, textStatus) {
+                                        console.log("Request failed: " + textStatus);
+                                    }
+                                });
+                            },
+                            complete: function (cEl) {
+                                // nothing foor now
+                            },
+                            isAllowed: function (cEl, hint, target) {
+                                if (cEl.data('parent') == "meth_<?php echo $object->id; ?>" && target.data('parent') == undefined) return true;
+                                else if (cEl.data('parent').substring(0, 4) == "proc"
+                                    && target.data('parent') != undefined
+                                    && target.data('parent').substring(0, 4) == "meth"
+                                    && target.data('id') == cEl.data("parent").substring(5)) return true;
+                                else {
+                                    console.log(cEl.data('parent'), target.data('parent'));
+                                    target.find('#sortableListsHintWrapper').hide();
+                                    target.find('#sortableListsHint').hide();
+                                    return false;
+                                }
+                            },
+                            opener: {
+                                active: true,
+                                as: 'html',  // if as is not set plugin uses background image
+                                close: '<i class="fa fa-minus c3"></i>',  // or \'fa-minus c3\',  // or \'./imgs/Remove2.png\',
+                                open: '<i class="fa fa-plus"></i>',  // or \'fa-plus\',  // or\'./imgs/Add2.png\',
+                                openerCss: {
+                                    'display': 'inline-block',
+                                    'float': 'left',
+                                    'margin-left': '-35px',
+                                    'margin-right': '5px',
+                                    'font-size': '1.1em'
+                                }
+                            },
+                            ignoreClass: 'clickable',
 
-						insertZonePlus: true,
-					};
+                            insertZonePlus: true,
+                        };
 
-                    $('#sortableLists').sortableLists( options );
+                        $('#sortableLists').sortableLists(options);
 
-				});
-			</script>
+                    });
+				</script>
 
-			<?php
+				<?php
+			}
 
             print '<div class="tabsAction">'."\n";
             $parameters=array();
