@@ -55,14 +55,6 @@ if ($object->isextrafieldmanaged)
     $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 }
 
-// Initialize array of search criterias
-//$search_all=trim(GETPOST("search_all",'alpha'));
-//$search=array();
-//foreach($object->fields as $key => $val)
-//{
-//    if (GETPOST('search_'.$key,'alpha')) $search[$key]=GETPOST('search_'.$key,'alpha');
-//}
-
 /*
  * Actions
  */
@@ -285,9 +277,6 @@ else
             $formconfirm = getFormConfirmProcessStep($form, $object, $action);
             if (!empty($formconfirm)) print $formconfirm;
 
-
-            $linkback = '<a href="' .dol_buildpath('/processrules/processstep_list.php', 1) . '?restore_lastsearch_values=1">' . $langs->trans('BackToList') . '</a>';
-
             $morehtmlref='<div class="refidno">';
             /*
             // Ref bis
@@ -300,7 +289,7 @@ else
 
 
             $morehtmlstatus.=''; //$object->getLibStatut(2); // pas besoin fait doublon
-            dol_banner_tab($object, 'ref', $linkback, 1, 'ref', 'ref', $morehtmlref, '', 0, '', $morehtmlstatus);
+            dol_banner_tab($object, 'ref', "", 0, 'ref', 'ref', $morehtmlref, '', 0, '', $morehtmlstatus);
 
             print '<div class="fichecenter">';
 

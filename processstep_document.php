@@ -53,11 +53,6 @@ $confirm=GETPOST('confirm');
 $id=(GETPOST('socid', 'int') ? GETPOST('socid', 'int') : GETPOST('id', 'int'));
 $ref = GETPOST('ref', 'alpha');
 
-// Security check - Protection if external user
-//if ($user->societe_id > 0) access_forbidden();
-//if ($user->societe_id > 0) $socid = $user->societe_id;
-//$result = restrictedArea($user, 'processrules', $id);
-
 // Get parameters
 $sortfield = GETPOST("sortfield", 'alpha');
 $sortorder = GETPOST("sortorder", 'alpha');
@@ -82,7 +77,6 @@ $extralabels = $extrafields->fetch_name_optionals_label('processstep');
 include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php';  // Must be include, not include_once  // Must be include, not include_once. Include fetch and fetch_thirdparty but not fetch_optionals
 
 if ($id > 0 || ! empty($ref)) $upload_dir = $conf->processrules->multidir_output[$object->entity?$object->entity:$conf->entity] . "/processstep/" . dol_sanitizeFileName($object->id);
-//if ($id > 0 || ! empty($ref)) $upload_dir = $conf->processrules->multidir_output[$object->entity?$object->entity:$conf->entity] . "/processrules/" . dol_sanitizeFileName($object->ref);
 
 
 /*
@@ -124,9 +118,8 @@ if ($object->id)
 
 	// Object card
 	// ------------------------------------------------------------
-	$linkback = '<a href="' .dol_buildpath('/processrules/processstep_list.php', 1) . '?restore_lastsearch_values=1' . (! empty($socid) ? '&socid=' . $socid : '') . '">' . $langs->trans("BackToList") . '</a>';
 
-	dol_banner_tab($object, 'ref', $linkback, 1, 'ref', 'ref', $morehtmlref);
+	dol_banner_tab($object, 'ref', "", 0, 'ref', 'ref', $morehtmlref);
 
 	print '<div class="fichecenter">';
 
