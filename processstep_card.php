@@ -326,14 +326,14 @@ else
 					// Clone
 					print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=clone">'.$langs->trans("processRulesClone").'</a></div>'."\n";
 
-					if ($object->status == ProcessStep::STATUS_DRAFT)
+					/*if ($object->status == ProcessStep::STATUS_DRAFT)
 					{
 						print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'&amp;action=enable">'.$langs->trans("Activate").'</a></div>';
 					}
 					else
 					{
 						print '<div class="inline-block divButAction"><a class="butActionDelete" href="'.$_SERVER['PHP_SELF'].'?action=disable&amp;id='.$object->id.'">'.$langs->trans("Disable").'</a></div>';
-					}
+					}*/
                 }
                 else
                 {
@@ -342,14 +342,14 @@ else
 					// Clone
 					print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("processRulesClone").'</a></div>'."\n";
 
-					if ($object->status == ProcessStep::STATUS_DRAFT)
+					/*if ($object->status == ProcessStep::STATUS_DRAFT)
 					{
 						print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("Activate").'</a></div>';
 					}
 					else
 					{
 						print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("Disable").'</a></div>';
-					}
+					}*/
                 }
 
                 if (!empty($user->rights->processrules->delete))
