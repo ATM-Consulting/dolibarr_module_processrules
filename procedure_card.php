@@ -333,7 +333,7 @@ else
 			print _displaySortableSteps($object->lines, 'sortableLists', false, $thisUrl, $method->status < 1);
 
 			print '<script src="'.dol_buildpath('processrules/js/jquery-sortable-lists.min.js',1).'" ></script>';
-			print '<link rel="stylesheet" href="'.dol_buildpath('/processrules/css/sortable.css', 1).'">';
+			print '<link rel="stylesheet" href="'.dol_buildpath('/processrules/css/sortable.css.php', 1).'">';
 			print '</div>';// Fin fichecenter
 
 			if ($method->status < 1) {

@@ -29,7 +29,7 @@ $langs->load('processrules@processrules');
 $action = GETPOST('action');
 $id = GETPOST('id', 'int');
 $ref = GETPOST('ref');
-
+$optioncss = GETPOST("optioncss");
 
 $contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'processrulescard';   // To manage different context of search
 $backtopage = GETPOST('backtopage', 'alpha');
@@ -259,65 +259,77 @@ else
         }
         elseif ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'create')))
         {
-            $head = processrules_prepare_head($object);
-            $picto = 'processrules@processrules';
-            dol_fiche_head($head, 'card', $langs->trans('processRules'), -1, $picto);
+        	if (empty($optioncss))
+			{
+				$head = processrules_prepare_head($object);
+				$picto = 'processrules@processrules';
+				dol_fiche_head($head, 'card', $langs->trans('processRules'), -1, $picto);
 
-            $formconfirm = getFormConfirmprocessRules($form, $object, $action);
-            if (!empty($formconfirm)) print $formconfirm;
-
-
-            $linkback = '<a href="' .dol_buildpath('/processrules/processrules_list.php', 1) . '?restore_lastsearch_values=1">' . $langs->trans('BackToList') . '</a>';
-
-            $morehtmlref='<div class="refidno">';
-            /*
-            // Ref bis
-            $morehtmlref.=$form->editfieldkey("RefBis", 'ref_client', $object->ref_client, $object, $user->rights->processrules->write, 'string', '', 0, 1);
-            $morehtmlref.=$form->editfieldval("RefBis", 'ref_client', $object->ref_client, $object, $user->rights->processrules->write, 'string', '', null, null, '', 1);
-            // Thirdparty
-            $morehtmlref.='<br>'.$langs->trans('ThirdParty') . ' : ' . $soc->getNomUrl(1);
-            */
-            $morehtmlref.='</div>';
+				$formconfirm = getFormConfirmprocessRules($form, $object, $action);
+				if (!empty($formconfirm)) print $formconfirm;
 
 
-            $morehtmlstatus.=''; //$object->getLibStatut(2); // pas besoin fait doublon
-            dol_banner_tab($object, 'ref', $linkback, 1, 'ref', 'ref', $morehtmlref, '', 0, '', $morehtmlstatus);
+				$linkback = '<a href="' .dol_buildpath('/processrules/processrules_list.php', 1) . '?restore_lastsearch_values=1">' . $langs->trans('BackToList') . '</a>';
 
-            print '<div class="fichecenter">';
+				$morehtmlref='<div class="refidno">';
+				/*
+				// Ref bis
+				$morehtmlref.=$form->editfieldkey("RefBis", 'ref_client', $object->ref_client, $object, $user->rights->processrules->write, 'string', '', 0, 1);
+				$morehtmlref.=$form->editfieldval("RefBis", 'ref_client', $object->ref_client, $object, $user->rights->processrules->write, 'string', '', null, null, '', 1);
+				// Thirdparty
+				$morehtmlref.='<br>'.$langs->trans('ThirdParty') . ' : ' . $soc->getNomUrl(1);
+				*/
+				$morehtmlref.='</div>';
 
-            print '<div class="fichehalfleft">'; // Auto close by commonfields_view.tpl.php
-            print '<div class="underbanner clearboth"></div>';
-            print '<table class="border tableforfield" width="100%">'."\n";
 
-            // Common attributes
-            //$keyforbreak='fieldkeytoswithonsecondcolumn';
-            include DOL_DOCUMENT_ROOT . '/core/tpl/commonfields_view.tpl.php';
+				$morehtmlstatus.=''; //$object->getLibStatut(2); // pas besoin fait doublon
+				dol_banner_tab($object, 'ref', $linkback, 1, 'ref', 'ref', $morehtmlref, '', 0, '', $morehtmlstatus);
 
-            // Other attributes
-            include DOL_DOCUMENT_ROOT . '/core/tpl/extrafields_view.tpl.php';
+				print '<div class="fichecenter">';
 
-            print '</table>';
+				print '<div class="fichehalfleft">'; // Auto close by commonfields_view.tpl.php
+				print '<div class="underbanner clearboth"></div>';
+				print '<table class="border tableforfield" width="100%">'."\n";
 
-            print '</div></div>'; // Fin fichehalfright & ficheaddleft
-            print '</div>'; // Fin fichecenter
+				// Common attributes
+				//$keyforbreak='fieldkeytoswithonsecondcolumn';
+				include DOL_DOCUMENT_ROOT . '/core/tpl/commonfields_view.tpl.php';
 
-            print '<div class="clearboth"></div><br />';
+				// Other attributes
+				include DOL_DOCUMENT_ROOT . '/core/tpl/extrafields_view.tpl.php';
+
+				print '</table>';
+
+				print '</div></div>'; // Fin fichehalfright & ficheaddleft
+				print '</div>'; // Fin fichecenter
+
+				print '<div class="clearboth"></div><br />';
+
+			}
+
             print '<div class="fichecenter">';
             $object->fetch_lines();
 
-			$titleBtn = '';
-			if ($object->status < 1 )
-				$titleBtn = dolGetButtonTitle($langs->trans('Newprocedure'), '', 'fa fa-plus-circle', dol_buildpath('/processrules/procedure_card.php', 2).'?action=create&fk_processrules='.$object->id.'&backtopage='.urlencode($thisUrl));
-			print load_fiche_titre($langs->trans('Procedures'), $titleBtn, 'title_generic.png');
+			if (empty($optioncss))
+			{
+				$titleBtn = '';
+				if ($object->status < 1 )
+					$titleBtn = dolGetButtonTitle($langs->trans('Newprocedure'), '', 'fa fa-plus-circle', dol_buildpath('/processrules/procedure_card.php', 2).'?action=create&fk_processrules='.$object->id.'&backtopage='.urlencode($thisUrl));
+				print load_fiche_titre($langs->trans('Procedures'), $titleBtn, 'title_generic.png');
+			}
+			elseif ($optioncss == 'print')
+			{
+				print "<div style='text-align: center'><h1>".$langs->trans("processRulesCard")." ".$object->label."</h1></div>";
+			}
 
 			print '<div id="ajaxResults" ></div>';
-            print _displaySortableProcedures($object->lines, 'sortableLists', false, $object->status < 1);
+            print _displaySortableProcedures($object->lines, 'sortableLists', false, $object->status < 1 && empty($optioncss));
 
 			print '<script src="'.dol_buildpath('processrules/js/jquery-sortable-lists.min.js',1).'" ></script>';
-			print '<link rel="stylesheet" href="'.dol_buildpath('/processrules/css/sortable.css', 1).'">';
+			print '<link rel="stylesheet" href="'.dol_buildpath('/processrules/css/sortable.css.php', 1).'">';
 			print '</div>';// Fin fichecenter
 
-			if ($object->status < 1) {
+			if ($object->status < 1 && empty($optioncss)) {
 				?>
 
 				<script type="text/javascript">
@@ -400,74 +412,78 @@ else
 				<?php
 			}
 
-            print '<div class="tabsAction">'."\n";
-            $parameters=array();
-            $reshook = $hookmanager->executeHooks('addMoreActionsButtons', $parameters, $object, $action);    // Note that $action and $object may have been modified by hook
-            if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
+			if (empty($optioncss))
+			{
 
-            if (empty($reshook))
-            {
-                // Modify
-                if (!empty($user->rights->processrules->write))
-                {
-                	if ($object->status < 1)
+				print '<div class="tabsAction">'."\n";
+				$parameters=array();
+				$reshook = $hookmanager->executeHooks('addMoreActionsButtons', $parameters, $object, $action);    // Note that $action and $object may have been modified by hook
+				if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
+
+				if (empty($reshook))
+				{
+					// Modify
+					if (!empty($user->rights->processrules->write))
+					{
+						if ($object->status < 1)
+						{
+							// Modify
+							print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=edit">'.$langs->trans("processRulesModify").'</a></div>'."\n";
+						}
+
+						// Clone
+						print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=clone">'.$langs->trans("processRulesClone").'</a></div>'."\n";
+
+						if ($object->status == ProcessRules::STATUS_DRAFT)
+						{
+							print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'&amp;action=enable">'.$langs->trans("Activate").'</a></div>';
+						}
+						else
+						{
+							print '<div class="inline-block divButAction"><a class="butActionDelete" href="'.$_SERVER['PHP_SELF'].'?action=disable&amp;id='.$object->id.'">'.$langs->trans("Disable").'</a></div>';
+						}
+					}
+					else
 					{
 						// Modify
-						print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=edit">'.$langs->trans("processRulesModify").'</a></div>'."\n";
+						print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("processRulesModify").'</a></div>'."\n";
+						// Clone
+						print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("processRulesClone").'</a></div>'."\n";
+
+						if ($object->status == ProcessRules::STATUS_DRAFT)
+						{
+							print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("Activate").'</a></div>';
+						}
+						else
+						{
+							print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("Disable").'</a></div>';
+						}
 					}
 
-					// Clone
-					print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=clone">'.$langs->trans("processRulesClone").'</a></div>'."\n";
-
-					if ($object->status == ProcessRules::STATUS_DRAFT)
+					if (!empty($user->rights->processrules->delete))
 					{
-						print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'&amp;action=enable">'.$langs->trans("Activate").'</a></div>';
+						print '<div class="inline-block divButAction"><a class="butActionDelete" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=delete">'.$langs->trans("processRulesDelete").'</a></div>'."\n";
 					}
 					else
 					{
-						print '<div class="inline-block divButAction"><a class="butActionDelete" href="'.$_SERVER['PHP_SELF'].'?action=disable&amp;id='.$object->id.'">'.$langs->trans("Disable").'</a></div>';
+						print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("processRulesDelete").'</a></div>'."\n";
 					}
-                }
-                else
-                {
-					// Modify
-					print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("processRulesModify").'</a></div>'."\n";
-					// Clone
-					print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("processRulesClone").'</a></div>'."\n";
+				}
+				print '</div>'."\n";
 
-					if ($object->status == ProcessRules::STATUS_DRAFT)
-					{
-						print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("Activate").'</a></div>';
-					}
-					else
-					{
-						print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("Disable").'</a></div>';
-					}
-                }
+				print '<div class="fichecenter"><div class="fichehalfleft">';
+				$linktoelem = $form->showLinkToObjectBlock($object, null, array($object->element));
+				$somethingshown = $form->showLinkedObjectBlock($object, $linktoelem);
 
-                if (!empty($user->rights->processrules->delete))
-                {
-                    print '<div class="inline-block divButAction"><a class="butActionDelete" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=delete">'.$langs->trans("processRulesDelete").'</a></div>'."\n";
-                }
-                else
-                {
-                    print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("processRulesDelete").'</a></div>'."\n";
-                }
-            }
-            print '</div>'."\n";
+				print '</div><div class="fichehalfright"><div class="ficheaddleft">';
 
-            print '<div class="fichecenter"><div class="fichehalfleft">';
-            $linktoelem = $form->showLinkToObjectBlock($object, null, array($object->element));
-            $somethingshown = $form->showLinkedObjectBlock($object, $linktoelem);
+				// List of actions on element
+				include_once DOL_DOCUMENT_ROOT . '/core/class/html.formactions.class.php';
+				$formactions = new FormActions($db);
+				$somethingshown = $formactions->showactions($object, $object->element, $socid, 1);
 
-            print '</div><div class="fichehalfright"><div class="ficheaddleft">';
-
-            // List of actions on element
-            include_once DOL_DOCUMENT_ROOT . '/core/class/html.formactions.class.php';
-            $formactions = new FormActions($db);
-            $somethingshown = $formactions->showactions($object, $object->element, $socid, 1);
-
-            print '</div></div></div>';
+				print '</div></div></div>';
+			}
 
             dol_fiche_end(-1);
         }
