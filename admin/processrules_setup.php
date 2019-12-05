@@ -108,6 +108,8 @@ if(!function_exists('setup_print_title')){
 
 setup_print_title("Parameters");
 
+setup_print_on_off("PROCESSRULES_DISPLAY_WIDE_IMG");
+
 // Example with a yes / no select
 //setup_print_on_off('CONSTNAME', $langs->trans('ParamLabel'), 'ParamDesc');
 

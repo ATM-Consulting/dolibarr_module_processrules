@@ -23,6 +23,7 @@ ProcedureExtraFields=Attributs supplémentaires (Procédure)
 ProcessstepExtraFields=Attributs supplémentaires (Etapes)
 ProcedureExtrafieldPage=Attributs supplémentaires (Procédure)
 ProcessstepExtrafieldPage=Attributs supplémentaires (Etapes)
+PROCESSRULES_DISPLAY_WIDE_IMG=Afficher les images originales au lieu des miniatures dans les étapes (attention ceci peut ralentir concidérablement le chargement des fiches méthodes et fiches procedures)
 
 # MENU
 TopMenuprocessRules=Méthodes
