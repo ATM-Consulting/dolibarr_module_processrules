@@ -460,7 +460,7 @@ function _displaySortableStepsImages($Tab, $htmlClass = '', $open = true, $backt
 			$file = urlencode('processstep/'.$img->fk_step.'/'.$img->filename);
 			$thumb = urlencode('processstep/'.$img->fk_step.'/thumbs/'.substr($img->filename, 0, strrpos($img->filename,'.')).'_mini'.substr($img->filename, strrpos($img->filename,'.')));
 			$doclink = dol_buildpath('document.php', 1).'?modulepart=processrules&attachment=0&file='.$file.'&entity='.$conf->entity;
-			$viewlink = dol_buildpath('viewimage.php', 1).'?modulepart=processrules&file='.$thumb.'&entity='.$conf->entity;
+			$viewlink = dol_buildpath('viewimage.php', 1).'?modulepart=processrules&file='.$file.'&entity='.$conf->entity;
 
 			$out.= '<a href="'.$doclink.'" class="pr-sortable-list__item__images documentpreview clickable" target="_blank" mime="image/png"><img class="clickable" src="'.$viewlink.'" title=""></a>';
 //			$out.= '</div>';

@@ -44,6 +44,7 @@ li.pr-sortable-list__item .pr-sortable-list__item__title , #sortableListsBase li
 .pr-sortable-list__item__title__flex{
 	display: flex;
 	flex-direction: row;
+	flex-wrap: wrap;
 }
 
 .pr-sortable-list__item__title__col{
@@ -68,7 +69,7 @@ li.pr-sortable-list__item .pr-sortable-list__item__title , #sortableListsBase li
 .pr-sortable-list__item__images{
 	max-height: 120px;
 	margin-right: 10px;
-	max-width: 150px;
+	max-width: 350px;
 	display: inline-block;
 	box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.70);
 }
