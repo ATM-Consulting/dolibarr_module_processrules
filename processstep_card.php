@@ -118,7 +118,7 @@ if (empty($reshook))
             }
             else
             {
-				if (! empty($backtopage)) header("Location: ".$backtopage);
+				if ($action == "update" && ! empty($backtopage)) header("Location: ".$backtopage);
 				else header('Location: '.dol_buildpath('/processrules/processstep_card.php', 1).'?id='.$object->id);
                 exit;
             }
