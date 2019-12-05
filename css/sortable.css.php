@@ -123,6 +123,7 @@ li.pr-sortable-list__item .pr-sortable-list__item__title , #sortableListsBase li
 	max-width: <?php echo $imgWidth; ?>;
 	display: inline-block;
 	box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.70);
+	margin-bottom: 20px;
 }
 
 .pr-sortable-list__item__images img{
