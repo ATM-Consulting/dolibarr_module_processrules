@@ -179,8 +179,16 @@ if (empty($reshook))
 		case 'confirm_delete':
 			if (!empty($user->rights->processrules->delete)) $object->delete($user);
 
-			header('Location: '.dol_buildpath('/processrules/procedure_list.php', 1));
-			exit;
+			if (! empty($backtopage))
+			{
+				header("Location: ".$backtopage);
+				exit;
+			}
+			else
+			{
+				header('Location: ' . dol_buildpath('/processrules/processrules_card.php', 1) . '?id=' . $object->fk_processrules);
+				exit;
+			}
 
 		// link from llx_element_element
 		case 'dellink':
@@ -288,22 +296,11 @@ else
             $formconfirm = getFormConfirmprocedure($form, $object, $action);
             if (!empty($formconfirm)) print $formconfirm;
 
-
-            $linkback = '<a href="' .dol_buildpath('/processrules/procedure_list.php', 1) . '?restore_lastsearch_values=1">' . $langs->trans('BackToList') . '</a>';
-
             $morehtmlref='<div class="refidno">';
-            /*
-            // Ref bis
-            $morehtmlref.=$form->editfieldkey("RefBis", 'ref_client', $object->ref_client, $object, $user->rights->processrules->write, 'string', '', 0, 1);
-            $morehtmlref.=$form->editfieldval("RefBis", 'ref_client', $object->ref_client, $object, $user->rights->processrules->write, 'string', '', null, null, '', 1);
-            // Thirdparty
-            $morehtmlref.='<br>'.$langs->trans('ThirdParty') . ' : ' . $soc->getNomUrl(1);
-            */
             $morehtmlref.='</div>';
 
-
             $morehtmlstatus.=''; //$object->getLibStatut(2); // pas besoin fait doublon
-            dol_banner_tab($object, 'ref', $linkback, 1, 'ref', 'ref', $morehtmlref, '', 0, '', $morehtmlstatus);
+            dol_banner_tab($object, 'ref', "", 0, 'ref', 'ref', $morehtmlref, '', 0, '', $morehtmlstatus);
 
             print '<div class="fichecenter">';
 
@@ -433,14 +430,14 @@ else
 					// Clone
 					print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=clone">'.$langs->trans("processRulesClone").'</a></div>'."\n";
 
-					if ($object->status == ProcessRules::STATUS_DRAFT)
+					/*if ($object->status == ProcessRules::STATUS_DRAFT)
 					{
 						print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'&amp;action=enable">'.$langs->trans("Activate").'</a></div>';
 					}
 					else
 					{
 						print '<div class="inline-block divButAction"><a class="butActionDelete" href="'.$_SERVER['PHP_SELF'].'?action=disable&amp;id='.$object->id.'">'.$langs->trans("Disable").'</a></div>';
-					}
+					}*/
                 }
                 else
                 {
@@ -449,14 +446,14 @@ else
 					// Clone
 					print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("processRulesClone").'</a></div>'."\n";
 
-					if ($object->status == ProcessRules::STATUS_DRAFT)
+					/*if ($object->status == ProcessRules::STATUS_DRAFT)
 					{
 						print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("Activate").'</a></div>';
 					}
 					else
 					{
 						print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("Disable").'</a></div>';
-					}
+					}*/
                 }
 
                 if (!empty($user->rights->processrules->delete))
