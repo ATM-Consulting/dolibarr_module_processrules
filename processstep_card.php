@@ -168,8 +168,16 @@ if (empty($reshook))
 		case 'confirm_delete':
 			if (!empty($user->rights->processrules->delete)) $object->delete($user);
 
-			header('Location: '.dol_buildpath('/processrules/processstep_list.php', 1));
-			exit;
+			if (! empty($backtopage))
+			{
+				header("Location: ".$backtopage);
+				exit;
+			}
+			else
+			{
+				header('Location: '.dol_buildpath('/processrules/procedure_card.php', 1) . '?id=' . $object->fk_procedure);
+				exit;
+			}
 
 		// link from llx_element_element
 		case 'dellink':
