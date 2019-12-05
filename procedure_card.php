@@ -288,22 +288,11 @@ else
             $formconfirm = getFormConfirmprocedure($form, $object, $action);
             if (!empty($formconfirm)) print $formconfirm;
 
-
-            $linkback = '<a href="' .dol_buildpath('/processrules/procedure_list.php', 1) . '?restore_lastsearch_values=1">' . $langs->trans('BackToList') . '</a>';
-
             $morehtmlref='<div class="refidno">';
-            /*
-            // Ref bis
-            $morehtmlref.=$form->editfieldkey("RefBis", 'ref_client', $object->ref_client, $object, $user->rights->processrules->write, 'string', '', 0, 1);
-            $morehtmlref.=$form->editfieldval("RefBis", 'ref_client', $object->ref_client, $object, $user->rights->processrules->write, 'string', '', null, null, '', 1);
-            // Thirdparty
-            $morehtmlref.='<br>'.$langs->trans('ThirdParty') . ' : ' . $soc->getNomUrl(1);
-            */
             $morehtmlref.='</div>';
 
-
             $morehtmlstatus.=''; //$object->getLibStatut(2); // pas besoin fait doublon
-            dol_banner_tab($object, 'ref', $linkback, 1, 'ref', 'ref', $morehtmlref, '', 0, '', $morehtmlstatus);
+            dol_banner_tab($object, 'ref', "", 0, 'ref', 'ref', $morehtmlref, '', 0, '', $morehtmlstatus);
 
             print '<div class="fichecenter">';
 
