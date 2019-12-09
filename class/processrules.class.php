@@ -75,6 +75,9 @@ class ProcessRules extends SeedObject
 	/** @var int $fk_user_modif */
 	public $fk_user_modif;
 
+	/** @var string $picto a picture file in [@...]/img/object_[...@].png  */
+	public $picto = 'processrules@processrules';
+
     /**
      *  'type' is the field format.
      *  'label' the translation key.
@@ -244,7 +247,6 @@ class ProcessRules extends SeedObject
 
 		$this->status = self::STATUS_DRAFT;
 		$this->entity = $conf->entity;
-		$this->picto = 'generic';
     }
 
     /**
@@ -487,11 +489,10 @@ class ProcessRules extends SeedObject
 
         $linkend='</a>';
 
-        $picto='generic';
-//        $picto='processrules@processrules';
 
-        if ($withpicto) $result.=($link.img_object($label, $picto, 'class="classfortooltip"').$linkend);
-        if ($withpicto && $withpicto != 2) $result.=' ';
+
+		if ($withpicto) $result.=($link.img_object($label, $this->picto, 'class="paddingright classfortooltip valignmiddle"').$linkend);
+		if ($withpicto && $withpicto != 2) $result.=' ';
 
         $result.=$link.$this->ref.$linkend;
 

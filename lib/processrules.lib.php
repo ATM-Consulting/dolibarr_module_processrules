@@ -319,7 +319,7 @@ function _displaySortableProcedures($Tab, $htmlId='', $open = true, $editable = 
 			$out.= '<div class="pr-sortable-list__item__title__flex">';
 
 			$out.= '<div class="pr-sortable-list__item__title__col -label" >';
-			$out.= dol_htmlentities($procedure->ref) . " - " . dol_htmlentities($procedure->label);
+			$out.=  $procedure->getNomUrl(2)." - ".$procedure->showField('fk_workstation')." - ".dol_htmlentities($procedure->label);
 			$out.= '</div>';
 
 			$out.= '<div class="pr-sortable-list__item__title__col -action clickable" >';
