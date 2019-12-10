@@ -24,6 +24,7 @@ if (!class_exists('SeedObject'))
 	require_once dirname(__FILE__).'/../config.php';
 }
 
+dol_include_once('workstation/class/workstation.class.php');
 
 class Procedure extends SeedObject
 {
@@ -111,20 +112,6 @@ class Procedure extends SeedObject
 
     public $fields = array(
 
-        'ref' => array(
-            'type' => 'varchar(50)',
-            'length' => 50,
-            'label' => 'Ref',
-            'enabled' => 1,
-            'visible' => 1,
-            'notnull' => 1,
-            'showoncombobox' => 1,
-            'index' => 1,
-            'position' => 10,
-            'searchall' => 1,
-            'comment' => 'Reference of object'
-        ),
-
         'entity' => array(
             'type' => 'integer',
             'label' => 'Entity',
@@ -162,17 +149,6 @@ class Procedure extends SeedObject
 			'notnull' => 1,
 			'help' => 'ProcedureWorkstationHelp'
 		),
-
-        'label' => array(
-            'type' => 'varchar(255)',
-            'label' => 'Label',
-            'enabled' => 1,
-            'visible' => 1,
-            'position' => 40,
-            'searchall' => 1,
-            'css' => 'minwidth200',
-            'showoncombobox' => 1
-        ),
 
         'fk_processrules' => array(
 			'type' 		=> 'integer:processrules:processrules/class/processrules.class.php',
@@ -249,17 +225,11 @@ class Procedure extends SeedObject
 
     );
 
-    /** @var string $ref Object reference */
-	public $ref;
-
     /** @var int $entity Object entity */
 	public $entity;
 
 	/** @var int $status Object status */
 	public $status;
-
-    /** @var string $label Object label */
-    public $label;
 
     /** @var string $description Object description */
     public $description;
@@ -291,11 +261,6 @@ class Procedure extends SeedObject
      */
     public function save($user)
     {
-        if (!empty($this->is_clone))
-        {
-            // TODO determinate if auto generate
-            $this->ref = '(PROV'.$this->id.')';
-        }
 
         if (empty($this->id)) $this->rang = $this->getMaxRang();
 
@@ -317,15 +282,6 @@ class Procedure extends SeedObject
 
 		return 0;
 	}
-
-    /**
-     * @see cloneObject
-     * @return void
-     */
-    public function clearUniqueFields()
-    {
-        $this->ref = 'Copy of '.$this->ref;
-    }
 
 
     /**
@@ -407,33 +363,7 @@ class Procedure extends SeedObject
 		}
 	}
 
-    /**
-     * @return string
-     */
-    public function getRef()
-    {
-		if (preg_match('/^[\(]?PROV/i', $this->ref) || empty($this->ref))
-		{
-			return $this->getNextRef();
-		}
 
-		return $this->ref;
-    }
-
-    /**
-     * @return string
-     */
-    private function getNextRef()
-    {
-		global $db,$conf;
-
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
-
-		$mask = !empty($conf->global->PROCEDURE_REF_MASK) ? $conf->global->PROCEDURE_REF_MASK : 'P{yy}{mm}-{0000}';
-		$ref = get_next_value($db, $mask, 'procedure', 'ref');
-
-		return $ref;
-    }
 
 
     /**
@@ -461,9 +391,6 @@ class Procedure extends SeedObject
     {
         if ($this->status === self::STATUS_DRAFT)
         {
-            // TODO determinate if auto generate
-//            $this->ref = $this->getRef();
-//            $this->fk_user_valid = $user->id;
             $this->status = self::STATUS_VALIDATED;
             $this->withChild = false;
 
@@ -534,26 +461,38 @@ class Procedure extends SeedObject
     {
 		global $langs;
 
+
+		$PDOdb = new TPDOdb($this->db);
+
+		$TWorkstation = new TWorkstation();
+		$TWorkstation->load($PDOdb, $this->fk_workstation);
+
+
         $result='';
         $label = '<u>' . $langs->trans("Showprocedure") . '</u>';
-        if (! empty($this->ref)) $label.= '<br><b>'.$langs->trans('Ref').':</b> '.$this->ref;
+        $label.= '<br><b>'.$langs->trans('Workstation').':</b> '.$TWorkstation->name;
 
-        $linkclose = '" title="'.dol_escape_htmltag($label, 1).'" class="classfortooltip">';
-        $link = '<a  class="clickable" href="'.dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$this->id.urlencode($moreparams).$linkclose;
+		$url = dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$this->id.urlencode($moreparams);
+        $link = '<a class="classfortooltip clickable" href="'.$url.'" title="'.dol_escape_htmltag($label, 1).'" >';
 
-        $linkend='</a>';
 
-		if ($withpicto) $result.=($link.img_object($label, $this->picto, 'class="paddingright classfortooltip valignmiddle"').$linkend);
-        if ($withpicto && $withpicto != 2) $result.=' ';
 
-        $result.=$link.$this->ref.$linkend;
+		$result.= '<a class="classfortooltip clickable" href="'.$url.'" title="'.dol_escape_htmltag($label, 1).'" >';
+
+		if ($withpicto){
+			$result.=img_object('', $this->picto, 'class="paddingright valignmiddle clickable " ');
+		}
+		if ($withpicto && $withpicto != 2) $result.=' ';
+
+		$result.= $TWorkstation->name;
+        $result.= '</a>';
 
         return $result;
     }
 
     /**
      * @param int       $id             Identifiant
-     * @param null      $ref            Ref
+     * @param null      $ref            Ref not used
      * @param int       $withpicto      Add picto into link
      * @param string    $moreparams     Add more parameters in the URL
      * @return string
@@ -633,7 +572,7 @@ class Procedure extends SeedObject
 
 			dol_include_once('workstation/class/workstation.class.php');
 
-			$PDOdb = new TPDOdb($db);
+			$PDOdb = new TPDOdb;
 
 			$TWorkstation = TWorkstation::getWorstations($PDOdb, false, true);
 			$out = $form->selectArray('fk_workstation', $TWorkstation, $value, 0, 0, 0, '', 0, 0, 0, '', '', 1);
@@ -661,7 +600,7 @@ class Procedure extends SeedObject
 	 */
 	public function showOutputField($val, $key, $value, $moreparam = '', $keysuffix = '', $keyprefix = '', $morecss = '')
 	{
-		global $conf, $langs, $form, $db;
+		global $conf, $langs, $form;
 
 		// TODO : quite a fixer autant le faire dans le seed object
 		// patch for dolibarr 9.0 show PR : https://github.com/Dolibarr/dolibarr/pull/11571
@@ -671,15 +610,11 @@ class Procedure extends SeedObject
 		}
 
 		if($key == 'fk_workstation'){
-
-			dol_include_once('workstation/class/workstation.class.php');
-
-			$PDOdb = new TPDOdb($db);
+			$PDOdb = new TPDOdb;
 
 			$TWorkstation = new TWorkstation();
 			$TWorkstation->load($PDOdb, $value);
 			$out = '<a class="clickable" href="'.dol_buildpath('/workstation/workstation.php?action=view&id='.$TWorkstation->getId(),1).'" >'.img_picto('', 'object_generic').$TWorkstation->name.'</a>';
-
 
 		}
 		else{
@@ -702,11 +637,9 @@ class Procedure extends SeedObject
 	 * @param  mixed   $morecss        Value for css to define size. May also be a numeric.
 	 * @return string
 	 */
-	public function showField($key, $moreparam = '', $keysuffix = '', $keyprefix = '', $morecss = '')
+	public function showFieldValue($key, $moreparam = '', $keysuffix = '', $keyprefix = '', $morecss = '')
 	{
-		return $this->showOutputField($this->fields[$key], $key, $this->{$key} );
+		return $this->showOutputField($this->fields[$key], $key, $this->{$key}, $moreparam, $keyprefix, $morecss);
 	}
-
-
 
 }

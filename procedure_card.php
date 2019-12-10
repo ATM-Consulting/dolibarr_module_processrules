@@ -298,7 +298,7 @@ else
 
 
             $morehtmlref ='<div class="refidno">';
-			$morehtmlref.= $object->showField('fk_workstation');
+			$morehtmlref.= $object->showFieldValue('fk_workstation');
 			$morehtmlref.='</div>';
 
             $morehtmlstatus.=''; //$object->getLibStatut(2); // pas besoin fait doublon

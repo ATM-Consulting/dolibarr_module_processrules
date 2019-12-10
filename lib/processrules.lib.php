@@ -311,15 +311,13 @@ function _displaySortableProcedures($Tab, $htmlId='', $open = true, $editable = 
 
 			$out.= '<li id="item_'.$procedure->id.'" class="pr-sortable-list__item '.$class.'" ';
 			$out.= ' data-id="'.$procedure->id.'" ';
-			$out.= ' data-ref="'.$procedure->ref.'"';
-			$out.= ' data-title="'.dol_escape_htmltag($procedure->label).'" ';
 			$out.= ' data-parent="meth_'.$procedure->fk_processrules.'"';
 			$out.= '>';
 			$out.= '<div class="pr-sortable-list__item__title  move">';
 			$out.= '<div class="pr-sortable-list__item__title__flex">';
 
 			$out.= '<div class="pr-sortable-list__item__title__col -label" >';
-			$out.=  $procedure->getNomUrl(2)." - ".$procedure->showField('fk_workstation')." - ".dol_htmlentities($procedure->label);
+			$out.=  $procedure->getNomUrl(2);
 			$out.= '</div>';
 
 			$out.= '<div class="pr-sortable-list__item__title__col -action clickable" >';
