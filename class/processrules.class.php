@@ -78,6 +78,8 @@ class ProcessRules extends SeedObject
 	/** @var string $picto a picture file in [@...]/img/object_[...@].png  */
 	public $picto = 'processrules@processrules';
 
+	public $model_pdf;
+
     /**
      *  'type' is the field format.
      *  'label' the translation key.
@@ -152,6 +154,14 @@ class ProcessRules extends SeedObject
             'showoncombobox' => 1
         ),
 
+        'model_pdf' => array(
+            'type' => 'varchar(255)',
+            'label' => 'model_pdf',
+            'enabled' => 1,
+            'visible' => 0,
+            'position' => 200,
+        ),
+
         /*'fk_soc' => array(
             'type' => 'integer:Societe:societe/class/societe.class.php',
             'label' => 'ThirdParty',
@@ -181,7 +191,7 @@ class ProcessRules extends SeedObject
         ),
 
 		'note_public' => array(
-			'type' => 'html', // or text
+			'type' => 'text', // or text
 			'label' => 'NotePublic',
 			'enabled' => 1,
 			'visible' => 0,
@@ -189,7 +199,7 @@ class ProcessRules extends SeedObject
 		),
 
 		'note_private' => array(
-			'type' => 'html', // or text
+			'type' => 'text', // or text
 			'label' => 'NotePrivate',
 			'enabled' => 1,
 			'visible' => 0,
@@ -558,5 +568,39 @@ class ProcessRules extends SeedObject
 
         return $res;
     }
+
+
+	/**
+	 *  Create a document onto disk according to template module.
+	 *
+	 * 	@param	    string		$modele			Force model to use ('' to not force)
+	 * 	@param		Translate	$outputlangs	Object langs to use for output
+	 *  @param      int			$hidedetails    Hide details of lines
+	 *  @param      int			$hidedesc       Hide description
+	 *  @param      int			$hideref        Hide ref
+	 *  @param   null|array  $moreparams     Array to provide more information
+	 * 	@return     int         				0 if KO, 1 if OK
+	 */
+	public function generateDocument($modele, $outputlangs, $hidedetails = 0, $hidedesc = 0, $hideref = 0, $moreparams = null)
+	{
+		global $conf,$langs;
+
+		$langs->load("processrules@processrules");
+
+		if (! dol_strlen($modele)) {
+
+			$modele = 'processrules';
+
+			if ($this->modelpdf) {
+				$modele = $this->modelpdf;
+			} elseif (! empty($conf->global->PROCESSRULES_ADDON_PDF)) {
+				$modele = $conf->global->PROCESSRULES_ADDON_PDF;
+			}
+		}
+
+		$modelpath = "core/modules/processrules/doc/";
+
+		return $this->commonGenerateDocument($modelpath, $modele, $outputlangs, $hidedetails, $hidedesc, $hideref, $moreparams);
+	}
 }
 

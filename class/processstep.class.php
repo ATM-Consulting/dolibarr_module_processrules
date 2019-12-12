@@ -181,7 +181,7 @@ class ProcessStep extends SeedObject
         ),
 
 		'note_public' => array(
-			'type' => 'html', // or text
+			'type' => 'text', // or text
 			'label' => 'NotePublic',
 			'enabled' => 1,
 			'visible' => 0,
@@ -189,7 +189,7 @@ class ProcessStep extends SeedObject
 		),
 
 		'note_private' => array(
-			'type' => 'html', // or text
+			'type' => 'text', // or text
 			'label' => 'NotePrivate',
 			'enabled' => 1,
 			'visible' => 0,
