@@ -18,6 +18,7 @@
 require 'config.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 dol_include_once('processrules/class/processrules.class.php');
 dol_include_once('processrules/lib/processrules.lib.php');
 
@@ -26,10 +27,17 @@ $permissiondellink = $user->rights->webhost->write;	// Used by the include of ac
 
 $langs->load('processrules@processrules');
 
-$action = GETPOST('action');
-$id = GETPOST('id', 'int');
-$ref = GETPOST('ref');
+// Get parameters
 $optioncss = GETPOST("optioncss");
+$id = GETPOST('id', 'int');
+$ref        = GETPOST('ref', 'alpha');
+$action = GETPOST('action', 'aZ09');
+$confirm    = GETPOST('confirm', 'alpha');
+$cancel     = GETPOST('cancel', 'aZ09');
+$contextpage = GETPOST('contextpage', 'aZ') ?GETPOST('contextpage', 'aZ') : 'processrulescard'; // To manage different context of search
+$backtopage = GETPOST('backtopage', 'alpha');
+
+
 
 $contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'processrulescard';   // To manage different context of search
 $backtopage = GETPOST('backtopage', 'alpha');
@@ -38,18 +46,32 @@ $backtopage = GETPOST('backtopage', 'alpha');
 
 $object = new ProcessRules($db);
 
-if (!empty($id) || (!empty($ref) && empty($action))) {
-	$result = $object->fetch($id, 0, $ref);
 
-	if ($result <= 0 || empty($object->id)) {
-		print $langs->trans('NotFound');
-		exit;
+// Load object
+include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be include, not include_once.
+
+
+$permissiontoread = $user->rights->processrules->processrules->read;
+$permissiontoadd = $user->rights->processrules->processrules->write; // Used by the include of actions_addupdatedelete.inc.php and actions_lineupdown.inc.php
+$permissiontodelete = $user->rights->processrules->processrules->delete || ($permissiontoadd && isset($object->status) && $object->status == $object::STATUS_DRAFT);
+$permissionnote = $user->rights->processrules->processrules->write; // Used by the include of actions_setnotes.inc.php
+$permissiondellink = $user->rights->processrules->processrules->write; // Used by the include of actions_dellink.inc.php
+$upload_dir = $conf->processrules->multidir_output[isset($object->entity) ? $object->entity : 1];
+
+$backurlforlist = dol_buildpath('/processrules/processrules_list.php', 1);
+
+if (empty($backtopage) || ($cancel && empty($id))) {
+	if (empty($backtopage) || ($cancel && strpos($backtopage, '__ID__'))) {
+		if (empty($id) && (($action != 'add' && $action != 'create') || $cancel)) $backtopage = $backurlforlist;
+		else $backtopage = dol_buildpath('/processrules/processrules_card.php', 1).'?id='.($id > 0 ? $id : '__ID__');
 	}
 }
+$triggermodname = 'PROCESSRULES_PROCESSRULES_MODIFY'; // Name of trigger action code to execute when we modify record
+
 
 $thisUrl = dol_buildpath('/processrules/processrules_card.php', 1).'?id='.$object->id;
 
-	$hookmanager->initHooks(array('processrulescard', 'globalcard'));
+$hookmanager->initHooks(array('processrulescard', 'globalcard'));
 
 
 if ($object->isextrafieldmanaged)
@@ -93,7 +115,17 @@ if (empty($reshook))
     // For object linked
     include DOL_DOCUMENT_ROOT.'/core/actions_dellink.inc.php';		// Must be include, not include_once
 
-    $error = 0;
+	// Action to build doc
+	// $action must be defined
+	// $id must be defined
+	// $object must be defined and must have a method generateDocument().
+	// $permissiontoadd must be defined
+	// $upload_dir must be defined (example $conf->projet->dir_output . "/";)
+	// $hidedetails, $hidedesc, $hideref and $moreparams may have been set or not.
+	include DOL_DOCUMENT_ROOT.'/core/actions_builddoc.inc.php';
+
+
+	$error = 0;
 	switch ($action) {
 		case 'add':
 		case 'update':
@@ -176,6 +208,13 @@ if (empty($reshook))
 			header('Location: '.dol_buildpath('/processrules/processrules_card.php', 1).'?id='.$object->id);
 			exit;
 	}
+
+
+	// Actions to send emails
+	$triggersendname = 'PROCESSRULES_SENTBYMAIL';
+	$autocopy = 'MAIN_MAIL_AUTOCOPY_PROCESSRULES_TO';
+	$trackid = 'processrules'.$object->id;
+	include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 }
 
 
@@ -183,6 +222,7 @@ if (empty($reshook))
  * View
  */
 $form = new Form($db);
+$formfile = new FormFile($db);
 
 $title=$langs->trans('processRules');
 llxHeader('', $title);
@@ -472,6 +512,18 @@ else
 				print '</div>'."\n";
 
 				print '<div class="fichecenter"><div class="fichehalfleft">';
+				print '<a name="builddoc"></a>'; // ancre
+
+				// Documents
+				$objref = dol_sanitizeFileName($object->ref);
+				$relativepath = $objref . '/' . $objref . '.pdf';
+				$filedir = $conf->processrules->dir_output . '/' . $objref;
+				$urlsource = $_SERVER["PHP_SELF"] . "?id=" . $object->id;
+				$genallowed = 1;$user->rights->processrules->read;	// If you can read, you can build the PDF to read content
+				$delallowed = $user->rights->processrules->create;	// If you can create/edit, you can remove a file on card
+				print $formfile->showdocuments('processrules:processrules', $objref, $filedir, $urlsource, $genallowed, $delallowed, $object->modelpdf, 1, 0, 0, 28, 0, '', '', '', $langs->defaultlang);
+
+
 				$linktoelem = $form->showLinkToObjectBlock($object, null, array($object->element));
 				$somethingshown = $form->showLinkedObjectBlock($object, $linktoelem);
 
