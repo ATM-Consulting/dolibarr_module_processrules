@@ -51,11 +51,12 @@ $object = new ProcessRules($db);
 include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be include, not include_once.
 
 
-$permissiontoread = $user->rights->processrules->processrules->read;
-$permissiontoadd = $user->rights->processrules->processrules->write; // Used by the include of actions_addupdatedelete.inc.php and actions_lineupdown.inc.php
-$permissiontodelete = $user->rights->processrules->processrules->delete || ($permissiontoadd && isset($object->status) && $object->status == $object::STATUS_DRAFT);
-$permissionnote = $user->rights->processrules->processrules->write; // Used by the include of actions_setnotes.inc.php
-$permissiondellink = $user->rights->processrules->processrules->write; // Used by the include of actions_dellink.inc.php
+$permissioncreate = $user->rights->processrules->write;	// Used by the include of actions_dellink.inc.php
+$permissiontoread = $user->rights->processrules->read;
+$permissiontoadd = $user->rights->processrules->write; // Used by the include of actions_addupdatedelete.inc.php and actions_lineupdown.inc.php
+$permissiontodelete = $user->rights->processrules->delete || ($permissiontoadd && isset($object->status) && $object->status == $object::STATUS_DRAFT);
+$permissionnote = $user->rights->processrules->write; // Used by the include of actions_setnotes.inc.php
+$permissiondellink = $user->rights->processrules->write; // Used by the include of actions_dellink.inc.php
 $upload_dir = $conf->processrules->multidir_output[isset($object->entity) ? $object->entity : 1];
 
 $backurlforlist = dol_buildpath('/processrules/processrules_list.php', 1);
