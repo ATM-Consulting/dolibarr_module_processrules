@@ -24,6 +24,7 @@ if (!class_exists('SeedObject'))
 	require_once dirname(__FILE__).'/../config.php';
 }
 
+dol_include_once('workstation/class/workstation.class.php');
 
 class Procedure extends SeedObject
 {
@@ -66,6 +67,9 @@ class Procedure extends SeedObject
     /** @var int $ismultientitymanaged 0=No test on entity, 1=Test with field entity, 2=Test with link by societe */
     public $ismultientitymanaged = 1;
 
+    /** @var int @var workstation  */
+    public $fk_workstation = 0;
+
 	/** @var string $note_public */
 	public $note_public;
 
@@ -81,7 +85,12 @@ class Procedure extends SeedObject
 	/** @var int $fk_procedure_type */
 	public $fk_procedure_type;
 
-    /**
+
+	/** @var string $picto a picture file in [@...]/img/object_[...@].png  */
+	public $picto = 'procedure@processrules';
+
+
+	/**
      *  'type' is the field format.
      *  'label' the translation key.
      *  'enabled' is a condition when the field must be managed.
@@ -102,20 +111,6 @@ class Procedure extends SeedObject
      */
 
     public $fields = array(
-
-        'ref' => array(
-            'type' => 'varchar(50)',
-            'length' => 50,
-            'label' => 'Ref',
-            'enabled' => 1,
-            'visible' => 1,
-            'notnull' => 1,
-            'showoncombobox' => 1,
-            'index' => 1,
-            'position' => 10,
-            'searchall' => 1,
-            'comment' => 'Reference of object'
-        ),
 
         'entity' => array(
             'type' => 'integer',
@@ -144,16 +139,16 @@ class Procedure extends SeedObject
             )
         ),
 
-        'label' => array(
-            'type' => 'varchar(255)',
-            'label' => 'Label',
-            'enabled' => 1,
-            'visible' => 1,
-            'position' => 40,
-            'searchall' => 1,
-            'css' => 'minwidth200',
-            'showoncombobox' => 1
-        ),
+		'fk_workstation' => array(
+			'type' => 'integer', // workstation use PDODB so isn't compatible with dolibarr std
+			'label' => 'Workstation',
+			'visible' => 1,
+			'enabled' => 1,
+			'position' => 30,
+			'index' => 1,
+			'notnull' => 1,
+			'help' => 'ProcedureWorkstationHelp'
+		),
 
         'fk_processrules' => array(
 			'type' 		=> 'integer:processrules:processrules/class/processrules.class.php',
@@ -165,11 +160,12 @@ class Procedure extends SeedObject
 			'index'		=> 1
         ),
 
+
 		'fk_procedure_type' => array(
 			'type' => 'sellist:c_procedure_type:label:rowid::active=1',
 			'label' => 'Type',
-			'visible' => 1,
-			'enabled' => 1,
+			'visible' =>  0, // désactivation du dico "type" au profit de l'utilisation du module workstation. PS: on garde au cas où car "type" c'est générique
+			'enabled' => 0, // désactivation du dico "type" au profit de l'utilisation du module workstation. PS: on garde au cas où car "type" c'est générique
 			'position' => 30,
 			'index' => 1,
 			'help' => 'DictionnaryProcedureTypeHelp'
@@ -229,17 +225,11 @@ class Procedure extends SeedObject
 
     );
 
-    /** @var string $ref Object reference */
-	public $ref;
-
     /** @var int $entity Object entity */
 	public $entity;
 
 	/** @var int $status Object status */
 	public $status;
-
-    /** @var string $label Object label */
-    public $label;
 
     /** @var string $description Object description */
     public $description;
@@ -263,7 +253,6 @@ class Procedure extends SeedObject
 
 		$this->status = self::STATUS_DRAFT;
 		$this->entity = $conf->entity;
-		$this->picto = 'generic';
     }
 
     /**
@@ -272,11 +261,6 @@ class Procedure extends SeedObject
      */
     public function save($user)
     {
-        if (!empty($this->is_clone))
-        {
-            // TODO determinate if auto generate
-            $this->ref = '(PROV'.$this->id.')';
-        }
 
         if (empty($this->id)) $this->rang = $this->getMaxRang();
 
@@ -298,15 +282,6 @@ class Procedure extends SeedObject
 
 		return 0;
 	}
-
-    /**
-     * @see cloneObject
-     * @return void
-     */
-    public function clearUniqueFields()
-    {
-        $this->ref = 'Copy of '.$this->ref;
-    }
 
 
     /**
@@ -388,33 +363,7 @@ class Procedure extends SeedObject
 		}
 	}
 
-    /**
-     * @return string
-     */
-    public function getRef()
-    {
-		if (preg_match('/^[\(]?PROV/i', $this->ref) || empty($this->ref))
-		{
-			return $this->getNextRef();
-		}
 
-		return $this->ref;
-    }
-
-    /**
-     * @return string
-     */
-    private function getNextRef()
-    {
-		global $db,$conf;
-
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
-
-		$mask = !empty($conf->global->PROCEDURE_REF_MASK) ? $conf->global->PROCEDURE_REF_MASK : 'P{yy}{mm}-{0000}';
-		$ref = get_next_value($db, $mask, 'procedure', 'ref');
-
-		return $ref;
-    }
 
 
     /**
@@ -442,9 +391,6 @@ class Procedure extends SeedObject
     {
         if ($this->status === self::STATUS_DRAFT)
         {
-            // TODO determinate if auto generate
-//            $this->ref = $this->getRef();
-//            $this->fk_user_valid = $user->id;
             $this->status = self::STATUS_VALIDATED;
             $this->withChild = false;
 
@@ -515,29 +461,38 @@ class Procedure extends SeedObject
     {
 		global $langs;
 
+
+		$PDOdb = new TPDOdb($this->db);
+
+		$TWorkstation = new TWorkstation();
+		$TWorkstation->load($PDOdb, $this->fk_workstation);
+
+
         $result='';
         $label = '<u>' . $langs->trans("Showprocedure") . '</u>';
-        if (! empty($this->ref)) $label.= '<br><b>'.$langs->trans('Ref').':</b> '.$this->ref;
+        $label.= '<br><b>'.$langs->trans('Workstation').':</b> '.$TWorkstation->name;
 
-        $linkclose = '" title="'.dol_escape_htmltag($label, 1).'" class="classfortooltip">';
-        $link = '<a href="'.dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$this->id.urlencode($moreparams).$linkclose;
+		$url = dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$this->id.urlencode($moreparams);
+        $link = '<a class="classfortooltip clickable" href="'.$url.'" title="'.dol_escape_htmltag($label, 1).'" >';
 
-        $linkend='</a>';
 
-        $picto='generic';
-//        $picto='processrules@processrules';
 
-        if ($withpicto) $result.=($link.img_object($label, $picto, 'class="classfortooltip"').$linkend);
-        if ($withpicto && $withpicto != 2) $result.=' ';
+		$result.= '<a class="classfortooltip clickable" href="'.$url.'" title="'.dol_escape_htmltag($label, 1).'" >';
 
-        $result.=$link.$this->ref.$linkend;
+		if ($withpicto){
+			$result.=img_object('', $this->picto, 'class="paddingright valignmiddle clickable " ');
+		}
+		if ($withpicto && $withpicto != 2) $result.=' ';
+
+		$result.= $TWorkstation->name;
+        $result.= '</a>';
 
         return $result;
     }
 
     /**
      * @param int       $id             Identifiant
-     * @param null      $ref            Ref
+     * @param null      $ref            Ref not used
      * @param int       $withpicto      Add picto into link
      * @param string    $moreparams     Add more parameters in the URL
      * @return string
@@ -611,9 +566,21 @@ class Procedure extends SeedObject
 	 */
 	public function showInputField($val, $key, $value, $moreparam = '', $keysuffix = '', $keyprefix = '', $morecss = 0)
 	{
-		global $conf, $langs, $form;
+		global $conf, $langs, $form, $db;
 
-		$out = parent::showInputField($val, $key, $value, $moreparam, $keysuffix, $keyprefix, $morecss);
+		if($key == 'fk_workstation'){
+
+			dol_include_once('workstation/class/workstation.class.php');
+
+			$PDOdb = new TPDOdb;
+
+			$TWorkstation = TWorkstation::getWorstations($PDOdb, false, true);
+			$out = $form->selectArray('fk_workstation', $TWorkstation, $value, 0, 0, 0, '', 0, 0, 0, '', '', 1);
+
+		}
+		else{
+			$out = parent::showInputField($val, $key, $value, $moreparam, $keysuffix, $keyprefix, $morecss);
+		}
 
 		return $out;
 	}
@@ -642,9 +609,37 @@ class Procedure extends SeedObject
 			$val['type'] = 'sellist';
 		}
 
-		$out = parent::showOutputField($val, $key, $value, $moreparam, $keysuffix, $keyprefix, $morecss);
+		if($key == 'fk_workstation'){
+			$PDOdb = new TPDOdb;
+
+			$TWorkstation = new TWorkstation();
+			$TWorkstation->load($PDOdb, $value);
+			$out = '<a class="clickable" href="'.dol_buildpath('/workstation/workstation.php?action=view&id='.$TWorkstation->getId(),1).'" >'.img_picto('', 'object_generic').$TWorkstation->name.'</a>';
+
+		}
+		else{
+			$out = parent::showOutputField($val, $key, $value, $moreparam, $keysuffix, $keyprefix, $morecss);
+		}
+
 
 
 		return $out;
 	}
+
+	/**
+	 * Return HTML string to show a field into a page
+	 * Code very similar with showOutputField of extra fields
+	 *
+	 * @param  string  $key            Key of attribute
+	 * @param  string  $moreparam      To add more parametes on html input tag
+	 * @param  string  $keysuffix      Prefix string to add into name and id of field (can be used to avoid duplicate names)
+	 * @param  string  $keyprefix      Suffix string to add into name and id of field (can be used to avoid duplicate names)
+	 * @param  mixed   $morecss        Value for css to define size. May also be a numeric.
+	 * @return string
+	 */
+	public function showFieldValue($key, $moreparam = '', $keysuffix = '', $keyprefix = '', $morecss = '')
+	{
+		return $this->showOutputField($this->fields[$key], $key, $this->{$key}, $moreparam, $keyprefix, $morecss);
+	}
+
 }

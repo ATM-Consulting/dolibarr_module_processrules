@@ -154,8 +154,9 @@ echo $r->render($sql, array(
 		'rowid' // important : rowid doit exister dans la query sql pour les checkbox de massaction
 	)
 	,'title'=>array(
-		'ref' => $langs->trans('Ref.')
-		,'label' => $langs->trans('Label')
+		//'ref' => $langs->trans('Ref.')
+		//,'label' => $langs->trans('Label')
+		'fk_workstation'=> $langs->trans('Workstation')
 		,'fk_processrules'=> $langs->trans('processRules')
 		,'fk_procedure_type'=> $langs->trans('Type')
 		,'date_creation' => $langs->trans('DateCre')

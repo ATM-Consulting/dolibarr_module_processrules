@@ -296,8 +296,10 @@ else
             $formconfirm = getFormConfirmprocedure($form, $object, $action);
             if (!empty($formconfirm)) print $formconfirm;
 
-            $morehtmlref='<div class="refidno">';
-            $morehtmlref.='</div>';
+
+            $morehtmlref ='<div class="refidno">';
+			$morehtmlref.= $object->showFieldValue('fk_workstation');
+			$morehtmlref.='</div>';
 
             $morehtmlstatus.=''; //$object->getLibStatut(2); // pas besoin fait doublon
             dol_banner_tab($object, 'ref', "", 0, 'ref', 'ref', $morehtmlref, '', 0, '', $morehtmlstatus);
