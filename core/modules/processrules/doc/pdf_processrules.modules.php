@@ -493,22 +493,23 @@ class pdf_processrules extends CommonDocGenerator
 		 * @var $pdf TCPDF
 		 */
 
-
 		$curY = $y;
-
 		// Titre de la procedure
-		$pdf->SetXY($this->marge_gauche, $curY);
+		$pdf->SetXY($this->marge_gauche, $curY+1);
 		$pdf->SetFont('','', $this->default_font_size + 5);
 		$pdf->MultiCell($fullWidth, 3, $procedure->getNom() , 1, 'L');
 
 		// Description
-		$curY = $pdf->getY() + 6;
-		$this->resetDefaultFont($pdf);
-		$pdf->writeHTMLCell($fullWidth, 3, $this->marge_gauche, $curY, dol_htmlentitiesbr($procedure->description), 0, 1);
+		$curY = $pdf->getY() + 2;
 
-		$curY = $pdf->getY();
-		$pdf->setY($curY + 6);
+		if(!empty($procedure->description))
+		{
+			$this->resetDefaultFont($pdf);
+			$pdf->writeHTMLCell($fullWidth, 3, $this->marge_gauche, $curY, dol_htmlentitiesbr($procedure->description), 0, 1);
 
+			$curY = $pdf->getY();
+			$pdf->setY($curY + 6);
+		}
 
 	}
 
