@@ -190,7 +190,7 @@ class Procedure extends SeedObject
         ),
 
 		'note_public' => array(
-			'type' => 'html', // or text
+			'type' => 'text', // or text
 			'label' => 'NotePublic',
 			'enabled' => 1,
 			'visible' => 0,
@@ -198,7 +198,7 @@ class Procedure extends SeedObject
 		),
 
 		'note_private' => array(
-			'type' => 'html', // or text
+			'type' => 'text', // or text
 			'label' => 'NotePrivate',
 			'enabled' => 1,
 			'visible' => 0,
@@ -461,16 +461,11 @@ class Procedure extends SeedObject
     {
 		global $langs;
 
-
-		$PDOdb = new TPDOdb($this->db);
-
-		$TWorkstation = new TWorkstation();
-		$TWorkstation->load($PDOdb, $this->fk_workstation);
-
+		$name = $this->getNom();
 
         $result='';
         $label = '<u>' . $langs->trans("Showprocedure") . '</u>';
-        $label.= '<br><b>'.$langs->trans('Workstation').':</b> '.$TWorkstation->name;
+        $label.= '<br><b>'.$langs->trans('Workstation').':</b> '.$name;
 
 		$url = dol_buildpath('/processrules/procedure_card.php', 1).'?id='.$this->id.urlencode($moreparams);
         $link = '<a class="classfortooltip clickable" href="'.$url.'" title="'.dol_escape_htmltag($label, 1).'" >';
@@ -484,11 +479,26 @@ class Procedure extends SeedObject
 		}
 		if ($withpicto && $withpicto != 2) $result.=' ';
 
-		$result.= $TWorkstation->name;
+		$result.= $name;
         $result.= '</a>';
 
         return $result;
     }
+
+	/**
+	 * @return string
+	 */
+	public function getNom()
+	{
+		global $langs;
+
+		$PDOdb = new TPDOdb($this->db);
+
+		$TWorkstation = new TWorkstation();
+		$TWorkstation->load($PDOdb, $this->fk_workstation);
+
+		return $TWorkstation->name;
+	}
 
     /**
      * @param int       $id             Identifiant
