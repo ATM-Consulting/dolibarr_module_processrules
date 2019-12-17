@@ -41,6 +41,10 @@ class pdf_processrules extends CommonDocGenerator
 {
 	var $emetteur;	// Objet societe qui emet
 
+	public $maxImages4StepsLines = 3;
+
+	public $maxImagesHeight4StepsLines = 60;
+	public $ImagesGutter4StepsLines = 5;
 
 	/**
 	 *	Constructor
@@ -91,7 +95,8 @@ class pdf_processrules extends CommonDocGenerator
 	{
 		global $user,$conf,$langs,$hookmanager;
 
-		$object->fetch_thirdparty();
+		$this->object = $object;
+
 
 		if (! is_object($outputlangs)) $outputlangs=$langs;
 		// For backward compatibility with FPDF, force output charset to ISO, because FPDF expect text to be encoded in ISO
@@ -155,7 +160,7 @@ class pdf_processrules extends CommonDocGenerator
 				$this->default_font_size = pdf_getPDFFontSize($outputlangs);
 				$heightforinfotot = 8;	// Height reserved to output the info and total part
 				$heightforfreetext= (isset($conf->global->MAIN_PDF_FREETEXT_HEIGHT)?$conf->global->MAIN_PDF_FREETEXT_HEIGHT:5);	// Height reserved to output the free text on last page
-				$heightforfooter = $this->marge_basse + 8;	// Height reserved to output the footer (value include bottom margin)
+				$heightforfooter = $this->marge_basse + 20;	// Height reserved to output the footer (value include bottom margin)
 				if ($conf->global->MAIN_GENERATE_DOCUMENTS_SHOW_FOOT_DETAILS >0) $heightforfooter+= 6;
 				$pdf->SetAutoPageBreak(1,0);
 
@@ -189,41 +194,114 @@ class pdf_processrules extends CommonDocGenerator
 
 				// New page
 				$pdf->AddPage();
-				if (! empty($tplidx)) $pdf->useTemplate($tplidx);
-				$pagenb++;
-				$this->_pagehead($pdf, $object, 1, $outputlangs);
-				$this->resetDefaultFont($pdf);
-				$pdf->MultiCell(0, 3, '');		// Set interline to 3
-
-				$this->_pagefoot($pdf,$object,$outputlangs);
-
-				$curentY = 40;
-				$tab_top_newpage = (empty($conf->global->MAIN_PDF_DONOTREPEAT_HEAD)?42:10);
+				$curentY = $this->prepareNewPage($pdf, true);
 
 
+				// Display Notes
 				$displayNoteParam = array('object' => $object, 'y' => $curentY);
 				$displayNoteMethod = array($this, 'displayNote');
 				$curentY = $this->tryToPrint($pdf, $displayNoteMethod, true, $displayNoteParam);
 
+				// Display Description
+				$displayParam = array('object' => $object, 'y' => $curentY);
+				$curentY = $this->tryToPrint($pdf, array($this, 'displayDescription'), true, $displayParam);
+
 				$object->fetch_lines();
 
-				// Loop on each lines
+				// Loop on each  procedure
 				if(!empty($object->lines)){
 					foreach ($object->lines as $procedure)
 					{
+						/**
+						 * @var $procedure Procedure
+						 */
+
 						$displayParam = array(
-							'object' => $object,
 							'y' => $curentY,
+							'object' => $object,
 							'procedure' => $procedure
 						);
-						$displayMethod = array($this, 'displayProcedure');
-						$curentY = $this->tryToPrint($pdf, $displayMethod, true, $displayParam);
+
+						$curentY = $this->tryToPrint($pdf, array($this, 'displayProcedure'), true, $displayParam);
 						$curentY + 6;
+
+						$procedure->fetch_lines();
+
+						// Loop on each step
+						if(!empty($procedure->lines)){
+							foreach ($procedure->lines as $step)
+							{
+								/**
+								 * @var $step ProcessStep
+								 */
+
+								$displayParam = array(
+									'y' => $curentY,
+									'object' => $object,
+									'procedure' => $procedure,
+									'step' => $step
+								);
+
+								$curentY = $this->tryToPrint($pdf, array($this, 'displayStep'), true, $displayParam);
+
+								$TImage = $step->fetch_images();
+
+								// Le plus simple c'est de gérer les photos par une liste de lignes pour faciliter les sauts de pages
+								$TImageMatrix = $this->prepareImagesMatrix($TImage);
+
+								if(!empty($TImageMatrix))
+								{
+									foreach ($TImageMatrix as $matrixLine)
+									{
+										$col = 0; // init du numero de photo
+
+										if(!empty($matrixLine['TImage']))
+										{
+											$curentY+= $this->ImagesGutter4StepsLines;
+
+											// If photo too high, we moved completely on new page
+											if (($curentY + $matrixLine['lineHeight']) > $this->page_hauteur - $heightforfooter )
+											{
+												$pdf->AddPage();
+												$curentY = $this->prepareNewPage($pdf);
+											}
+
+											foreach ($matrixLine['TImage'] as $image)
+											{
+												// Calcule de la position
+												$x = $this->marge_gauche + $col * ($matrixLine['colWidth'] + $this->ImagesGutter4StepsLines);
+
+												// Centrage horizontale
+												$offsetX = round(($matrixLine['colWidth'] - $image->width) / 2 , 2);
+
+												// centrage verticale
+												$offsetY = round(($matrixLine['lineHeight'] - $image->height) / 2 , 2);
+
+												// Affichage de l'image
+												$pdf->Image(
+													$image->realFilePath,
+													$x + $offsetX,
+													$curentY + $offsetY,
+													$image->width,
+													$image->height,
+													'',
+													'',
+													'',
+													2,
+													150 // use 150 DPI to reduce PDF size
+												);
+
+												$col++;
+											}
+
+											$curentY+= $matrixLine['lineHeight'];
+										}
+									}
+								}
+							}
+						}
 					}
 				}
-
-
-
 
 
 				// Pied de page
@@ -411,19 +489,7 @@ class pdf_processrules extends CommonDocGenerator
 					$pdf->AddPage();
 					$pagenb++;
 
-					if (! empty($tplidx)) $pdf->useTemplate($tplidx);
-
-					if (empty($conf->global->MAIN_PDF_DONOTREPEAT_HEAD)) $this->_pagehead($pdf, $this->object, 0, $outputlangs);
-
-					$topY = $pdf->GetY() + 20;
-					$pdf->SetMargins($this->marge_gauche, $topY, $this->marge_droite); // Left, Top, Right
-
-					$pdf->SetAutoPageBreak(0, 0); // to prevent footer creating page
-					$footerheight = $this->_pagefoot($pdf,$this->object, $outputlangs);
-					$pdf->SetAutoPageBreak(1, $footerheight);
-
-					// The only function to edit the bottom margin of current page to set it.
-					$pdf->setPageOrientation('', 1, $footerheight);
+					$this->prepareNewPage($pdf);
 				}
 
 				// BACK TO START
@@ -444,6 +510,41 @@ class pdf_processrules extends CommonDocGenerator
 	}
 
 	/**
+	 * Prepare new page with header, footer, margin ...
+	 * @param TCPDF $pdf
+	 * @return float Y position
+	 */
+	public function prepareNewPage(&$pdf, $forceHead = false)
+	{
+		global $conf, $outputlangs;
+
+		// Set path to the background PDF File
+		if (! empty($conf->global->MAIN_ADD_PDF_BACKGROUND))
+		{
+			$pagecount = $pdf->setSourceFile($conf->mycompany->dir_output.'/'.$conf->global->MAIN_ADD_PDF_BACKGROUND);
+			$tplidx = $pdf->importPage(1);
+		}
+
+		if (! empty($tplidx)) $pdf->useTemplate($tplidx);
+
+		if ($forceHead || empty($conf->global->MAIN_PDF_DONOTREPEAT_HEAD)) $this->_pagehead($pdf, $this->object, 0, $outputlangs);
+
+		$topY = $pdf->GetY() + 20;
+		$pdf->SetMargins($this->marge_gauche, $topY, $this->marge_droite); // Left, Top, Right
+
+		$pdf->SetAutoPageBreak(0, 0); // to prevent footer creating page
+		$footerheight = $this->_pagefoot($pdf,$this->object, $outputlangs);
+		$pdf->SetAutoPageBreak(1, $footerheight);
+
+		// The only function to edit the bottom margin of current page to set it.
+		$pdf->setPageOrientation('', 1, $footerheight);
+
+		$tab_top_newpage = (empty($conf->global->MAIN_PDF_DONOTREPEAT_HEAD)?42:10);
+		return $tab_top_newpage;
+	}
+
+
+	/**
 	 * @param TCPDF $pdf
 	 * @param array $param
 	 * @return float Y position
@@ -454,12 +555,8 @@ class pdf_processrules extends CommonDocGenerator
 
 		if (! empty($object->note_public))
 		{
-			// Notes
-			if (! empty($object->note_public))
-			{
-				$pdf->SetFont('','', $this->default_font_size - 1);   // Dans boucle pour gerer multi-page
-				$pdf->writeHTMLCell(190, 3, $this->marge_gauche+1, $y, dol_htmlentitiesbr($object->note_public), 0, 1);
-			}
+			$pdf->SetFont('','', $this->default_font_size - 1);   // Dans boucle pour gerer multi-page
+			$pdf->writeHTMLCell(190, 3, $this->marge_gauche+1, $y, dol_htmlentitiesbr($object->note_public), 0, 1);
 
 			$nexY = $pdf->GetY();
 			$height_note=$nexY-$y;
@@ -475,6 +572,39 @@ class pdf_processrules extends CommonDocGenerator
 		return $y;
 	}
 
+
+	/**
+	 * @param TCPDF $pdf
+	 * @param array $param
+	 * @return float Y position
+	 */
+	public function displayDescription($pdf, $param){
+		$y = $param['y'];
+		$object = $param['object'];
+		/**
+		 * @var $object ProcessRules
+		 */
+
+		if (! empty($object->description))
+		{
+
+			$pdf->SetFont('','', $this->default_font_size - 1);   // Dans boucle pour gerer multi-page
+			$pdf->writeHTMLCell(190, 3, $this->marge_gauche+1, $y, dol_htmlentitiesbr($object->description), 0, 1);
+
+
+			$nexY = $pdf->GetY();
+			$height_note=$nexY-$y;
+
+			// Rect prend une longueur en 3eme param
+			$pdf->SetDrawColor(192,192,192);
+			$pdf->Rect($this->marge_gauche, $y-1, $this->page_largeur-$this->marge_gauche-$this->marge_droite, $height_note+1);
+
+			$y = $nexY+6;
+			$pdf->SetY($y);
+		}
+
+		return $y;
+	}
 
 	function displayProcedure($pdf, $param){
 		global $langs;
@@ -496,8 +626,8 @@ class pdf_processrules extends CommonDocGenerator
 		$curY = $y;
 		// Titre de la procedure
 		$pdf->SetXY($this->marge_gauche, $curY+1);
-		$pdf->SetFont('','', $this->default_font_size + 5);
-		$pdf->MultiCell($fullWidth, 3, $procedure->getNom() , 1, 'L');
+		$pdf->SetFont('','B', $this->default_font_size + 5);
+		$pdf->MultiCell($fullWidth, 3, strtoupper($procedure->getNom()) , 1, 'L');
 
 		// Description
 		$curY = $pdf->getY() + 2;
@@ -513,9 +643,151 @@ class pdf_processrules extends CommonDocGenerator
 
 	}
 
+	function displayStep($pdf, $param){
+		global $langs;
+
+		//($procedure, $htmlId='', $open = true, $editable = true)
+
+		$y = $param['y'];
+		$object = $param['object'];
+		$procedure = $param['procedure'];
+		$step = $param['step'];
+
+		$fullWidth = $this->page_largeur-$this->marge_gauche-$this->marge_droite;
+
+		/**
+		 * @var $procedure Procedure
+		 * @var $step ProcessStep
+		 * @var $pdf TCPDF
+		 */
+
+		$curY = $y;
+		// Titre de l'etape
+		$pdf->SetXY($this->marge_gauche, $curY+1);
+		$pdf->SetFont('','B', $this->default_font_size + 1);
+		$pdf->MultiCell($fullWidth, 3, $step->ref.' '.$step->label , 0, 'L');
+		$this->resetDefaultFont($pdf);
+
+		// Description
+		$curY = $pdf->getY() + 2;
+
+		if(!empty($step->description))
+		{
+			$this->resetDefaultFont($pdf);
+			$pdf->writeHTMLCell($fullWidth, 3, $this->marge_gauche, $curY, dol_htmlentitiesbr($step->description), 0, 1);
+
+			$curY = $pdf->getY();
+			$pdf->setY($curY + 6);
+		}
+
+	}
+
+
+
+
 	public function resetDefaultFont($pdf){
 		$pdf->SetFont('','', $this->default_font_size - 1);
 		$pdf->SetTextColor(0,0,0);
 	}
+
+	/**
+	 * Return dimensions to use for images onto PDF checking that width and height are not higher than
+	 * maximum (16x32 by default).
+	 *
+	 * @param	string		$realpath		Full path to photo file to use
+	 * @param	double		$maxwidth		size in mm
+	 * @param	double		$maxheight		size in mm
+	 * @return	array						Height and width to use to output image (in pdf user unit, so mm)
+	 */
+	function pdf_getSizeForImage($realpath, $maxwidth, $maxheight)
+	{
+		global $conf;
+
+		include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+		$tmp=dol_getImageSize($realpath);
+		if ($tmp['height'])
+		{
+			$width=(int) round($maxheight*$tmp['width']/$tmp['height']);	// I try to use maxheight
+			if ($width > $maxwidth)	// Pb with maxheight, so i use maxwidth
+			{
+				$width=$maxwidth;
+				$height=(int) round($maxwidth*$tmp['height']/$tmp['width']);
+			}
+			else	// No pb with maxheight
+			{
+				$height=$maxheight;
+			}
+		}
+		return array('width'=>$width,'height'=>$height);
+	}
+
+	/**
+	 * Return a prepared array of images
+	 *
+	 * @param	array		$TImage		list of images
+	 * @return	array
+	 */
+	function prepareImagesMatrix($TImage)
+	{
+		global $conf;
+
+		if(empty($TImage)){
+			return false;
+		}
+
+		$TImageMatrix = array();
+		$imageLineNum = 0;
+
+		$fullWidth = $this->page_largeur - $this->marge_gauche - $this->marge_droite;
+
+		$totalGutterWidth = $this->ImagesGutter4StepsLines * ($this->maxImages4StepsLines - 1);
+		$imageWidth = ($fullWidth - $totalGutterWidth) / $this->maxImages4StepsLines ;
+
+		$defaultLineArray = array(
+			'TImage' => array(),
+			'lineHeight' => 0,
+			'colWidth' => $imageWidth,
+			'fullWidth' => $fullWidth
+		);
+
+		foreach($TImage as $image){
+			$realFilePath = DOL_DATA_ROOT.'/'.$image->filepath.'/'.$image->filename;
+
+			if(is_file($realFilePath)){
+
+				// Ajouter la premiere ligne
+				if(empty($TImageMatrix[$imageLineNum])){
+					$TImageMatrix[$imageLineNum] = $defaultLineArray;
+				}
+
+				// Add new line if needed
+				$imageLineCount = count($TImageMatrix[$imageLineNum]['TImage']);
+				if($imageLineCount >= $this->maxImages4StepsLines)
+				{
+					$imageLineNum++;
+					$TImageMatrix[$imageLineNum] = $defaultLineArray;
+				}
+
+				// Define size of image
+				$imglinesize = $this->pdf_getSizeForImage($realFilePath, $imageWidth, $this->maxImagesHeight4StepsLines);
+
+				if(!empty($imglinesize)){
+					$TImageMatrix[$imageLineNum]['TImage'][$image->id] = $image;
+					$TImageMatrix[$imageLineNum]['TImage'][$image->id]->realFilePath = $realFilePath;
+					$TImageMatrix[$imageLineNum]['TImage'][$image->id]->width  = $imglinesize['width'];
+					$TImageMatrix[$imageLineNum]['TImage'][$image->id]->height = $imglinesize['height'];
+
+					// Update line height
+					$TImageMatrix[$imageLineNum]['lineHeight'] = max($TImageMatrix[$imageLineNum]['lineHeight'], $imglinesize['height']);
+				}
+			}
+		}
+
+
+		return $TImageMatrix;
+	}
+
+
+
 }
 
