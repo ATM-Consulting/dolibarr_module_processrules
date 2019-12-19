@@ -219,7 +219,7 @@ llxHeader('', $title);
 
 if ($action == 'create')
 {
-    print load_fiche_titre($langs->trans('Newprocedure'), '', 'processrules@processrules');
+    print load_fiche_titre($langs->trans('Newprocedure'), '', 'procedure@processrules');
 
     print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'">';
     print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
@@ -266,7 +266,7 @@ else
             print '<input type="hidden" name="id" value="'.$object->id.'">';
 
             $head = procedure_prepare_head($object);
-            $picto = 'processrules@processrules';
+            $picto = 'procedure@processrules';
             dol_fiche_head($head, 'card', $langs->trans('procedure'), 0, $picto);
 
             print '<table class="border centpercent">'."\n";
@@ -290,7 +290,7 @@ else
         elseif ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'create')))
         {
             $head = procedure_prepare_head($object);
-            $picto = 'processrules@processrules';
+            $picto = 'procedure@processrules';
             dol_fiche_head($head, 'card', $langs->trans('procedure'), -1, $picto);
 
             $formconfirm = getFormConfirmprocedure($form, $object, $action);

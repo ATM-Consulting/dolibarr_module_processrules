@@ -1,50 +1,99 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Generator: Adobe Illustrator 18.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 492.981 492.981" style="enable-background:new 0 0 492.981 492.981;" xml:space="preserve">
-<g>
-	<path d="M160.215,142.729h122.867c5.492,0,9.937-4.45,9.937-9.933V9.931c0-5.482-4.444-9.931-9.937-9.931H160.215
-		c-5.487,0-9.938,4.449-9.938,9.931v122.865C150.277,138.279,154.728,142.729,160.215,142.729z M183.057,32.782h77.182v77.166
-		h-77.182V32.782z"/>
-	<path d="M160.215,317.855h122.867c5.492,0,9.937-4.451,9.937-9.933V185.057c0-5.482-4.444-9.932-9.937-9.932H160.215
-		c-5.487,0-9.938,4.449-9.938,9.932v122.865C150.277,313.404,154.728,317.855,160.215,317.855z M183.057,207.907h77.182v77.167
-		h-77.182V207.907z"/>
-	<path d="M252.396,482.76c-8.388,0-16.79-3.201-23.176-9.603l-12.967-12.958h-33.196v-77.166h77.182v12.741L293.019,363v-2.818
-		c0-5.482-4.444-9.932-9.937-9.932H160.215c-5.487,0-9.938,4.449-9.938,9.932v122.865c0,5.482,4.45,9.934,9.938,9.934h122.867
-		c5.492,0,9.937-4.451,9.937-9.934v-27.338l-17.442,17.447C269.171,479.559,260.783,482.76,252.396,482.76z"/>
-	<path d="M337.902,364.457c-6.4-6.403-16.775-6.403-23.175,0l-62.332,62.344l-19.157-19.151c-6.406-6.402-16.774-6.402-23.176,0
-		c-6.406,6.402-6.406,16.774,0,23.177l30.747,30.74c3.198,3.201,7.392,4.803,11.586,4.803c4.193,0,8.388-1.602,11.59-4.803
-		l73.917-73.933C344.304,381.231,344.304,370.859,337.902,364.457z"/>
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="Capa_1"
+   x="0px"
+   y="0px"
+   viewBox="0 0 492.981 492.981"
+   style="enable-background:new 0 0 492.981 492.981;"
+   xml:space="preserve"
+   sodipodi:docname="checked-box-svgrepo-com.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"><metadata
+   id="metadata47"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+   id="defs45">
+	
+	
+	
+	
+</defs><sodipodi:namedview
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="1920"
+   inkscape:window-height="1014"
+   id="namedview43"
+   showgrid="false"
+   inkscape:zoom="0.47872029"
+   inkscape:cx="246.49049"
+   inkscape:cy="246.49049"
+   inkscape:window-x="0"
+   inkscape:window-y="0"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="Capa_1" />
+<path
+   inkscape:connector-curvature="0"
+   id="path4"
+   d="M 34.101462,493.3228 H 457.24274 c 18.91388,0 34.22199,-15.3297 34.22199,-34.21026 V 35.952918 c 0,-18.880576 -15.30468,-34.2068244 -34.22199,-34.2068244 H 34.101462 c -18.896656,0 -34.22544141,15.3228144 -34.22544141,34.2068244 V 459.11254 c 0,18.88056 15.32878541,34.21026 34.22544141,34.21026 z M 112.76696,114.65065 H 378.57381 V 380.4217 H 112.76696 Z"
+   style="stroke-width:3.44399953" />
+<g
+   id="g12">
 </g>
-<g>
+<g
+   id="g14">
 </g>
-<g>
+<g
+   id="g16">
 </g>
-<g>
+<g
+   id="g18">
 </g>
-<g>
+<g
+   id="g20">
 </g>
-<g>
+<g
+   id="g22">
 </g>
-<g>
+<g
+   id="g24">
 </g>
-<g>
+<g
+   id="g26">
 </g>
-<g>
+<g
+   id="g28">
 </g>
-<g>
+<g
+   id="g30">
 </g>
-<g>
+<g
+   id="g32">
 </g>
-<g>
+<g
+   id="g34">
 </g>
-<g>
+<g
+   id="g36">
 </g>
-<g>
+<g
+   id="g38">
 </g>
-<g>
-</g>
-<g>
+<g
+   id="g40">
 </g>
 </svg>

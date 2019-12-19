@@ -370,6 +370,10 @@ function _displaySortableSteps($Tab, $htmlClass = '', $open = true, $backtopage 
 		$out = '<ul class="pr-sortable-list steps '.$htmlClass.'" >';
 		foreach ($Tab as $step)
 		{
+			/**
+			 * @var $step ProcessStep
+			 */
+
 			$class = '';
 			if($open){
 				$class.= 'sortableListsClosed';
@@ -378,7 +382,7 @@ function _displaySortableSteps($Tab, $htmlClass = '', $open = true, $backtopage 
 
 			$out.= '<li id="item_'.$step->id.'" class="pr-sortable-list__item '.$class.'" ';
 			$out.= ' data-id="'.$step->id.'" ';
-			$out.= ' data-ref="'.$step->ref.'"';
+//			$out.= ' data-ref="'.$step->ref.'"';
 			$out.= ' data-title="'.dol_escape_htmltag($step->label).'" ';
 			$out.= ' data-parent="proc_'.$step->fk_procedure.'"';
 			$out.= '>';
@@ -386,7 +390,8 @@ function _displaySortableSteps($Tab, $htmlClass = '', $open = true, $backtopage 
 			$out.= '<div class="pr-sortable-list__item__title__flex">';
 
 			$out.= '<div class="pr-sortable-list__item__title__col"  style="flex:1">';
-			$out.= dol_htmlentities($step->ref) . ' - ' . dol_htmlentities($step->label);
+			//$out.= dol_htmlentities($step->ref) . ' - ' . dol_htmlentities($step->label);
+			$out.=  dol_htmlentities($step->getNom());
 			$out.= '</div>';
 
 			$out.= '<div class="pr-sortable-list__item__title__col"  style="flex:3">';

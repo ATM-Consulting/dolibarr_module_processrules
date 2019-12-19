@@ -24,19 +24,19 @@ dol_include_once('processrules/lib/processrules.lib.php');
 if(empty($user->rights->processrules->read)) accessforbidden();
 $permissiondellink = $user->rights->webhost->write;	// Used by the include of actions_dellink.inc.php
 
-$langs->load('processrules@processrules');
+$langs->load('step@processrules');
 
 $action = GETPOST('action');
 $id = GETPOST('id', 'int');
-$ref = GETPOST('ref');
+$rang = GETPOST('rang');
 
 $contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'processstepcard';   // To manage different context of search
 $backtopage = GETPOST('backtopage', 'alpha');
 
 $object = new ProcessStep($db);
 
-if (!empty($id) || (!empty($ref) && empty($action))) {
-	$result = $object->fetch($id, 0, $ref);
+if (!empty($id) || (!empty($rang) && empty($action))) {
+	$result = $object->fetch($id, 0, $rang);
 
 	if ($result <= 0 || empty($object->id)) {
 		print $langs->trans('NotFound');
@@ -59,7 +59,7 @@ if ($object->isextrafieldmanaged)
  * Actions
  */
 
-$parameters = array('id' => $id, 'ref' => $ref);
+$parameters = array('id' => $id);
 $reshook = $hookmanager->executeHooks('doActions', $parameters, $object, $action); // Note that $action and $object may have been modified by some
 if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 
@@ -200,7 +200,7 @@ llxHeader('', $title);
 
 if ($action == 'create')
 {
-    print load_fiche_titre($langs->trans('NewProcessStep'), '', 'processrules@processrules');
+    print load_fiche_titre($langs->trans('NewProcessStep'), '', 'step@processrules');
 
     print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'">';
     print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
@@ -247,7 +247,7 @@ else
             print '<input type="hidden" name="id" value="'.$object->id.'">';
 
             $head = processstep_prepare_head($object);
-            $picto = 'processrules@processrules';
+            $picto = 'step@processrules';
             dol_fiche_head($head, 'card', $langs->trans('processStep'), 0, $picto);
 
             print '<table class="border centpercent">'."\n";
@@ -271,7 +271,7 @@ else
         elseif ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'create')))
         {
             $head = processstep_prepare_head($object);
-            $picto = 'processrules@processrules';
+            $picto = 'step@processrules';
             dol_fiche_head($head, 'card', $langs->trans('processStep'), -1, $picto);
 
             $formconfirm = getFormConfirmProcessStep($form, $object, $action);
@@ -289,7 +289,7 @@ else
 
 
             $morehtmlstatus.=''; //$object->getLibStatut(2); // pas besoin fait doublon
-            dol_banner_tab($object, 'ref', "", 0, 'ref', 'ref', $morehtmlref, '', 0, '', $morehtmlstatus);
+            dol_banner_tab($object, 'id', "", 0, 'label', 'label', $morehtmlref, '', 0, '', $morehtmlstatus);
 
             print '<div class="fichecenter">';
 

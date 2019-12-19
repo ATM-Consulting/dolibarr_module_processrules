@@ -99,7 +99,7 @@ class ProcessStep extends SeedObject
      */
 
     public $fields = array(
-
+/*
         'ref' => array(
             'type' => 'varchar(50)',
             'length' => 50,
@@ -112,7 +112,7 @@ class ProcessStep extends SeedObject
             'position' => 10,
             'searchall' => 1,
             'comment' => 'Reference of object'
-        ),
+        ),*/
 
         'entity' => array(
             'type' => 'integer',
@@ -148,6 +148,7 @@ class ProcessStep extends SeedObject
             'visible' => 1,
             'position' => 40,
             'searchall' => 1,
+			'notnull' => 1,
             'css' => 'minwidth200',
             'showoncombobox' => 1
         ),
@@ -437,7 +438,7 @@ class ProcessStep extends SeedObject
 
         $result='';
         $label = '<u>' . $langs->trans("ShowProcessStep") . '</u>';
-        if (! empty($this->ref)) $label.= '<br><b>'.$langs->trans('Ref').':</b> '.$this->ref;
+        $label.= '<br><b>'.$langs->trans('Ref').':</b> '.$this->getNom();
 
         $linkclose = '" title="'.dol_escape_htmltag($label, 1).'" class="classfortooltip">';
         $link = '<a href="'.dol_buildpath('/processrules/processstep_card.php', 1).'?id='.$this->id.urlencode($moreparams).$linkclose;
@@ -450,10 +451,22 @@ class ProcessStep extends SeedObject
         if ($withpicto) $result.=($link.img_object($label, $picto, 'class="classfortooltip"').$linkend);
         if ($withpicto && $withpicto != 2) $result.=' ';
 
-        $result.=$link.$this->ref.$linkend;
+        $result.=$link.$this->getNom().$linkend;
 
         return $result;
     }
+
+	/**
+	 * @return string
+	 */
+	public function getNom()
+	{
+		global $langs;
+
+		$name = $langs->trans('processruleStepRankPrefix').($this->rang+1).' - '.$this->label;
+
+		return $name;
+	}
 
     /**
      * @param int       $id             Identifiant

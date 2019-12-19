@@ -96,7 +96,7 @@ if ($id > 0 || ! empty($ref))
 	$morehtmlref.='</div>';
 
 
-	dol_banner_tab($object, 'ref', "", 0, 'ref', 'ref', $morehtmlref);
+	dol_banner_tab($object, 'id', "", 0, 'label', 'label', $morehtmlref);
 
 
 	print '<div class="fichecenter">';

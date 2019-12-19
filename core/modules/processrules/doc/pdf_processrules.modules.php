@@ -43,7 +43,7 @@ class pdf_processrules extends CommonDocGenerator
 
 	public $maxImages4StepsLines = 3;
 
-	public $maxImagesHeight4StepsLines = 60;
+	public $maxImagesHeight4StepsLines = 80;
 	public $ImagesGutter4StepsLines = 5;
 
 	/**
@@ -681,7 +681,7 @@ class pdf_processrules extends CommonDocGenerator
 		// Titre de l'etape
 		$pdf->SetXY($this->marge_gauche, $curY+1);
 		$pdf->SetFont('','B', $this->default_font_size + 1);
-		$pdf->MultiCell($fullWidth, 3, $step->ref.' '.$step->label , 0, 'L');
+		$pdf->MultiCell($fullWidth, 3, dol_html_entity_decode($step->getNom(), ENT_QUOTES) , 0, 'L');
 		$this->resetDefaultFont($pdf);
 
 		// Description

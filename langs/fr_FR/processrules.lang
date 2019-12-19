@@ -112,6 +112,8 @@ ConfirmCloneprocessRulesBody=Souhaitez-vous cloner cette fiche méthode %s ?
 ConfirmCloneprocedureBody=Souhaitez-vous cloner cette fiche procédure %s ?
 ConfirmCloneprocessStepBody=Souhaitez-vous cloner cette fiche étape %s ?
 
+processruleStepRankPrefix=Étape
+
 # WORKSTATION
 ProcedureWorkstationHelp=Vous pouvez ajouter des postes de charge dans GPAO -> Nouveau poste de charge
 
