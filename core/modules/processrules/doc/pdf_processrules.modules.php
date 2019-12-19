@@ -277,20 +277,12 @@ class pdf_processrules extends CommonDocGenerator
 												// centrage verticale
 												$offsetY = round(($matrixLine['lineHeight'] - $image->height) / 2 , 2);
 
-//												if($image->deg > 0)
-//												{
-//													// Start Transformation
-//													$pdf->StartTransform();
-//													$pdf->Rotate($image->deg, $x + $offsetX + $image->width/2, $curentY + $offsetY + $image->height / 2);
-//
-//
-//													if($image->deg == 90){
-//
-//													}
-//													elseif($image->deg == 270){
-//
-//													}
-//												}
+												if($image->deg > 0)
+												{
+													// Start Transformation
+													$pdf->StartTransform();
+													$pdf->Rotate($image->deg, $x + $offsetX + $image->width/2, $curentY + $offsetY + $image->height / 2);
+												}
 
 
 												// Affichage de l'image
@@ -307,11 +299,11 @@ class pdf_processrules extends CommonDocGenerator
 													150 // use 150 DPI to reduce PDF size
 												);
 
-//												if($image->deg > 0)
-//												{
-//													// Stop Transformation
-//													$pdf->StopTransform();
-//												}
+												if($image->deg > 0)
+												{
+													// Stop Transformation
+													$pdf->StopTransform();
+												}
 
 												$col++;
 											}
@@ -729,26 +721,15 @@ class pdf_processrules extends CommonDocGenerator
 
 		include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
 		$tmp=dol_getImageSize($realpath);
-		if ($tmp['height'])
-		{
-			$width=(int) round($maxheight*$tmp['width']/$tmp['height']);	// I try to use maxheight
-			if ($width > $maxwidth)	// Pb with maxheight, so i use maxwidth
-			{
-				$width=$maxwidth;
-				$height=(int) round($maxwidth*$tmp['height']/$tmp['width']);
-			}
-			else	// No pb with maxheight
-			{
-				$height=$maxheight;
-			}
-		}
-
+		$tmpWidth = $tmp['width'];
+		$tmpHeight = $tmp['height'];
 
 		$return = array(
-			'width'=>$width,
-			'height'=>$height,
+			'width'=>0,
+			'height'=>0,
 			'deg' => 0
 		);
+
 
 		if(!empty($conf->global->MAIN_USE_EXIF_ROTATION))
 		{
@@ -770,6 +751,36 @@ class pdf_processrules extends CommonDocGenerator
 						default:
 							$return['deg'] = 0;
 					}
+				}
+			}
+		}
+
+		if ($tmpHeight)
+		{
+			if($return['deg'] == 90 || $return['deg'] == 270)
+			{
+				$return['height']=(int) round($maxheight*$tmpHeight/$tmpWidth);	// I try to use maxheight
+				if ($return['height'] > $maxwidth)	// Pb with maxheight, so i use maxwidth
+				{
+					$return['height']=$maxwidth;
+					$return['width']=(int) round($maxwidth*$tmpWidth/$tmpHeight);
+				}
+				else	// No pb with maxheight
+				{
+					$return['width']=$maxheight;
+				}
+			}
+			else
+			{
+				$return['width']=(int) round($maxheight*$tmpWidth/$tmpHeight);	// I try to use maxheight
+				if ($return['width'] > $maxwidth)	// Pb with maxheight, so i use maxwidth
+				{
+					$return['width']=$maxwidth;
+					$return['height']=(int) round($maxwidth*$tmpHeight/$tmpWidth);
+				}
+				else	// No pb with maxheight
+				{
+					$return['height']=$maxheight;
 				}
 			}
 		}
@@ -834,8 +845,19 @@ class pdf_processrules extends CommonDocGenerator
 					$TImageMatrix[$imageLineNum]['TImage'][$image->id]->height = $imglinesize['height'];
 					$TImageMatrix[$imageLineNum]['TImage'][$image->id]->deg = $imglinesize['deg'];
 
-					// Update line height
-					$TImageMatrix[$imageLineNum]['lineHeight'] = max($TImageMatrix[$imageLineNum]['lineHeight'], $imglinesize['height']);
+
+
+					if($image->deg == 90 || $image->deg == 270){
+						// Update line height
+						// note after rotate the final height is image width
+						$TImageMatrix[$imageLineNum]['lineHeight'] = max($TImageMatrix[$imageLineNum]['lineHeight'], $imglinesize['width']);
+					}
+					else{
+						// Update line height
+						$TImageMatrix[$imageLineNum]['lineHeight'] = max($TImageMatrix[$imageLineNum]['lineHeight'], $imglinesize['height']);
+					}
+
+
 				}
 			}
 		}
