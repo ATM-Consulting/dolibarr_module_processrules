@@ -511,7 +511,12 @@ class Procedure extends SeedObject
 		$TWorkstation = new TWorkstation();
 		$TWorkstation->load($PDOdb, $this->fk_workstation);
 
-		return $TWorkstation->name .' '.$this->name;
+		$name =  $TWorkstation->name;
+		if(!empty($this->label)){
+			$name.= ' - '.$this->label;
+		}
+
+		return $name;
 	}
 
     /**
