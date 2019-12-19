@@ -150,6 +150,17 @@ class Procedure extends SeedObject
 			'help' => 'ProcedureWorkstationHelp'
 		),
 
+		'label' => array(
+			'type' => 'varchar(255)',
+			'label' => 'Label',
+			'enabled' => 1,
+			'visible' => 1,
+			'position' => 40,
+			'searchall' => 1,
+			'css' => 'minwidth200',
+			'showoncombobox' => 1
+		),
+
         'fk_processrules' => array(
 			'type' 		=> 'integer:processrules:processrules/class/processrules.class.php',
 			'label'		=> 'processRules',
@@ -230,6 +241,9 @@ class Procedure extends SeedObject
 
 	/** @var int $status Object status */
 	public $status;
+
+	/** @var string $label Object label */
+	public $label;
 
     /** @var string $description Object description */
     public $description;
@@ -497,7 +511,7 @@ class Procedure extends SeedObject
 		$TWorkstation = new TWorkstation();
 		$TWorkstation->load($PDOdb, $this->fk_workstation);
 
-		return $TWorkstation->name;
+		return $TWorkstation->name .' '.$this->name;
 	}
 
     /**

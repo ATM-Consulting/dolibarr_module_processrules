@@ -184,10 +184,10 @@ class pdf_processrules extends CommonDocGenerator
 				if (method_exists($pdf,'AliasNbPages')) $pdf->AliasNbPages();
 
 				$pdf->SetTitle($outputlangs->convToOutputCharset($object->ref));
-				$pdf->SetSubject($outputlangs->transnoentities("Shipment"));
+				$pdf->SetSubject($outputlangs->transnoentities("Processrules"));
 				$pdf->SetCreator("Dolibarr ".DOL_VERSION);
 				$pdf->SetAuthor($outputlangs->convToOutputCharset($user->getFullName($outputlangs)));
-				$pdf->SetKeyWords($outputlangs->convToOutputCharset($object->ref)." ".$outputlangs->transnoentities("Shipment"));
+				$pdf->SetKeyWords($outputlangs->convToOutputCharset($object->ref)." ".$outputlangs->transnoentities("Processrules"));
 				if (! empty($conf->global->MAIN_DISABLE_PDF_COMPRESSION)) $pdf->SetCompression(false);
 
 				$pdf->SetMargins($this->marge_gauche, $this->marge_haute, $this->marge_droite);   // Left, Top, Right
@@ -277,6 +277,22 @@ class pdf_processrules extends CommonDocGenerator
 												// centrage verticale
 												$offsetY = round(($matrixLine['lineHeight'] - $image->height) / 2 , 2);
 
+//												if($image->deg > 0)
+//												{
+//													// Start Transformation
+//													$pdf->StartTransform();
+//													$pdf->Rotate($image->deg, $x + $offsetX + $image->width/2, $curentY + $offsetY + $image->height / 2);
+//
+//
+//													if($image->deg == 90){
+//
+//													}
+//													elseif($image->deg == 270){
+//
+//													}
+//												}
+
+
 												// Affichage de l'image
 												$pdf->Image(
 													$image->realFilePath,
@@ -290,6 +306,12 @@ class pdf_processrules extends CommonDocGenerator
 													2,
 													150 // use 150 DPI to reduce PDF size
 												);
+
+//												if($image->deg > 0)
+//												{
+//													// Stop Transformation
+//													$pdf->StopTransform();
+//												}
 
 												$col++;
 											}
@@ -449,6 +471,7 @@ class pdf_processrules extends CommonDocGenerator
 	}
 
 	/**
+	 * TODO renomer cette methode avec le nouveau nom qui va être dans dolibarr standard (probablement v12)
 	 * @param TCPDF $pdf
 	 * @param string $method
 	 * @param bool $autoPageBreak
@@ -540,7 +563,8 @@ class pdf_processrules extends CommonDocGenerator
 		$pdf->setPageOrientation('', 1, $footerheight);
 
 		$tab_top_newpage = (empty($conf->global->MAIN_PDF_DONOTREPEAT_HEAD)?42:10);
-		return $tab_top_newpage;
+		$pdf->SetY($tab_top_newpage);
+		return empty($conf->global->MAIN_PDF_DONOTREPEAT_HEAD)?42:10;
 	}
 
 
@@ -718,7 +742,39 @@ class pdf_processrules extends CommonDocGenerator
 				$height=$maxheight;
 			}
 		}
-		return array('width'=>$width,'height'=>$height);
+
+
+		$return = array(
+			'width'=>$width,
+			'height'=>$height,
+			'deg' => 0
+		);
+
+		if(!empty($conf->global->MAIN_USE_EXIF_ROTATION))
+		{
+			$exif = @exif_read_data($realpath);
+
+			if ($exif !== false) {
+				$orientation = intval(@$exif['Orientation']);
+				if (in_array($orientation, array(3, 6, 8))) {
+					switch ($orientation) {
+						case 3:
+							$return['deg'] = 180;
+							break;
+						case 6:
+							$return['deg'] = 270;
+							break;
+						case 8:
+							$return['deg'] = 90;
+							break;
+						default:
+							$return['deg'] = 0;
+					}
+				}
+			}
+		}
+
+		return $return;
 	}
 
 	/**
@@ -776,6 +832,7 @@ class pdf_processrules extends CommonDocGenerator
 					$TImageMatrix[$imageLineNum]['TImage'][$image->id]->realFilePath = $realFilePath;
 					$TImageMatrix[$imageLineNum]['TImage'][$image->id]->width  = $imglinesize['width'];
 					$TImageMatrix[$imageLineNum]['TImage'][$image->id]->height = $imglinesize['height'];
+					$TImageMatrix[$imageLineNum]['TImage'][$image->id]->deg = $imglinesize['deg'];
 
 					// Update line height
 					$TImageMatrix[$imageLineNum]['lineHeight'] = max($TImageMatrix[$imageLineNum]['lineHeight'], $imglinesize['height']);

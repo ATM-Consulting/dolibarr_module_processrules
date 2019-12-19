@@ -533,7 +533,12 @@ class ProcessStep extends SeedObject
 	{
 		global $conf, $langs, $form;
 
+		/**
+		 * @var $form Form
+		 */
+
 		$out = parent::showInputField($val, $key, $value, $moreparam, $keysuffix, $keyprefix, $morecss);
+
 
 		return $out;
 	}
