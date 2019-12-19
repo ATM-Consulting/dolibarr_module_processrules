@@ -216,6 +216,8 @@ class pdf_processrules extends CommonDocGenerator
 						 * @var $procedure Procedure
 						 */
 
+						$curentY + 6;
+
 						$displayParam = array(
 							'y' => $curentY,
 							'object' => $object,
@@ -223,6 +225,7 @@ class pdf_processrules extends CommonDocGenerator
 						);
 
 						$curentY = $this->tryToPrint($pdf, array($this, 'displayProcedure'), true, $displayParam);
+
 						$curentY + 6;
 
 						$procedure->fetch_lines();
@@ -313,6 +316,8 @@ class pdf_processrules extends CommonDocGenerator
 									}
 								}
 							}
+
+							$curentY + 6;
 						}
 					}
 				}
