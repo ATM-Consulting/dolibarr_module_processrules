@@ -200,11 +200,11 @@ class pdf_processrules extends CommonDocGenerator
 				// Display Notes
 				$displayNoteParam = array('object' => $object, 'y' => $curentY);
 				$displayNoteMethod = array($this, 'displayNote');
-				$curentY = $this->tryToPrint($pdf, $displayNoteMethod, true, $displayNoteParam);
+				$curentY = $this->pdfPrintCallback($pdf, $displayNoteMethod, true, $displayNoteParam);
 
 				// Display Description
 				$displayParam = array('object' => $object, 'y' => $curentY);
-				$curentY = $this->tryToPrint($pdf, array($this, 'displayDescription'), true, $displayParam);
+				$curentY = $this->pdfPrintCallback($pdf, array($this, 'displayDescription'), true, $displayParam);
 
 				$object->fetch_lines();
 
@@ -224,7 +224,7 @@ class pdf_processrules extends CommonDocGenerator
 							'procedure' => $procedure
 						);
 
-						$curentY = $this->tryToPrint($pdf, array($this, 'displayProcedure'), true, $displayParam);
+						$curentY = $this->pdfPrintCallback($pdf, array($this, 'displayProcedure'), true, $displayParam);
 
 						$curentY + 6;
 
@@ -245,7 +245,7 @@ class pdf_processrules extends CommonDocGenerator
 									'step' => $step
 								);
 
-								$curentY = $this->tryToPrint($pdf, array($this, 'displayStep'), true, $displayParam);
+								$curentY = $this->pdfPrintCallback($pdf, array($this, 'displayStep'), true, $displayParam);
 
 								$TImage = $step->fetch_images();
 
@@ -468,65 +468,55 @@ class pdf_processrules extends CommonDocGenerator
 	}
 
 	/**
-	 * TODO renomer cette methode avec le nouveau nom qui va être dans dolibarr standard (probablement v12)
-	 * @param TCPDF $pdf
-	 * @param string $method
-	 * @param bool $autoPageBreak
-	 * @param array $param
-	 * @return float Y position
+	 * A convenient method for PDF pagebreak
+	 *
+	 * @param 	TCPDF 	$pdf TCPDF object, this is also passed as first parameter of $callback function
+	 * @param 	callable $callback a  callable callback function
+	 * @param 	bool 	$autoPageBreak enable page jump
+	 * @param 	array 	$param this is passed to seccond parametter of $callback function
+	 * @return 	float 	Y position
 	 */
-	public function tryToPrint(&$pdf, $callback, $autoPageBreak = true, $param = array())
+	public function pdfPrintCallback(&$pdf, callable $callback, $autoPageBreak = true, $param = array())
 	{
 		global $conf, $outputlangs;
 
+		$posY = $posYBefore = $pdf->GetY();
+
 		if (is_callable($callback))
 		{
-
-
 			$pdf->startTransaction();
-			$posYBefore = $pdf->GetY();
 			$pageposBefore=$pdf->getPage();
 
 			// START FIRST TRY
 			$res = call_user_func_array($callback, array(&$pdf, $param));
-
 			$pageposAfter=$pdf->getPage();
-			$posYAfter = $pdf->GetY();
-
+			$posY = $posYAfter = $pdf->GetY();
 			// END FIRST TRY
 
-
-
-			//if ($method == 'printNotes') {var_dump('yes',$pageposafter>$pageposbefore, $pageposafter, $pageposbefore,$posybefore, $posyafter); exit;}
 			if($autoPageBreak && $pageposAfter > $pageposBefore )
 			{
 				$pagenb = $pageposBefore;
 				$pdf->rollbackTransaction(true);
 				$posY = $posYBefore;
-
 				// prepare pages to receive content
 				while ($pagenb < $pageposAfter) {
 					$pdf->AddPage();
 					$pagenb++;
-
 					$this->prepareNewPage($pdf);
 				}
-
 				// BACK TO START
 				$pdf->setPage($pageposBefore);
 				$pdf->SetY($posYBefore);
-
 				// RESTART DISPLAY BLOCK - without auto page break
-				$posY = $this->tryToPrint($pdf, $callback, false, $param);
-
+				$posY = $this->pdfPrintCallback($pdf, $callback, false, $param);
 			}
 			else // No pagebreak
 			{
 				$pdf->commitTransaction();
 			}
-
-			return $pdf->GetY();
 		}
+
+		return $posY;
 	}
 
 	/**
