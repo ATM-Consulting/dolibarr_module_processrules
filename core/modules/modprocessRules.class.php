@@ -69,26 +69,6 @@ class modprocessRules extends DolibarrModules
 		// If file is in module/img directory under name object_pictovalue.png, use this->picto='pictovalue@module'
 		$this->picto='processrules@processrules';
 
-		// Defined all module parts (triggers, login, substitutions, menus, css, etc...)
-		// for default path (eg: /processrules/core/xxxxx) (0=disable, 1=enable)
-		// for specific path of parts (eg: /processrules/core/modules/barcode)
-		// for specific css file (eg: /processrules/css/processrules.css.php)
-		//$this->module_parts = array(
-		//                        	'triggers' => 0,                                 	// Set this to 1 if module has its own trigger directory (core/triggers)
-		//							'login' => 0,                                    	// Set this to 1 if module has its own login method directory (core/login)
-		//							'substitutions' => 0,                            	// Set this to 1 if module has its own substitution function file (core/substitutions)
-		//							'menus' => 0,                                    	// Set this to 1 if module has its own menus handler directory (core/menus)
-		//							'theme' => 0,                                    	// Set this to 1 if module has its own theme directory (theme)
-		//                        	'tpl' => 0,                                      	// Set this to 1 if module overwrite template dir (core/tpl)
-		//							'barcode' => 0,                                  	// Set this to 1 if module has its own barcode directory (core/modules/barcode)
-		//							'models' => 0,                                   	// Set this to 1 if module has its own models directory (core/modules/xxx)
-		//							'css' => array('/processrules/css/processrules.css.php'),	// Set this to relative path of css file if module has its own css file
-	 	//							'js' => array('/processrules/js/processrules.js'),          // Set this to relative path of js file if module must load a js on all pages
-		//							'hooks' => array('hookcontext1','hookcontext2')  	// Set here all hooks context managed by module
-		//							'dir' => array('output' => 'othermodulename'),      // To force the default directories names
-		//							'workflow' => array('WORKFLOW_MODULE1_YOURACTIONTYPE_MODULE2'=>array('enabled'=>'! empty($conf->module1->enabled) && ! empty($conf->module2->enabled)', 'picto'=>'yourpicto@processrules')) // Set here all workflow context managed by module
-		//                        );
-
 		// Define some features supported by module (triggers, login, substitutions, menus, css, etc...)
 		$this->module_parts = array(
 			// Set this to 1 if module has its own trigger directory (core/triggers)
@@ -144,7 +124,7 @@ class modprocessRules extends DolibarrModules
 		$this->requiredby = array();	// List of modules id to disable if this one is disabled
 		$this->conflictwith = array();	// List of modules id this module is in conflict with
 		$this->phpmin = array(5,0);					// Minimum version of PHP required by module
-		$this->need_dolibarr_version = array(3,0);	// Minimum version of Dolibarr required by module
+		$this->need_dolibarr_version = array(10,0);	// Minimum version of Dolibarr required by module
 		$this->langfiles = array("processrules@processrules");
 
 		// Constants
