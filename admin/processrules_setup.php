@@ -90,7 +90,7 @@ elseif ($action == 'del')
 	$ret = delDocumentModel($value, $type);
 	if ($ret > 0)
 	{
-		if ($conf->global->FACTURE_ADDON_PDF == "$value") dolibarr_del_const($db, 'FACTURE_ADDON_PDF', $conf->entity);
+		if ($conf->global->PROCESSRULES_ADDON_PDF == "$value") dolibarr_del_const($db, 'PROCESSRULES_ADDON_PDF', $conf->entity);
 	}
 }
 // Set default model
