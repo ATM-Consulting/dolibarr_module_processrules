@@ -317,7 +317,7 @@ class Procedure extends SeedObject
      * @param User $user User object
      * @return int
      */
-    public function delete(User &$user)
+    public function delete(User &$user, $notrigger = false)
     {
         $this->deleteObjectLinked();
 
@@ -328,7 +328,7 @@ class Procedure extends SeedObject
 		}
 
         unset($this->fk_element); // avoid conflict with standard Dolibarr comportment
-        return parent::delete($user);
+        return parent::delete($user, $notrigger);
     }
 
 	/**
