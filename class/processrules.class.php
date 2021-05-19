@@ -261,6 +261,7 @@ class ProcessRules extends SeedObject
 		$this->init();
 
 		$this->status = self::STATUS_DRAFT;
+		$this->statut = $this->status; // use statut for somme dolibarr compatibility
 		$this->entity = $conf->entity;
     }
 
