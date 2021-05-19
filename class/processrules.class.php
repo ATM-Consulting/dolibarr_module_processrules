@@ -80,6 +80,11 @@ class ProcessRules extends SeedObject
 
 	public $model_pdf;
 
+	/**
+	 * @var Procedure[] $lines
+	 */
+	public $lines;
+
     /**
      *  'type' is the field format.
      *  'label' the translation key.
@@ -288,7 +293,7 @@ class ProcessRules extends SeedObject
 	 * @param User $user object
 	 * @return int
 	 */
-	public function cloneObject($user)
+	public function cloneObject($user, $notrigger = false)
 	{
 		$this->fetch_lines();
 
@@ -303,7 +308,7 @@ class ProcessRules extends SeedObject
 			{
 				$line->fk_processrules = $newID;
 
-				$line->cloneObject($user);
+				$line->cloneObject($user, $notrigger);
 			}
 		}
 
@@ -314,7 +319,7 @@ class ProcessRules extends SeedObject
      * @param User $user User object
      * @return int
      */
-    public function delete(User &$user)
+    public function delete(User &$user, $notrigger = false)
     {
         $this->deleteObjectLinked();
 
@@ -325,7 +330,7 @@ class ProcessRules extends SeedObject
 		}
 
         unset($this->fk_element); // avoid conflict with standard Dolibarr comportment
-        return parent::delete($user);
+        return parent::delete($user, $notrigger);
     }
 
 	/**

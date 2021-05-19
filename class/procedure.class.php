@@ -320,7 +320,7 @@ class Procedure extends SeedObject
 	 * @param User $user object
 	 * @return int
 	 */
-	public function cloneObject($user)
+	public function cloneObject($user, $notrigger = false)
 	{
 		$this->fetch_lines();
 
@@ -335,7 +335,7 @@ class Procedure extends SeedObject
 			{
 				$line->fk_procedure = $newID;
 
-				$line->cloneObject($user);
+				$line->cloneObject($user, $notrigger);
 			}
 		}
 
