@@ -101,6 +101,7 @@ if($action == 'addProduct'){
 	if(!empty($fk_product)){
 		if($object->add_object_linked('product', intval($fk_product)) > 0)
 		{
+			$object->update($user);
 			setEventMessage($langs->trans('ProcessRulesLinkAdded'));
 		}
 		else{
