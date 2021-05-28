@@ -324,7 +324,7 @@ class Procedure extends SeedObject
 		$this->fetch_lines();
 		if (!empty($this->lines))
 		{
-			foreach ($this->lines as $line) $line->delete($user);
+			foreach ($this->lines as $line) $line->delete($user, $notrigger);
 		}
 
         unset($this->fk_element); // avoid conflict with standard Dolibarr comportment
