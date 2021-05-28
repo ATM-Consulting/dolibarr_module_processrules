@@ -101,7 +101,7 @@ if($action == 'addProduct'){
 	if(!empty($fk_product)){
 		if($object->add_object_linked('product', intval($fk_product)) > 0)
 		{
-			$object->update($user);
+			$object->update($user);// Ajouter pour pallier au manque de trigger et hoolk pour add_object_linked, cela permet aux autre modules de garder des fonction de contrôle plus simples et de ne pas avoir a éparpiller le code de vérification
 			setEventMessage($langs->trans('ProcessRulesLinkAdded'));
 		}
 		else{
