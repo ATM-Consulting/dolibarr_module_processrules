@@ -80,7 +80,24 @@ function processrulesAdminPrepareHead()
  */
 function processrules_prepare_head(ProcessRules $object)
 {
-    global $langs, $conf;
+    global $langs, $conf, $db;
+
+	$sql = 'SELECT COUNT(*) as nb ';
+	$sql.= ' FROM '.MAIN_DB_PREFIX.'product t ';
+	$sql.= ' JOIN '.MAIN_DB_PREFIX.'element_element elel ON (elel.targettype = \''.$db->escape($object->element).'\' AND elel.fk_target = '.intval($object->id).' AND elel.sourcetype = \'product\' AND  elel.fk_source = t.rowid)';
+	$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product_extrafields et ON (et.fk_object = t.rowid)';
+	$sql.= ' WHERE 1=1';
+	$sql.= ' AND t.entity IN ('.getEntity('product', 1).')';
+
+	$resql = $db->query($sql);
+
+	if ($resql)
+	{
+		$obj=$db->fetch_object($resql);
+		$db->free();
+		$nbProduct = $obj->nb;
+	}
+
     $h = 0;
     $head = array();
     $head[$h][0] = dol_buildpath('/processrules/processrules_card.php', 1).'?id='.$object->id;
@@ -104,6 +121,7 @@ function processrules_prepare_head(ProcessRules $object)
 
 	$head[$h][0] = dol_buildpath('/processrules/processrules_product_tab.php', 1).'?id='.$object->id;
 	$head[$h][1] = $langs->trans("Products");
+	if ($nbProduct > 0)  $head[$h][1] .= ' <span class="badge">'.$nbProduct.'</span>';
 	$head[$h][2] = 'products';
 	$h++;
 
