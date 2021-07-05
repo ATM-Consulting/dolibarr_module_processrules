@@ -59,7 +59,7 @@ class modprocessRules extends DolibarrModules
 		// Module description, used if translation string 'ModuleXXXDesc' not found (where XXX is value of numeric property 'numero' of module)
 		$this->description = "Description of module processRules";
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->version = '1.1.0';
+		$this->version = '1.1.1';
 		// Key used in llx_const table to save module status enabled/disabled (where PROCESSRULES is value of property name of module in uppercase)
 		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
 		// Where to store the module in setup page (0=common,1=interface,2=others,3=very specific)
@@ -97,10 +97,11 @@ class modprocessRules extends DolibarrModules
 			),
 			// Set here all hooks context managed by module. To find available hook context, make a "grep -r '>initHooks(' *" on source code. You can also set hook context to 'all'
 			'hooks' => array(
-				//   'data' => array(
+				   'data' => array(
+					   'processruleslist'
 				//       'hookcontext1',
 				//       'hookcontext2',
-				//   ),
+				   ),
 				//   'entity' => '0',
 			),
 			// Set this to 1 if features of module are opened to external users

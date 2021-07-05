@@ -521,7 +521,7 @@ else
 				$filedir = $conf->processrules->dir_output . '/' . $objref;
 				$urlsource = $_SERVER["PHP_SELF"] . "?id=" . $object->id;
 				$genallowed = 1;$user->rights->processrules->read;	// If you can read, you can build the PDF to read content
-				$delallowed = $user->rights->processrules->create;	// If you can create/edit, you can remove a file on card
+				$delallowed = $user->rights->processrules->delete;	// If you can create/edit, you can remove a file on card
 				print $formfile->showdocuments('processrules:processrules', $objref, $filedir, $urlsource, $genallowed, $delallowed, $object->modelpdf, 1, 0, 0, 28, 0, '', '', '', $langs->defaultlang);
 
 

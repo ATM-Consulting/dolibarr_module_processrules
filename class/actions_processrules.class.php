@@ -67,7 +67,7 @@ class ActionsprocessRules
 	 */
 	public function doActions($parameters, &$object, &$action, $hookmanager)
 	{
-		$error = 0; // Error counter
+		/*$error = 0; // Error counter
 		$myvalue = 'test'; // A result value
 
 		print_r($parameters);
@@ -89,6 +89,45 @@ class ActionsprocessRules
 		{
 			$this->errors[] = 'Error message';
 			return -1;
-		}
+		}*/
 	}
+
+	/**
+	 * @param $parameters
+	 * @return int
+	 */
+	function completeTabsHead($parameters) {
+
+		global $langs, $db;
+
+		$contextArray = explode(':', $parameters['context']) ;
+
+		$object = $parameters['object'];
+		$head = $parameters['head'];
+
+		if(!class_exists('processrules')) require_once __DIR__ . '/processrules.class.php';
+
+		$processRules = new ProcessRules($db);
+		$element = $processRules->isCompatibleElement($object);
+		if($element == 'product' && !empty($processRules->compatibleElementList[$element]['showTab'])) {
+
+			foreach ($head as $k => &$values) {
+				if ($values[2] === 'productmethodelist') {
+					$countItems = $processRules->countItemsForProcessRules($object->id);
+					if (!preg_match('/marginleftonlyshort/', $values[1])) $values[1] .= '<span class="badge marginleftonlyshort">' . $countItems . '</span>';
+					break;
+				}
+			}
+			$resArray = $head;
+
+		}
+		if($resArray){
+			$this->results = $resArray;
+			return 1;
+		}
+		else return 0;
+	}
+
+
+
 }
