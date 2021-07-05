@@ -318,17 +318,17 @@ class Procedure extends SeedObject
      * @return int
      */
     public function delete(User &$user, $notrigger = false)
-    {
+	{
         $this->deleteObjectLinked();
 
 		$this->fetch_lines();
 		if (!empty($this->lines))
 		{
-			foreach ($this->lines as $line) $line->delete($user, $notrigger);
+			foreach ($this->lines as $line) $line->delete($user);
 		}
 
         unset($this->fk_element); // avoid conflict with standard Dolibarr comportment
-        return parent::delete($user, $notrigger);
+        return parent::delete($user);
     }
 
 	/**
