@@ -302,8 +302,8 @@ class Procedure extends SeedObject
      * @param User $user User object
      * @return int
      */
-    public function delete(User &$user)
-    {
+    public function delete(User &$user, $notrigger = false)
+	{
         $this->deleteObjectLinked();
 
 		$this->fetch_lines();
@@ -320,7 +320,7 @@ class Procedure extends SeedObject
 	 * @param User $user object
 	 * @return int
 	 */
-	public function cloneObject($user)
+	public function cloneObject($user, $notrigger = false)
 	{
 		$this->fetch_lines();
 

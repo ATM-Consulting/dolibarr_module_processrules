@@ -81,7 +81,7 @@ $extralabels = $extrafields->fetch_name_optionals_label('processrules');
 // Load object
 include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php';  // Must be include, not include_once  // Must be include, not include_once. Include fetch and fetch_thirdparty but not fetch_optionals
 
-if ($id > 0 || ! empty($ref)) $upload_dir = $conf->processrules->multidir_output[$object->entity?$object->entity:$conf->entity] . "/processrules/" . dol_sanitizeFileName($object->id);
+if ($id > 0 || ! empty($ref)) $upload_dir = $conf->processrules->dir_output . '/' . dol_sanitizeFileName($object->ref);
 //if ($id > 0 || ! empty($ref)) $upload_dir = $conf->processrules->multidir_output[$object->entity?$object->entity:$conf->entity] . "/processrules/" . dol_sanitizeFileName($object->ref);
 
 
