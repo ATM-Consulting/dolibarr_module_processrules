@@ -288,7 +288,7 @@ class ProcessRules extends SeedObject
 	 * @param User $user object
 	 * @return int
 	 */
-	public function cloneObject($user)
+	public function cloneObject($user, $notrigger = false)
 	{
 		$this->fetch_lines();
 
@@ -314,7 +314,7 @@ class ProcessRules extends SeedObject
      * @param User $user User object
      * @return int
      */
-    public function delete(User &$user)
+    public function delete(User &$user, $notrigger = false)
     {
         $this->deleteObjectLinked();
 
@@ -601,6 +601,94 @@ class ProcessRules extends SeedObject
 		$modelpath = "core/modules/processrules/doc/";
 
 		return $this->commonGenerateDocument($modelpath, $modele, $outputlangs, $hidedetails, $hidedesc, $hideref, $moreparams);
+	}
+
+	/**
+	 * test if current object is compatible with processrules
+	 *
+	 * @param CommonObject $object
+	 * @return string|false
+	 */
+	public function isCompatibleElement($object)
+	{
+		if(!is_object($object)){
+			return false;
+		}
+
+		if(empty($this->compatibleElementList)){
+			$this->getCompatibleElementList();
+		}
+
+		foreach ($this->compatibleElementList as $key => $values){
+			if($object->element === $key){
+				return $key;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Return array of compatible elements
+	 * Code very similar with showOutputField of extra fields
+	 *
+	 * @return array
+	 */
+	public function getCompatibleElementList()
+	{
+		global $langs, $user, $conf;
+		$error = 0;
+
+		$this->compatibleElementList = array();
+
+		if(!empty($conf->product->enabled)){
+			$this->compatibleElementList['product'] = array(
+				'label' 	=> $langs->trans('Product'),
+				'class' 	=> 'Product',
+				'classfile' => 'product/class/product.class.php',
+				'showTab'	=> $user->rights->processrules->read
+			);
+		}
+
+		/*if(!empty($conf->resource->enabled)){
+
+			$this->compatibleElementList['dolresource'] = array(
+				'label' => $langs->trans('Resource'),
+				'class' => 'Dolresource',
+				'classfile' => 'resource/class/dolresource.class.php',
+				'overrideFkElementType' => 'integer:Dolresource:resource/class/dolresource.class.php:1:fk_statut>=0',
+				'showTab'	=> $user->rights->processrules->read
+			);
+		}*/
+
+
+		return $this->compatibleElementList;
+	}
+
+	/**
+	 * Return the number of processRules stored
+	 *
+	 * @param  int  productid
+	 * @return string|false
+	 */
+	public function countItemsForProcessRules($productid)
+	{
+		if(empty($productid)){
+			return false;
+		}
+
+		$sql = 'SELECT COUNT(*) nb FROM '.MAIN_DB_PREFIX.$this->table_element.' t ';
+		$sql.= " JOIN llx_element_element elel ON (elel.targettype = 'processrules' AND elel.fk_target = t.rowid AND elel.sourcetype = 'product')";
+		$sql .= " WHERE elel.fk_source = ".$productid;
+
+		$res = $this->db->query($sql);
+		if ($res)
+		{
+			$obj = $this->db->fetch_object($res);
+			return $obj->nb;
+		}
+
+		return false;
 	}
 }
 
