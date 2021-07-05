@@ -269,6 +269,21 @@ class Procedure extends SeedObject
 		$this->entity = $conf->entity;
     }
 
+	/**
+	 *	Get object and children from database
+	 *
+	 *	@param      int			$id       		Id of object to load
+	 * 	@param		bool		$loadChild		used to load children from database
+	 *  @param      string      $ref            Ref
+	 *	@return     int         				>0 if OK, <0 if KO, 0 if not found
+	 */
+	public function fetch($id, $loadChild = true, $ref = null)
+	{
+		$res = parent::fetch($id, $loadChild, $ref);
+		$this->statut = $this->status; // Somme test of dolibarr are made on $this->statut instead of $this->status
+		return $res;
+	}
+
     /**
      * @param User $user User object
      * @return int
@@ -335,7 +350,7 @@ class Procedure extends SeedObject
 			{
 				$line->fk_procedure = $newID;
 
-				$line->cloneObject($user);
+				$line->cloneObject($user, $notrigger);
 			}
 		}
 
