@@ -80,7 +80,7 @@ function processrulesAdminPrepareHead()
  */
 function processrules_prepare_head(ProcessRules $object)
 {
-    global $langs, $conf, $db;
+	global $langs, $conf, $db;
 
 	$sql = 'SELECT COUNT(*) as nb ';
 	$sql.= ' FROM '.MAIN_DB_PREFIX.'product t ';
@@ -98,7 +98,7 @@ function processrules_prepare_head(ProcessRules $object)
 		$nbProduct = $obj->nb;
 	}
 
-    $h = 0;
+	$h = 0;
     $head = array();
     $head[$h][0] = dol_buildpath('/processrules/processrules_card.php', 1).'?id='.$object->id;
     $head[$h][1] = $langs->trans("processRulesCard");
