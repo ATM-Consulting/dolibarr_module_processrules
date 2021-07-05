@@ -126,5 +126,4 @@ class ActionsprocessRules
 		}
 		else return 0;
 	}
-
 }
