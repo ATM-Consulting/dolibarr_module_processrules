@@ -318,7 +318,7 @@ class Procedure extends SeedObject
      * @return int
      */
     public function delete(User &$user, $notrigger = false)
-    {
+	{
         $this->deleteObjectLinked();
 
 		$this->fetch_lines();

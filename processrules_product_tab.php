@@ -88,7 +88,7 @@ if ($id > 0 || ! empty($ref)) $upload_dir = $conf->processrules->multidir_output
 // LOAD PRODUCTS EXTRAFIELDS
 $productStatic = new Product($db);
 $productExtrafields = new ExtraFields($db);
-$productExtrafieldslabels = $productExtrafields->fetch_name_optionals_label($object->table_element);
+$productExtrafieldslabels = $productExtrafields->fetch_name_optionals_label('product');
 
 
 /*
