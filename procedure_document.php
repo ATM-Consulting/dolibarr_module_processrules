@@ -47,7 +47,6 @@ dol_include_once('/processrules/lib/processrules.lib.php');
 // Load translation files required by the page
 $langs->loadLangs(array("processrules@processrules","companies","other","mails"));
 
-
 $action=GETPOST('action', 'aZ09');
 $confirm=GETPOST('confirm');
 $id=(GETPOST('socid', 'int') ? GETPOST('socid', 'int') : GETPOST('id', 'int'));
@@ -88,7 +87,7 @@ if ($id > 0 || ! empty($ref)) $upload_dir = $conf->processrules->multidir_output
 /*
  * Actions
  */
-
+$permissiontoadd = $user->rights->processrules->write;
 include_once DOL_DOCUMENT_ROOT . '/core/actions_linkedfiles.inc.php';
 
 

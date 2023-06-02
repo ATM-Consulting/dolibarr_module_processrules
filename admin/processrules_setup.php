@@ -260,7 +260,7 @@ foreach ($dirmodels as $reldir)
 								if (in_array($name, $def))
 								{
 									print '<td class="center">'."\n";
-									print '<a href="'.$_SERVER["PHP_SELF"].'?action=del&value='.$name.'">';
+									print '<a href="'.$_SERVER["PHP_SELF"].'?action=del&value='.$name.'&token='.newToken().'">';
 									print img_picto($langs->trans("Enabled"), 'switch_on');
 									print '</a>';
 									print '</td>';
@@ -268,7 +268,7 @@ foreach ($dirmodels as $reldir)
 								else
 								{
 									print '<td class="center">'."\n";
-									print '<a href="'.$_SERVER["PHP_SELF"].'?action=set&value='.$name.'&scan_dir='.$module->scandir.'&label='.urlencode($module->name).'">'.img_picto($langs->trans("SetAsDefault"), 'switch_off').'</a>';
+									print '<a href="'.$_SERVER["PHP_SELF"].'?action=set&value='.$name.'&scan_dir='.$module->scandir.'&label='.urlencode($module->name).'&token='.newToken().'">'.img_picto($langs->trans("SetAsDefault"), 'switch_off').'</a>';
 									print "</td>";
 								}
 
@@ -280,7 +280,7 @@ foreach ($dirmodels as $reldir)
 								}
 								else
 								{
-									print '<a href="'.$_SERVER["PHP_SELF"].'?action=setdoc&value='.$name.'&scan_dir='.$module->scandir.'&label='.urlencode($module->name).'" alt="'.$langs->trans("Default").'">'.img_picto($langs->trans("SetAsDefault"), 'off').'</a>';
+									print '<a href="'.$_SERVER["PHP_SELF"].'?action=setdoc&value='.$name.'&scan_dir='.$module->scandir.'&label='.urlencode($module->name).'&token='.newToken().'" alt="'.$langs->trans("Default").'">'.img_picto($langs->trans("SetAsDefault"), 'off').'</a>';
 								}
 								print '</td>';
 
@@ -305,7 +305,7 @@ foreach ($dirmodels as $reldir)
 								print '<td class="center">';
 								if ($module->type == 'pdf')
 								{
-									print '<a href="'.$_SERVER["PHP_SELF"].'?action=specimen&module='.$name.'">'.img_object($langs->trans("Preview"), 'bill').'</a>';
+									print '<a href="'.$_SERVER["PHP_SELF"].'?action=specimen&token='.newToken().'&module='.$name.'&token='.newToken().'">'.img_object($langs->trans("Preview"), 'bill').'</a>';
 								}
 								else
 								{
